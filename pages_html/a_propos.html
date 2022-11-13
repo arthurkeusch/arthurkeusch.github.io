@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href="../styles/page.css" rel="stylesheet" type="text/css">
+    <title>A propos de nous</title>
+</head>
+  <body>
+<!--Début navbar-->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="../index.html">FdlFK</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="../index.html">Accueil</a> <!--Lien position-->
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="page1.html">Page 1</a> <!--Lien pas de position-->
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Lien 2</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Lien 3
+          </a> <!--Lien dropdown-->
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="#">Lien 3.1</a></li>
+            <li><a class="dropdown-item" href="#">Lien 3.2</a></li>
+            <li><a class="dropdown-item" href="#">Lien 3.3</a></li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="navbar-nav me-auto mb-2 mb-md-2">
+        <button type="button" class="btn btn-outline-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-search" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+          </svg>
+          <span class="visually-hidden">Button</span>
+        </button>
+        <form>
+          <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+        </form>
+      </ul>
+      <ul class="navbar-nav me-2 mb-2 mb-md-2">
+        <a href="login.html">
+          <button type="button" class="btn btn-outline-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-person-circle" viewBox="0 0 16 16">
+              <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+              <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+            </svg>
+            <span class="visually-hidden">Button</span>
+          </button>
+        </a>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!--Fin navbar-->
+<br><br><br>
+<!--Début présentation-->
+<h1 class="a_propos_de_nous">Titre de niveau 1</h1>
+<p class="a_propos_de_nous">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ornare ante ut dolor consequat elementum. 
+    Praesent mi arcu, varius a metus id, commodo rhoncus nulla. Praesent quis eleifend justo. Quisque tellus felis, tincidunt ac varius a, 
+    ornare eu metus. Integer lacinia erat congue dolor fermentum, nec rutrum ante congue. Orci varius natoque penatibus et magnis dis parturient montes, 
+    nascetur ridiculus mus. Quisque lobortis est eros. Cras lorem ligula, efficitur sit amet feugiat nec, dignissim non risus. Ut eu rhoncus metus. 
+    Sed vitae molestie arcu. Maecenas varius mauris sed mauris varius sodales.
+    <br><br>
+    Suspendisse fermentum massa id vehicula pretium. Fusce egestas magna tellus, at hendrerit dolor posuere ac. Nullam molestie euismod erat nec 
+    volutpat. Nunc consequat ut lectus a hendrerit. Sed lorem odio, laoreet ut ex eget, tempor suscipit tortor. Sed congue tellus vitae velit venenatis, 
+    quis finibus arcu elementum. Cras vulputate lorem vitae ex cursus, ut pretium magna hendrerit. Phasellus nec lacinia massa. Mauris elementum est eu 
+    feugiat suscipit. Vivamus dignissim tellus vel libero faucibus, sed venenatis sem posuere. Duis et tempus turpis.
+    <br><br>
+    Proin ac egestas est. Sed viverra magna id justo fermentum lacinia. Vestibulum id enim dictum, fringilla sapien nec, facilisis felis. Quisque 
+    iaculis ullamcorper massa, vitae ullamcorper magna porta id. Nam a libero justo. Aenean efficitur non sem a placerat. Duis egestas et mauris ut 
+    varius. Mauris ut varius risus. Cras tempor molestie augue a euismod. Aliquam vel arcu efficitur, pharetra magna id, tincidunt massa. Etiam sed 
+    fringilla nibh. In hac habitasse platea dictumst. Donec dui enim, ultricies nec volutpat eu, tempus eget quam. Donec mattis, quam at rutrum pretium, 
+    justo turpis sollicitudin tortor, auctor efficitur ligula erat non tellus.
+    <br><br>
+    Fusce commodo lacus id magna ornare scelerisque. Nunc eget molestie turpis. Morbi porta nunc sed suscipit accumsan. Mauris porttitor quam et quam 
+    dignissim, sit amet eleifend ex blandit. Donec vehicula elit at mi pellentesque dictum eget sit amet orci. Class aptent taciti sociosqu ad litora 
+    torquent per conubia nostra, per inceptos himenaeos. Phasellus egestas mattis viverra. Donec feugiat diam ut tincidunt euismod. Suspendisse at ornare 
+    velit, id eleifend lacus. Mauris at est porta, lobortis urna ut, tempus ex.
+    <br><br>
+    Mauris vehicula, dui non sollicitudin pulvinar, ante turpis elementum tellus, et lobortis nunc nisi vitae massa. Aliquam tortor tellus, tincidunt 
+    et consectetur ut, placerat eu nisl. Suspendisse potenti. Mauris ut libero porttitor, bibendum dolor eu, sagittis neque. Ut suscipit lacinia metus, 
+    quis sagittis est fringilla quis. Sed ac ex nec nunc sagittis blandit a quis urna. Vestibulum ornare lacus id lacinia aliquam. Ut id est nec justo 
+    laoreet lacinia nec eget nunc. Curabitur vitae ipsum diam. Praesent euismod turpis nibh, quis tempor urna efficitur id. Orci varius natoque 
+    penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nunc in tortor tristique, tempus metus fermentum, scelerisque ex. Pellentesque 
+    consectetur urna eget turpis congue vulputate. Maecenas facilisis felis a luctus fermentum. Class aptent taciti sociosqu ad litora torquent per 
+    conubia nostra, per inceptos himenaeos. 
+</p>
+<!--Fin présentation-->
+<!--Début footer-->
+<footer class="py-3 my-4">
+  <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+    <li class="nav-item"><a href="index.html" class="nav-link px-2 text-muted">Accueil</a></li>
+    <li class="nav-item"><a href="a_propos.html" class="nav-link px-2 text-muted">A propos de nous</a></li>
+  </ul>
+  <p class="text-center text-muted">&copy; 2022 Company, Inc</p>
+</footer>
+<!--Fin footer-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+@media screen and (max-width: 770px) {
+    .affichage_carousel {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 770px) {
+    .image_carousel {
+        max-height: 600px;
+        max-width: 100%;
+        margin: auto;
+    }
+    
+    .fond_carousel {
+        background-color: rgb(137, 137, 137);    
+    }
+}
