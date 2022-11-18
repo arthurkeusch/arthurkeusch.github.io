@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href="../styles/page.css" rel="stylesheet" type="text/css">
+    <title>Connection</title>
+</head>
+    <body>
+<!--Début navbar-->
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="../index.html">FdlFK</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                    <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="../index.html">Accueil</a> <!--Lien position-->
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="../pages_html/page1.html">Page 1</a> <!--Lien pas de position-->
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="#">Lien 2</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Lien 3
+                    </a> <!--Lien dropdown-->
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">Lien 3.1</a></li>
+                        <li><a class="dropdown-item" href="#">Lien 3.2</a></li>
+                        <li><a class="dropdown-item" href="#">Lien 3.3</a></li>
+                    </ul>
+                    </li>
+                </ul>
+                <ul class="navbar-nav me-auto mb-2 mb-md-2">
+                    <button type="button" class="btn btn-outline-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                    </svg>
+                    <span class="visually-hidden">Button</span>
+                    </button>
+                    <form>
+                    <input class="form-control" type="text" placeholder="Rechercher" aria-label="Search">
+                    </form>
+                </ul>
+                <ul class="navbar-nav me-2 mb-2 mb-md-2">
+                    <a href="login.html">
+                    <button type="button" class="btn btn-outline-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-person-circle" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                        </svg>
+                        <span class="visually-hidden">Button</span>
+                    </button>
+                    </a>
+                </ul>
+                </div>
+            </div>
+        </nav>
+<!--Fin navbar-->
+<!--Début connection-->
+        <div class="modal modal-signin position-static d-block bg-white py-5" tabindex="-1" role="dialog" id="modalSignin">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content rounded-5 shadow">
+                    <div class="modal-header p-5 pb-4 border-bottom-0">
+                    <h2 class="fw-bold mb-0">Connection</h2>
+                </div>
+                <div class="modal-body p-5 pt-0">
+                    <form class="">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control rounded-4" id="floatingInput" placeholder="name@example.com">
+                            <label for="floatingInput">Adresse mail / Nom d'utilisateur</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control rounded-4" id="floatingPassword" placeholder="Password">
+                            <label for="floatingPassword">Mots de passe</label>
+                        </div>
+                        <button class="w-100 mb-2 btn btn-lg rounded-4 btn-primary" type="submit">Ce connecter</button>
+                        <hr class="my-4">
+                        <small class="text-muted">Vous n'avez pas de compte ou vous avez oubliez vos identifiants de connextion ?
+                            <br>
+                            Envoyer un mail à cette adresse pour crée un compte et recevoir vos identifiants de connections : <B><U>exemple.mail@gmail.com</U></B> 
+                        </small>
+                        <hr class="my-4">
+                        <h2 class="fs-5 fw-bold mb-3">Attention ! Page et fonctionnalités de connection en cours de développement.</h2>
+                    </form>
+                </div>
+            </div>
+            </div>
+        </div>
+<!--Fin connection-->
+<!--Début footer-->
+        <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <li class="nav-item"><a href="index.html" class="nav-link px-2 text-muted">Accueil</a></li>
+            <li class="nav-item"><a href="a_propos.html" class="nav-link px-2 text-muted">A propos de nous</a></li>
+        </ul>
+        <p class="text-center text-muted">&copy; 2022 Company, Inc</p>
+        </footer>
+<!--Fin footer-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    </body>
+</html>
