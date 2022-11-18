@@ -6,7 +6,7 @@
 
 @media screen and (min-width: 770px) {
     .image_carousel {
-        max-height: 600px;
+        min-height: 500px;
         max-width: 100%;
         margin: auto;
     }
