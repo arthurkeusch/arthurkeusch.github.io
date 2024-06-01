@@ -106,8 +106,10 @@
                                         <p>
                                             L'objectif de mon stage est donc de mettre en place un serveur qui testera
                                             régulièrement les prompts utilisés par l'entreprise afin de conserver les
-                                            réponses de l'API dans une base de données. Parallèlement, je dois créer un
-                                            site web permettant de visualiser ces réponses ainsi que des statistiques
+                                            réponses de l'API dans une base de données. Parallèlement, je devais créer
+                                            un
+                                            site web (PHP/Symfony) permettant de visualiser ces réponses ainsi que des
+                                            statistiques
                                             associées, telles que le temps de réponse de l'API et la nature des réponses
                                             (erreurs ou réponses normales).
                                         </p>
@@ -179,10 +181,26 @@
                                         <h4 class="text-center">Mise en œuvre du projet</h4>
                                     </div>
                                     <div class="card-body">
-                                        - AC 1 Identifier les processus présents dans une organisation en vue
-                                        d’améliorer les systèmes d’information<br>
-                                        - AC 2 Savoir intégrer un projet informatique dans le système d’information
-                                        d’une organisation
+                                        <p>
+                                            Pour mener à bien mon projet, en plus d'avoir identifié les besoins de
+                                            l'entreprise, j'ai dû m'adapter aux infrastructures existantes de
+                                            l'entreprise ainsi qu'à l'API d'OpenAI. Concernant le test des outils, j'ai
+                                            d'abord récupéré les prompts depuis les serveurs de l'entreprise via leur
+                                            API, puis je les ai envoyés à l'API d'OpenAI. Les différentes informations
+                                            des réponses, telles que le temps de réponse, le contenu des réponses et
+                                            leur complétude, étaient ensuite stockées.
+                                        </p>
+                                        <p>
+                                            Pour les assistants virtuels, il n'était plus nécessaire de passer par les
+                                            serveurs de l'entreprise. Les informations sur les assistants à tester
+                                            étaient directement récupérées depuis la base de données de mon site, puis
+                                            soumises à l'API d'OpenAI pour obtenir les réponses.
+                                        </p>
+                                        <p>
+                                            Ce projet m'a donc amené à intégrer l'API d'OpenAI ainsi que celle
+                                            d'OnlineFormaPro, assurant ainsi une intégration efficace entre les deux
+                                            systèmes.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -201,11 +219,62 @@
                             <div class="col">
                                 <div class="card h-100 d-flex flex-column">
                                     <div class="card-header">
-                                        <h4 class="text-center">Conception et mise en place d'une base de donnée</h4>
+                                        <h4 class="text-center">Conception, mise en place et optimisation d'une base de
+                                            données</h4>
                                     </div>
                                     <div class="card-body">
-                                        - AC 3 Concevoir une base de données relationnelle à partir d’un cahier des
-                                        charges
+                                        <p>
+                                            Après avoir établi les besoins de l'entreprise et analysé l'existant, j'ai
+                                            créé une base de données permettant de stocker les informations nécessaires
+                                            au fonctionnement du serveur. Comme vous pouvez le voir sur mon modèle
+                                            conceptuel de données (MCD) actuel peut se décomposer en trois blocs. Ce
+                                            modèle n'a pas été créé ainsi immédiatement et a nécessité plusieurs
+                                            ajustements au fur et à mesure de l'évolution du projet.
+                                        </p>
+                                        <p>
+                                            À l'origine, je devais seulement stocker des données et les visualiser.
+                                            Cependant, après plusieurs échanges avec mon responsable de stage, de
+                                            nouvelles idées sont apparues, les plus notables étant :
+                                        </p>
+                                        <ul>
+                                            <li>
+                                                La possibilité d'avoir des niveaux spécifiques aux langues d'un même
+                                                outil, plutôt que des niveaux partagés par toutes les langues. Cette
+                                                modification a simplifié la gestion des niveaux entre les outils.
+                                            </li>
+                                            <li>
+                                                L'ajout de paramètres : En raison des changements fréquents de l'API
+                                                d'OpenAI, il était important de pouvoir modifier l'emplacement de
+                                                certains éléments de réponse. En cas de changement, il suffirait de
+                                                modifier les paramètres du site sans toucher à la base de données. Il
+                                                fallait également pouvoir configurer des tâches CRON via le site web
+                                                pour choisir la fréquence des tests des outils et des assistants. J'ai
+                                                donc ajouté une table pour sauvegarder les paramètres CRON avant de les
+                                                écrire dans le fichier.
+                                            </li>
+                                            <li>
+                                                L'intégration des assistants : Initialement, il n'était pas prévu
+                                                d'intégrer les assistants au projet, car l'entreprise ne les utilisait
+                                                pas encore. Cependant, avec les possibilités accrues offertes par ces
+                                                assistants, il est devenu nécessaire de les intégrer au site. À terme,
+                                                l'entreprise compte basculer tous ses outils sur des assistants.
+                                            </li>
+                                            <li>
+                                                L'ajout de deux tables pour sauvegarder les assistants, car l'entreprise
+                                                avait rencontré des problèmes avec la sauvegarde des assistants sur les
+                                                serveurs d'OpenAI.
+                                            </li>
+                                        </ul>
+                                        <p>
+                                            Comme ces données provenaient de serveurs différents (OpenAI et
+                                            OnlineFormaPro), il était essentiel que la base de données ne devienne pas
+                                            obsolète à chaque changement dans les réponses des serveurs. Pour simplifier
+                                            l'enregistrement des données, j'ai décidé de stocker les réponses complètes
+                                            au format JSON de l'API. De cette manière, si la réponse change ou si
+                                            l'entreprise souhaite ajouter des informations dans le visuel du site, il
+                                            n'est pas nécessaire de modifier la base de données. Il suffit d'adapter
+                                            uniquement le visuel du site.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -213,10 +282,24 @@
                             <div class="col">
                                 <div class="card h-100 d-flex flex-column">
                                     <div class="card-header">
-                                        <h4 class="text-center">Optimisation des données</h4>
+                                        <h4 class="text-center">MCD</h4>
                                     </div>
                                     <div class="card-body">
-                                        - AC 4 Manipuler des données hétérogènes
+                                        <h1>
+                                            METTRE ICI LA PHOTO DU MCD
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col">
+                                <div class="card h-100 d-flex flex-column">
+                                    <div class="card-header">
+                                        <h4 class="text-center">Page des statistiques</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <h1>METTRE ICI LA PHOTO DE LA PAGE DES STATISTIQUES</h1>
                                     </div>
                                 </div>
                             </div>
@@ -227,12 +310,36 @@
                                         <h4 class="text-center">Analyse des données</h4>
                                     </div>
                                     <div class="card-body">
-                                        - AC 1 Capturer et stocker des ensembles volumineux et complexes de données
-                                        hétérogènes<br>
-                                        - AC 2 Préparer et extraire les données pour l’exploitation
+                                        <p>
+                                            En récupérant les réponses de l'API d'OpenAI, j'obtiens également des
+                                            informations très utiles telles que le temps de réponse, la présence
+                                            d'erreurs et leur type. Ces données sont essentielles pour analyser la
+                                            performance et la fiabilité de l'API.
+                                        </p>
+                                        <p>
+                                            Pour fournir une vue globale et détaillée des réponses de l'API, j'ai
+                                            intégré différents graphiques dans la page des statistiques. Ces graphiques
+                                            permettent de visualiser les tendances et les anomalies de manière claire et
+                                            concise.
+                                        </p>
+                                        <p>
+                                            Par exemple, un graphique montre la distribution des temps de réponse,
+                                            mettant en évidence les pics de latence. Un autre graphique présente la
+                                            répartition des types d'erreurs rencontrées, aidant à identifier les
+                                            problèmes récurrents. Ces visualisations permettent de prendre des décisions
+                                            éclairées pour optimiser l'utilisation de l'API.
+                                        </p>
+                                        <p>
+                                            En outre, j'ai configuré le système pour capturer et stocker les données de
+                                            manière efficace et sécurisée. Les données sont stockées dans un format
+                                            JSON, ce qui facilite leur extraction et leur manipulation pour diverses
+                                            analyses. Cela garantit également que la base de données reste adaptable aux
+                                            changements futurs de l'API.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -253,7 +360,23 @@
                                         <h4 class="text-center">Bilan du stage</h4>
                                     </div>
                                     <div class="card-body">
-                                        Résumé des projets réalisés
+                                        <p>
+                                            Mon stage chez <a href="https://www.onlineformapro.com/">OnlineFormaPro</a>
+                                            a été extrêmement enrichissant et formateur. J'ai pu mettre en pratique et
+                                            développer mes compétences en gestion de projet, en développement web (PHP,
+                                            Symfony), et en gestion de bases de données. J'ai participé activement à
+                                            l'élaboration d'un serveur de tests pour l'API d'OpenAI, à la conception
+                                            et l'optimisation de bases de données, ainsi qu'à la création d'un site web
+                                            permettant de visualiser et d'analyser les réponses de l'API.
+                                        </p>
+                                        <p>
+                                            Ce projet m'a permis de travailler sur des aspects techniques variés tout en
+                                            améliorant mon organisation et ma capacité à m'adapter aux évolutions
+                                            constantes de la technologie. J'ai également eu l'occasion de collaborer
+                                            avec des professionnels expérimentés, ce qui m'a aidé à développer mes
+                                            compétences interpersonnelles et à mieux comprendre le fonctionnement d'une
+                                            équipe de développement.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -264,7 +387,27 @@
                                         <h4 class="text-center">Compétences acquises</h4>
                                     </div>
                                     <div class="card-body">
-                                        Résumé des compétences acquises
+                                        <p>
+                                            Durant ce stage, j'ai consolidé plusieurs compétences clés :
+                                        </p>
+                                        <ul>
+                                            <li><strong>Conduite de projet :</strong> J'ai appris à identifier les
+                                                besoins des utilisateurs, à planifier et à exécuter les différentes
+                                                phases du projet en respectant les délais impartis.
+                                            </li>
+                                            <li><strong>Développement web :</strong> J'ai approfondi mes connaissances
+                                                en PHP et Symfony, en développant des fonctionnalités complexes et en
+                                                intégrant des API.
+                                            </li>
+                                            <li><strong>Gestion de bases de données :</strong> J'ai conçu et optimisé
+                                                une base de données pour garantir la performance et la fiabilité des
+                                                applications.
+                                            </li>
+                                            <li><strong>Analyse des données :</strong> J'ai mis en place des outils de
+                                                visualisation et d'analyse des données pour fournir des informations
+                                                précieuses sur les performances de l'API d'OpenAI.
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
