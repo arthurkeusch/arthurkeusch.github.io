@@ -7,7 +7,7 @@
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" rel="stylesheet">
     <link href="styles/index.css" rel="stylesheet" type="text/css">
     <title>Portfolio Stage</title>
-    <link rel="icon" type="image/x-icon" href="images/logo.jpg">
+    <link href="images/logo.jpg" rel="icon" type="image/x-icon">
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -23,16 +23,40 @@
         </a>
     </div>
 </nav>
-<br><br><br><br>
-<h1 class="text-center">
-    Portfolio stage <a href="https://www.onlineformapro.com/">OnlineFormaPro</a>
-</h1>
 
-<div class="album py-5">
+<div class="d-flex flex-column flex-shrink-0 p-3 position-fixed"
+     style="width: 170px; top: 50px; left: -10px; z-index: 10">
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a class="nav-link link-body-emphasis" href="#introduction">
+                Introduction
+            </a>
+        </li>
+        <li>
+            <a class="nav-link link-body-emphasis" href="#competence_5">
+                Compétence 5
+            </a>
+        </li>
+        <li>
+            <a class="nav-link link-body-emphasis" href="#competence_4">
+                Compétence 4
+            </a>
+        </li>
+        <li>
+            <a class="nav-link link-body-emphasis" href="#conclusion">
+                Conclusion
+            </a>
+        </li>
+    </ul>
+</div>
 
-    <div class="container">
+<div style="margin-top: 80px;">
+    <h1 class="text-center">
+        Portfolio stage <a href="https://www.onlineformapro.com/">OnlineFormaPro</a>
+    </h1>
+    <div style="margin-left: 150px; margin-right: 40px;">
         <div class="row row-cols-1 g-3" style="margin-bottom: 40px;">
-            <div class="col">
+            <div class="col" id="introduction">
                 <div class="card h-100 d-flex flex-column">
                     <div class="card-header">
                         <h4 class="text-center">Introduction</h4>
@@ -70,7 +94,8 @@
                                         <p>
                                             J'ai effectué un stage de 9 semaines au sein de cette entreprise, du 22
                                             avril au 21 juin 2024. Ce stage m'a permis de contribuer à plusieurs
-                                            projets de développement et de gestion des données, en mettant en pratique
+                                            projets de développement et de gestion des données, en mettant en
+                                            pratique
                                             les compétences acquises au cours de ma formation.
                                         </p>
                                     </div>
@@ -121,7 +146,7 @@
         </div>
 
         <div class="row row-cols-1 g-3">
-            <div class="col">
+            <div class="col" id="competence_5">
                 <div class="card h-100 d-flex flex-column">
                     <div class="card-header">
                         <h4 class="text-center">Compétence 5 : Conduire un projet</h4>
@@ -207,7 +232,7 @@
                 </div>
             </div>
 
-            <div class="col">
+            <div class="col" id="competence_4">
                 <div class="card h-100 d-flex flex-column">
                     <div class="card-header">
                         <h4 class="text-center">Compétence 4 : Gérer des données de l'information</h4>
@@ -357,7 +382,7 @@
         </div>
 
         <div class="row row-cols-1 g-3" style="margin-top: 20px;">
-            <div class="col">
+            <div class="col" id="conclusion">
                 <div class="card h-100 d-flex flex-column">
                     <div class="card-header">
                         <h4 class="text-center">Conclusion</h4>
@@ -455,3 +480,33 @@
         margin: auto;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sections = document.querySelectorAll('div[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', function () {
+            let current = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+
+                if (pageYOffset >= sectionTop - sectionHeight / 3) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                link.removeAttribute('aria-current');
+
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                    link.setAttribute('aria-current', 'page');
+                }
+            });
+        });
+    });
+</script>
