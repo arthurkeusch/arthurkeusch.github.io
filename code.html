@@ -8,14 +8,15 @@
     <link href="styles/index.css" rel="stylesheet" type="text/css">
     <title>Code Explorer</title>
     <link href="images/logo.jpg" rel="icon" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/php/php.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js"></script>
 </head>
-<body>
+<body style="margin: 0; overflow: hidden; height: 100%;">
+
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
     <div class="container-fluid justify-content-evenly d-flex">
         <a class="navbar-brand" href="./index.html">CV</a>
@@ -25,69 +26,44 @@
     </div>
 </nav>
 
-<div class="container-fluid" style="margin-top: 80px; height: calc(100vh - 80px);">
+<div class="container-fluid"
+     style="margin-top: 80px; height: calc(100vh - 80px); display: flex; flex-direction: column;">
     <div class="row" style="height: 100%;">
-        <div class="col-3" style="height: 100%; overflow-y: auto; border-right: 1px solid #ccc;">
-            <div id="file-tree-container" class="p-2">
-                <ul id="file-tree" class="list-unstyled"></ul>
-            </div>
+        <div class="col-3 p-2" style="overflow-y: auto; height: calc(100vh - 80px); border-right: 1px solid #ccc;">
+            <ul class="list-unstyled" id="file-tree"></ul>
         </div>
-        <div class="col-9" style="height: 100%;">
-            <div id="code-editor-container" class="p-2" style="height: 100%;">
-                <textarea id="code-editor" class="code-editor"></textarea>
-            </div>
+        <div class="col-9 p-2 d-flex flex-column" style="overflow: hidden; height: calc(100vh - 80px);">
+            <textarea class="code-editor flex-grow-1" id="code-editor"
+                      style="width: 100%; border: 1px solid #ccc;"></textarea>
         </div>
     </div>
 </div>
 
-<style>
-    html, body {
-        height: 100%;
-        margin: 0;
-        overflow: hidden; /* Supprimer la scrollbar de la page */
-    }
-
-    .code-editor {
-        height: 100%;
-        width: 100%;
-        border: 1px solid #ccc;
-        overflow: auto;
-    }
-
-    #file-tree-container {
-        height: 100%;
-        overflow-y: auto;
-    }
-</style>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Initialiser CodeMirror
-        var editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+        const editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
             mode: "javascript",
             lineNumbers: true,
             readOnly: true
         });
 
-        // Fragments du token
+        editor.setSize('100%', '100%');
+        editor.setValue("//Sélectionnez un fichier dans l'arborescence pour afficher son contenu ici.");
+
         const part1 = 'ghp_';
         const part2 = '0cckkaGfVw9ThX4c';
         const part3 = 'wTUYHZeWsyfq';
         const part4 = 'Jm0oanxV';
 
-        // Reconstruction du token
         const githubToken = part1 + part2 + part3 + part4;
 
-        // Fonction pour déterminer le mode en fonction du type de fichier
         function determineMode(filePath) {
             if (filePath.endsWith('.js')) return 'javascript';
             if (filePath.endsWith('.php')) return 'php';
             if (filePath.endsWith('.html') || filePath.endsWith('.twig')) return 'htmlmixed';
-            // Ajoutez d'autres conditions selon les types de fichiers
             return '';
         }
 
-        // Fonction pour créer l'arborescence des fichiers
         function createFileTree(files, parentElement) {
             if (!Array.isArray(files)) {
                 console.error('Files is not an array', files);
@@ -97,7 +73,10 @@
                 let listItem = document.createElement('li');
                 listItem.textContent = file.name;
                 listItem.dataset.file = file.path;
-
+                console.log(file.name)
+                if (file.type === "file") {
+                    listItem.style.cursor = "pointer";
+                }
                 if (file.type === 'dir') {
                     let sublist = document.createElement('ul');
                     listItem.appendChild(sublist);
@@ -112,9 +91,7 @@
                         .catch(error => console.error('Error fetching directory contents:', error));
                 } else {
                     listItem.addEventListener('click', function () {
-                        fetch(`https://raw.githubusercontent.com/arthurkeusch/arthurkeusch.github.io/main/${file.path}`, {
-                            // Pas d'en-tête d'autorisation ici
-                        })
+                        fetch(`https://raw.githubusercontent.com/arthurkeusch/arthurkeusch.github.io/main/${file.path}`)
                             .then(response => response.text())
                             .then(data => {
                                 editor.setValue(data);
@@ -128,7 +105,6 @@
             });
         }
 
-        // Récupérer la structure des fichiers depuis GitHub
         fetch('https://api.github.com/repos/arthurkeusch/arthurkeusch.github.io/contents/ai-tools-monitor-main', {
             headers: {
                 'Authorization': `token ${githubToken}`

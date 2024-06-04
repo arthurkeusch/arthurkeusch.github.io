@@ -232,16 +232,13 @@
                                     <div class="card-header">
                                         <h4 class="text-center">METTRE ICI TITRE</h4>
                                     </div>
-                                    <div class="card-body">
+                                    <div class="card-body text-center">
                                         <p>
-                                            PHOTOS OU EXEMPLES DE CODE<br>
-                                            - Exemple de code des controller pour montrer<br>
                                             - Photo de la page des paramètres pour montrer l'adaptation aux réponses de l'API
                                         </p>
-                                        <button type="button" class="btn btn-primary" href="./code.html">
+                                        <a type="button" class="btn btn-primary sticky-content" href="./code.html">
                                             Voir le code
-                                        </button>
-                                        <a class="navbar-brand" href="./code.html">Code</a>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -556,5 +553,120 @@
                 }
             });
         });
+    });
+
+    function showModal() {
+        document.getElementById('modal').classList.add("d-flex");
+        document.getElementById('modalContent').innerHTML = `
+        <div class="container-fluid"
+             style="margin-top: 80px; height: calc(100vh - 80px); display: flex; flex-direction: column;">
+            <div class="row" style="height: 100%;">
+                <div class="col-3 p-2" style="overflow-y: auto; height: calc(100vh - 80px); border-right: 1px solid #ccc;">
+                    <ul class="list-unstyled" id="file-tree"></ul>
+                </div>
+                <div class="col-9 p-2 d-flex flex-column" style="overflow: hidden; height: calc(100vh - 80px);">
+                    <textarea class="code-editor flex-grow-1" id="code-editor"
+                              style="width: 100%; border: 1px solid #ccc;"></textarea>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    function hideModal() {
+        document.getElementById('modal').classList.remove("d-flex");
+        document.getElementById('modalContent').innerHTML = `
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>`;
+    }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialiser CodeMirror
+        var editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+            mode: "javascript",
+            lineNumbers: true,
+            readOnly: true
+        });
+
+        editor.setSize('100%', '100%');
+        editor.setValue("//Sélectionnez un fichier dans l'arborescence pour afficher son contenu ici.");
+
+        // Fragments du token
+        const part1 = 'ghp_';
+        const part2 = '0cckkaGfVw9ThX4c';
+        const part3 = 'wTUYHZeWsyfq';
+        const part4 = 'Jm0oanxV';
+
+        // Reconstruction du token
+        const githubToken = part1 + part2 + part3 + part4;
+
+        // Fonction pour déterminer le mode en fonction du type de fichier
+        function determineMode(filePath) {
+            if (filePath.endsWith('.js')) return 'javascript';
+            if (filePath.endsWith('.php')) return 'php';
+            if (filePath.endsWith('.html') || filePath.endsWith('.twig')) return 'htmlmixed';
+            // Ajoutez d'autres conditions selon les types de fichiers
+            return '';
+        }
+
+        // Fonction pour créer l'arborescence des fichiers
+        function createFileTree(files, parentElement) {
+            if (!Array.isArray(files)) {
+                console.error('Files is not an array', files);
+                return;
+            }
+            files.forEach(file => {
+                let listItem = document.createElement('li');
+                listItem.textContent = file.name;
+                listItem.dataset.file = file.path;
+                console.log(file.name)
+                if (file.type === "file") {
+                    listItem.style.cursor = "pointer";
+                }
+                if (file.type === 'dir') {
+                    let sublist = document.createElement('ul');
+                    listItem.appendChild(sublist);
+
+                    fetch(`https://api.github.com/repos/arthurkeusch/arthurkeusch.github.io/contents/${file.path}`, {
+                        headers: {
+                            'Authorization': `token ${githubToken}`
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(subfiles => createFileTree(subfiles, sublist))
+                        .catch(error => console.error('Error fetching directory contents:', error));
+                } else {
+                    listItem.addEventListener('click', function () {
+                        fetch(`https://raw.githubusercontent.com/arthurkeusch/arthurkeusch.github.io/main/${file.path}`, {
+                            // Pas d'en-tête d'autorisation ici
+                        })
+                            .then(response => response.text())
+                            .then(data => {
+                                editor.setValue(data);
+                                editor.setOption('mode', determineMode(file.path));
+                            })
+                            .catch(error => console.error('Error fetching file contents:', error));
+                    });
+                }
+
+                parentElement.appendChild(listItem);
+            });
+        }
+
+        // Récupérer la structure des fichiers depuis GitHub
+        fetch('https://api.github.com/repos/arthurkeusch/arthurkeusch.github.io/contents/ai-tools-monitor-main', {
+            headers: {
+                'Authorization': `token ${githubToken}`
+            }
+        })
+            .then(response => response.json())
+            .then(files => {
+                let fileTree = document.getElementById('file-tree');
+                createFileTree(files, fileTree);
+            })
+            .catch(error => console.error('Error fetching file tree:', error));
     });
 </script>
