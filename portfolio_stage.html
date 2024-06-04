@@ -8,6 +8,13 @@
     <link href="styles/index.css" rel="stylesheet" type="text/css">
     <title>Portfolio Stage</title>
     <link href="images/logo.jpg" rel="icon" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGz1smjFME6lFwk8E6EsmXk3B1j6iuz9L1d5erNs8xwR1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12MFWJ1B4ooVPVfK9Kq5KfG5p07rZjlfA84fK6I/RiB3nn1B" crossorigin="anonymous"></script>
+
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -21,8 +28,30 @@
         <a class="navbar-brand" href="./portfolio_stage.html">
             Portfolio Stage
         </a>
+        <a class="navbar-brand" href="./code.html">
+            Code
+        </a>
     </div>
 </nav>
+
+<div class="modal fade" id="codeModal" tabindex="-1" aria-labelledby="codeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="max-width: calc(100% - 100px);">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="codeModalLabel">Explorateur de Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex">
+                <div id="file-tree-container" class="p-2" style="width: 25%; overflow-y: auto; border-right: 1px solid #ccc;">
+                    <ul id="file-tree" class="list-unstyled"></ul>
+                </div>
+                <div id="code-editor-container" class="p-2" style="width: 75%;">
+                    <textarea id="code-editor" class="code-editor"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="d-flex flex-column flex-shrink-0 p-3 position-fixed"
      style="width: 170px; top: 50px; left: -10px; z-index: 10">
@@ -194,6 +223,25 @@
                                                 améliorations de l'interface utilisateur.
                                             </li>
                                         </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="card h-100 d-flex flex-column">
+                                    <div class="card-header">
+                                        <h4 class="text-center">METTRE ICI TITRE</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>
+                                            PHOTOS OU EXEMPLES DE CODE<br>
+                                            - Exemple de code des controller pour montrer<br>
+                                            - Photo de la page des paramètres pour montrer l'adaptation aux réponses de l'API
+                                        </p>
+                                        <button type="button" class="btn btn-primary" href="./code.html">
+                                            Voir le code
+                                        </button>
+                                        <a class="navbar-brand" href="./code.html">Code</a>
                                     </div>
                                 </div>
                             </div>
