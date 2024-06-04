@@ -1,0 +1,49 @@
+<div class="chat-message-left pb-4">
+    <div>
+        <img src="{{ asset('images/' ~ image) }}"
+             class="rounded-circle mr-1" alt="Image" width="40" height="40">
+        <div class="text-muted small text-nowrap mt-2">{{ date | raw }}</div>
+    </div>
+    <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3 message-card">
+        <div class="font-weight-bold mb-1"><u>{{ role }}</u></div>
+        <pre style="white-space: pre-wrap;">{{ message }}</pre>
+    </div>
+</div>
+
+<style>
+    .chat-message-left {
+        display: flex;
+        flex-shrink: 0;
+        margin-right: auto;
+    }
+
+    /* IE 10+ */
+    @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+        .message-card {
+            max-width: 100%;
+        }
+    }
+
+    /* Edge 12-15 */
+    @supports (-ms-ime-align: auto) {
+        .message-card {
+            max-width: 100%;
+        }
+    }
+
+    /* Safari */
+    @media not all and (min-resolution: .001dpcm) {
+        @media {
+            .message-card {
+                max-width: 100%;
+            }
+        }
+    }
+
+    /* Pour Google Chrome mais ne fonctionne pas SAUF sur Firefox... */
+    @media screen and (-webkit-min-device-pixel-ratio: 0) {
+        .message-card {
+            max-width: 90%;
+        }
+    }
+</style>

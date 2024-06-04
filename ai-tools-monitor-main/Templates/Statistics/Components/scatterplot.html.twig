@@ -1,0 +1,239 @@
+<div id="scatterplot"></div>
+
+<script>
+    let data_scatterplot = {{ data_scatterplot|json_encode|raw }};
+    let model_scatterplot = {{ model_scatterplot|json_encode|raw }};
+    let x_name_scatterplot = {{ x_name|json_encode|raw }};
+    let y_name_scatterplot = {{ y_name|json_encode|raw }};
+    const to = {{ to|json_encode|raw }};
+
+    const width = 928;
+    const height = 600;
+    const marginTop = 20;
+    const marginRight = 30;
+    const marginBottom = 30;
+    const marginLeft = 40;
+
+    if (data_scatterplot.length === 0 || model_scatterplot.length === 0) {
+        document.getElementById('scatterplot').innerHTML = '<p>Données manquantes !</p>';
+    } else {
+        const colors = d3.scaleOrdinal(d3.schemeCategory10)
+            .domain(model_scatterplot.map(m => m.model));
+
+        const parseTime = d3.timeParse("%H:%M");
+        const x = d3.scaleTime()
+            .domain(d3.extent(data_scatterplot, d => parseTime(d.x_column)))
+            .range([marginLeft, width - marginRight]);
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(data_scatterplot, d => d.y_column)])
+            .range([height - marginBottom, marginTop])
+            .nice();
+
+        const svg = d3.select("#scatterplot")
+            .append("svg")
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .call(d3.zoom()
+                .scaleExtent([1, 8])
+                .translateExtent([[0, 0], [width, height]])
+                .extent([[0, 0], [width, height]])
+                .on("zoom", zoomed));
+
+        const gX = svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%H:%M")))
+            .call(g => g.select(".domain").remove())
+            .call(g => g.append("text")
+                .attr("x", width - marginRight)
+                .attr("y", -4)
+                .attr("fill", "#000")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "end")
+                .text(x_name_scatterplot));
+
+        const gY = svg.append("g")
+            .attr("transform", `translate(${marginLeft},0)`)
+            .call(d3.axisLeft(y))
+            .call(g => g.select(".domain").remove())
+            .call(g => g.select(".tick:last-of-type text").clone()
+                .attr("x", 4)
+                .attr("text-anchor", "start")
+                .attr("font-weight", "bold")
+                .text(y_name_scatterplot));
+
+        const dots = svg.append("g")
+            .attr("clip-path", "url(#clip)")
+            .selectAll("circle")
+            .data(data_scatterplot)
+            .enter().append("circle")
+            .attr("cx", d => x(parseTime(d.x_column)))
+            .attr("cy", d => y(d.y_column))
+            .attr("r", 3)
+            .attr("fill", d => d.isError === 1 ? "red" : colors(d.model))
+            .style("cursor", "pointer")
+            .on("click", (event, d) => {
+                if (to !== "") {
+                    goTo(d['id_log']);
+                }
+            });
+
+        function zoomed(event) {
+            const transform = event.transform;
+            const newX = transform.rescaleX(x);
+            const newY = transform.rescaleY(y);
+            gX.call(d3.axisBottom(newX).tickFormat(d3.timeFormat("%H:%M")));
+            gY.call(d3.axisLeft(newY));
+            dots.attr("cx", d => newX(parseTime(d.x_column)))
+                .attr("cy", d => newY(d.y_column));
+        }
+
+        const legend = svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", `translate(${width - marginRight - 150},${marginTop})`);
+
+        let uniqueModels = Array.from(new Set(data_scatterplot.map(d => d.model)));
+
+        uniqueModels = uniqueModels.filter(item => item !== null);
+
+        if (data_scatterplot.some(d => d.isError === 1 && !uniqueModels.includes('Erreur'))) {
+            uniqueModels.push('Erreur');
+        }
+
+        legend.selectAll("circle")
+            .data(uniqueModels)
+            .enter()
+            .append("circle")
+            .attr("cx", 0)
+            .attr("cy", (d, i) => i * 20)
+            .attr("r", 5)
+            .attr("fill", d => d === 'Erreur' ? 'red' : colors(d));
+
+        legend.selectAll("text")
+            .data(uniqueModels)
+            .enter()
+            .append("text")
+            .attr("x", 10)
+            .attr("y", (d, i) => i * 20)
+            .attr("dy", "0.35em")
+            .text(d => d === null ? 'Erreur' : d);
+    }
+
+    function setScatterPlot(data) {
+        const svg = d3.select("#scatterplot svg");
+
+        if (data.length === 0) {
+            svg.selectAll("*").remove();
+            document.getElementById('scatterplot').innerHTML = '<p>Données manquantes !</p>';
+            return;
+        }
+
+        const parseTime = d3.timeParse("%H:%M");
+        const x = d3.scaleTime()
+            .domain(d3.extent(data, d => parseTime(d.x_column)))
+            .range([marginLeft, width - marginRight]);
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.y_column)])
+            .range([height - marginBottom, marginTop])
+            .nice();
+
+        const uniqueModels = Array.from(new Set(data.map(d => d.model)));
+        data = data.slice(uniqueModels.length);
+        const colors = d3.scaleOrdinal(d3.schemeCategory10).domain(uniqueModels);
+
+        svg.selectAll("*").remove();
+
+        const gX = svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%H:%M")))
+            .call(g => g.select(".domain").remove())
+            .call(g => g.append("text")
+                .attr("x", width - marginRight)
+                .attr("y", -4)
+                .attr("fill", "#000")
+                .attr("font-weight", "bold")
+                .attr("text-anchor", "end")
+                .text(x_name_scatterplot));
+
+        const gY = svg.append("g")
+            .attr("transform", `translate(${marginLeft},0)`)
+            .call(d3.axisLeft(y))
+            .call(g => g.select(".domain").remove())
+            .call(g => g.select(".tick:last-of-type text").clone()
+                .attr("x", 4)
+                .attr("text-anchor", "start")
+                .attr("font-weight", "bold")
+                .text(y_name_scatterplot));
+
+        const dots = svg.append("g")
+            .attr("clip-path", "url(#clip)")
+            .selectAll("circle")
+            .data(data)
+            .enter().append("circle")
+            .attr("cx", d => x(parseTime(d.x_column)))
+            .attr("cy", d => y(d.y_column))
+            .attr("r", 3)
+            .attr("fill", d => d.isError === 1 ? "red" : colors(d.model))
+            .style("cursor", "pointer")
+            .on("click", (event, d) => {
+                if (to !== "") {
+                    openModal();
+                    document.getElementById("modalTitle").innerText = "Redirection";
+                    document.getElementById("modalBody").innerText = "Êtes-vous certain de vouloir accéder à ce log ?\n";
+                    return new Promise((resolve, reject) => {
+                        document.getElementById('confirm').addEventListener('click', () => {
+                            goTo(d['id_log']);
+                            closeModal();
+                        });
+                        document.getElementById('cancel').addEventListener('click', () => {
+                            closeModal();
+                        });
+                    });
+                }
+            });
+
+        const zoom = d3.zoom()
+            .scaleExtent([1, 8])
+            .translateExtent([[0, 0], [width, height]])
+            .extent([[0, 0], [width, height]])
+            .on("zoom", zoomed);
+
+        svg.call(zoom);
+
+        function zoomed(event) {
+            const transform = event.transform;
+            const newX = transform.rescaleX(x);
+            const newY = transform.rescaleY(y);
+            gX.call(d3.axisBottom(newX).tickFormat(d3.timeFormat("%H:%M")));
+            gY.call(d3.axisLeft(newY));
+            dots.attr("cx", d => newX(parseTime(d.x_column)))
+                .attr("cy", d => newY(d.y_column));
+        }
+
+        const legend = svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", `translate(${width - marginRight - 150},${marginTop})`);
+
+        if (data.some(d => d.isError === 1 && !uniqueModels.includes('erreur'))) {
+            uniqueModels.push('Erreur');
+        }
+
+        legend.selectAll("circle")
+            .data(uniqueModels)
+            .enter()
+            .append("circle")
+            .attr("cx", 0)
+            .attr("cy", (d, i) => i * 20)
+            .attr("r", 5)
+            .attr("fill", d => d === 'Erreur' ? 'red' : colors(d));
+
+        legend.selectAll("text")
+            .data(uniqueModels)
+            .enter()
+            .append("text")
+            .attr("x", 10)
+            .attr("y", (d, i) => i * 20)
+            .attr("dy", "0.35em")
+            .text(d => d === null ? 'Erreur' : d);
+    }
+</script>

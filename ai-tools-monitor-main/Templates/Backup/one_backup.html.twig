@@ -1,0 +1,129 @@
+{% include 'Components/headers.html.twig' %}
+
+<div class="modal modal-sheet position-fixed align-items-center justify-content-center"
+     style="background: transparent; padding: 50px; top: 0; bottom: 0; left: 0; right: 0; max-width: calc(100% - 50px); margin: auto; border-radius: 20px;"
+     role="dialog" id="modalBackup">
+    <div class="modal-dialog modal-fullscreen p-0 m-0 h-100" role="document">
+        <div class="modal-content rounded-4 shadow h-100" style="margin: auto;">
+            <div class="modal-header p-5 pb-4 border-bottom-0" style="margin: auto; max-width: calc(100% - 100px);">
+                <h1 id="backupTitle" class="fw-bold mb-0 fs-2">
+                    Chargement des données...
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close" onclick="hideBackup()"
+                        style="position: absolute; right: 100px;">
+                </button>
+            </div>
+            <div id="backupContent" class="modal-body p-5 pt-0 overflow-auto"
+                 style="height: calc(100% - 100px); margin: auto; max-width: calc(100% - 100px);">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-1">
+        <div style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px;" data-bs-toggle="popup-tip"
+             title="Revenir à la liste des backups'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+                 class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16"
+                 onclick="goBack()"
+                 style="cursor: pointer;">
+                <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"></path>
+            </svg>
+        </div>
+    </div>
+    <div class="col-9" style="margin-top: 22px;">
+        {% include 'Components/breadcrumb.html.twig' with {
+            'past': [
+                {'link': '/backup', 'name': 'Backup'}
+            ],
+            'current': informations.date_backup
+        } %}
+    </div>
+</div>
+
+<div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px; margin-top: 10px;">
+    <div class="card-body">
+        <h1 class="text-center">Backup du {{ informations.date_backup }}</h1>
+    </div>
+</div>
+
+
+<div style="margin-top: 20px;">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-3" style="margin-top: 10px;">
+
+        <table class="table table-bordered table-striped" style="width: 450px; margin: auto;">
+            <thead>
+            <tr class="table-dark" style="height: 61px;">
+                <th scope="col" class="text-center" style="width: 400px;">
+                    Assistants
+                </th>
+                <th scope="col" class="text-center" style="width: 50px;">
+
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for backup in list_backups %}
+                <tr>
+                    <td class="col-3" style="width: 400px;">
+                        {{ backup.object_backup_assistant }}
+                    </td>
+                    <td class="text-center" style="width: 50px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-dark"
+                                    data-bs-toggle="popup-tip" title="Voir le log."
+                                    onclick="goTo({{ backup.id_backup_assistant }})">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                     class="bi bi-eye" viewBox="0 0 16 16">
+                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<script>
+    function goBack() {
+        window.location.href = '/backup';
+    }
+
+    async function goTo(id) {
+        showBackup();
+        await getRequest("/backup/assistant", {id: id})
+            .then(response => {
+                document.getElementById('backupTitle').innerHTML = "Information sur l'assistant";
+                document.getElementById('backupContent').innerHTML = response;
+            })
+            .catch(error => {
+                show_danger_message("La récupération des données a échoué : " + error);
+            });
+    }
+
+    function showBackup() {
+        document.getElementById('modalBackup').classList.add("d-flex");
+    }
+
+    function hideBackup() {
+        document.getElementById('modalBackup').classList.remove("d-flex");
+        document.getElementById('backupContent').innerHTML = `
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>`;
+    }
+</script>

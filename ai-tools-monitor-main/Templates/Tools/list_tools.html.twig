@@ -1,0 +1,591 @@
+{% include 'Components/headers.html.twig' %}
+
+<div class="modal modal-sheet position-fixed"
+     style="top: 0; bottom: 0; left: 0; right: 0; z-index: 1050; background: transparent;" tabindex="-1" role="dialog"
+     id="formAddTool">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+                <h1 class="fw-bold mb-0 fs-2">Ajouter un outil</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        onclick="close_diag()">
+                </button>
+            </div>
+            <div class="modal-body p-5 pt-0">
+                <form class="" action="{{ path('form_add_tool') }}" method="POST" enctype="multipart/form-data">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="name" name="name" required>
+                        <label for="name">Nom de l'outil</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="api_name" name="api_name" required>
+                        <label for="api_name">Nom dans l'API</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="file" class="form-control rounded-3" id="image" name="image">
+                        <label for="image">Image</label>
+                    </div>
+                    <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Ajouter</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-sheet position-fixed"
+     style="top: 0; bottom: 0; left: 0; right: 0; z-index: 1050; background: transparent;" tabindex="-1" role="dialog"
+     id="formUpdateTool">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+                <h1 class="fw-bold mb-0 fs-2">Mettre à jour un outil</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        onclick="close_diag_update()">
+                </button>
+            </div>
+            <div class="modal-body p-5 pt-0">
+                <form class="" action="{{ path('form_update_tool') }}" method="POST" enctype="multipart/form-data">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="name_update" name="name_update" required>
+                        <label for="name_update">Nom de l'outil</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="api_name_update" name="api_name_update"
+                               required>
+                        <label for="api_name_update">Nom dans l'API</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="file" class="form-control rounded-3" id="image_update" name="image_update">
+                        <label for="image_update">Image</label>
+                    </div>
+                    <input type="hidden" id="id_tool" name="id_tool" value="">
+                    <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Modifier</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px; margin-top: 10px;">
+    <div class="card-body">
+        <h1>{{ title }}</h1>
+        <div class="text-center">
+            <button type="button" data-bs-toggle="popup-tip" class="btn btn-outline-dark"
+                    title="Ajouter un outil à la liste des outils."
+                    onclick="open_diag()">
+                Ajouter un outil
+            </button>
+        </div>
+        <div>
+            <div class="text-center" style="margin-top: 10px;">
+                <button id="button_card" type="button" class="btn btn-outline-dark"
+                        title="Afficher les outils avec des cartes."
+                        onclick="changeView('card')" data-bs-toggle="popup-tip">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                         class="bi bi-card-list" viewBox="0 0 16 16">
+                        <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
+                        <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
+                    </svg>
+                </button>
+                <button id="button_list" type="button" class="btn btn-outline-dark"
+                        title="Afficher les outils avec une liste."
+                        onclick="changeView('list')" data-bs-toggle="popup-tip">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                         class="bi bi-list-ul" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="button_all" class="text-center" style="margin-top: 10px; display: none;">
+                <button type="button" class="btn btn-outline-dark"
+                        data-bs-toggle="popup-tip"
+                        title="Activer tous les niveaux de toutes les langues de tous les outils."
+                        onclick="change_status_for_all_languages(true)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                         class="bi bi-check2-square" viewBox="0 0 16 16">
+                        <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5z"/>
+                        <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0"/>
+                    </svg>
+                </button>
+                <button type="button" class="btn btn-outline-dark"
+                        data-bs-toggle="popup-tip"
+                        title="Désactiver tous les niveaux de toutes les langues de tous les outils."
+                        onclick="change_status_for_all_languages(false)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                         class="bi bi-dash-square" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                        <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="album py-5" id="album">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-xl-4 g-3">
+
+            {% for tool in tools %}
+                <div id="tool_{{ tool.id_tool }}" class="col">
+                    <div class="card h-100 shadow-sm">
+                        {% set imagePath = 'images/images_tools/' ~ tool.image_tool %}
+                        {% if tool.image_tool != "" %}
+                            <img src="{{ asset(imagePath) }}" class="rounded-top" alt="Image de l'outil">
+                        {% else %}
+                            <img src="{{ asset('images/images_tools/default_image.svg') }}" alt="Image par défaut"
+                                 class="rounded-top">
+                        {% endif %}
+                        <div style="position: absolute; right: 5px; top: 5px; display: flex;" data-bs-toggle="popup-tip"
+                             title="Nombre d'erreur qui ont eu lieu au cours des dernières 24 heures pour cet outil.">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="red"
+                                 class="bi bi-bug-fill" viewBox="0 0 16 16">
+                                <path d="M4.978.855a.5.5 0 1 0-.956.29l.41 1.352A5 5 0 0 0 3 6h10a5 5 0 0 0-1.432-3.503l.41-1.352a.5.5 0 1 0-.956-.29l-.291.956A5 5 0 0 0 8 1a5 5 0 0 0-2.731.811l-.29-.956z"/>
+                                <path d="M13 6v1H8.5v8.975A5 5 0 0 0 13 11h.5a.5.5 0 0 1 .5.5v.5a.5.5 0 1 0 1 0v-.5a1.5 1.5 0 0 0-1.5-1.5H13V9h1.5a.5.5 0 0 0 0-1H13V7h.5A1.5 1.5 0 0 0 15 5.5V5a.5.5 0 0 0-1 0v.5a.5.5 0 0 1-.5.5zm-5.5 9.975V7H3V6h-.5a.5.5 0 0 1-.5-.5V5a.5.5 0 0 0-1 0v.5A1.5 1.5 0 0 0 2.5 7H3v1H1.5a.5.5 0 0 0 0 1H3v1h-.5A1.5 1.5 0 0 0 1 11.5v.5a.5.5 0 1 0 1 0v-.5a.5.5 0 0 1 .5-.5H3a5 5 0 0 0 4.5 4.975"/>
+                            </svg>
+                            <span class="badge text-bg-danger d-flex justify-content-center align-items-center"
+                                  style="height: 15px; width: 15px;">{{ tool.nbErrors }}</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                {{ tool.name_tool }}
+                            </p>
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-dark"
+                                            data-bs-toggle="popup-tip" title="Voir l'outil"
+                                            onclick="goTo({{ tool.id_tool }})">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                             fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-dark"
+                                            data-bs-toggle="popup-tip" title="Modifier les informations de l'outil."
+                                            onclick="open_diag_update({{ tool.id_tool }}, '{{ tool.name_tool|replace({"'": "\\'"}) }}', '{{ tool.api_name_tool|replace({"'": "\\'"}) }}')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                             fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                            <path fill-rule="evenodd"
+                                                  d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="popup-tip"
+                                            title="Supprimer l'outil. ATTENTION : Cette action vas supprimer l'outils ainsi que toutes langues, tous les niveaux et tous les logs qui y sont associé."
+                                            onclick="delete_tool({{ tool.id_tool }})">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                             fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+<div id="list"
+     style="display: none; margin-top: 10px; margin-left: 40px; margin-right: 40px;">
+    {% for tool in tools %}
+        <div class="accordion" id="accordion_tool_{{ tool.id_tool }}" style="margin-top: 10px;">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#accordion_collapse_tool_{{ tool.id_tool }}" aria-expanded="true">
+                        {{ tool.name_tool }}
+                        <div style="position: absolute; right: 50px; top: 10px; display: flex;"
+                             data-bs-toggle="popup-tip"
+                             title="Nombre d'erreur qui ont eu lieu au cours des dernières 24 heures pour cet outils.">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="red"
+                                 class="bi bi-bug-fill" viewBox="0 0 16 16">
+                                <path d="M4.978.855a.5.5 0 1 0-.956.29l.41 1.352A5 5 0 0 0 3 6h10a5 5 0 0 0-1.432-3.503l.41-1.352a.5.5 0 1 0-.956-.29l-.291.956A5 5 0 0 0 8 1a5 5 0 0 0-2.731.811l-.29-.956z"/>
+                                <path d="M13 6v1H8.5v8.975A5 5 0 0 0 13 11h.5a.5.5 0 0 1 .5.5v.5a.5.5 0 1 0 1 0v-.5a1.5 1.5 0 0 0-1.5-1.5H13V9h1.5a.5.5 0 0 0 0-1H13V7h.5A1.5 1.5 0 0 0 15 5.5V5a.5.5 0 0 0-1 0v.5a.5.5 0 0 1-.5.5zm-5.5 9.975V7H3V6h-.5a.5.5 0 0 1-.5-.5V5a.5.5 0 0 0-1 0v.5A1.5 1.5 0 0 0 2.5 7H3v1H1.5a.5.5 0 0 0 0 1H3v1h-.5A1.5 1.5 0 0 0 1 11.5v.5a.5.5 0 1 0 1 0v-.5a.5.5 0 0 1 .5-.5H3a5 5 0 0 0 4.5 4.975"/>
+                            </svg>
+                            <span class="badge text-bg-danger d-flex justify-content-center align-items-center"
+                                  style="height: 15px; width: 15px;">{{ tool.nbErrors }}</span>
+                        </div>
+                    </button>
+                </h2>
+                <div id="accordion_collapse_tool_{{ tool.id_tool }}" class="accordion-collapse collapse show">
+                    <div class="accordion-body" style="margin-right: 35px;">
+                        <ul class="row row-cols-sm-3 row-cols-xl-3 row-cols-xxl-6 g-3">
+                            {% for language in list_languages %}
+                                {% if language.id_tool == tool.id_tool %}
+                                    <li class="list-group-item">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header d-flex justify-content-center bg-blue">
+                                                <input class="form-check-input flex-shrink-0" type="checkbox"
+                                                       data-bs-toggle="popup-tip"
+                                                       title="Activer ou désactiver tous les niveaux de cette langue."
+                                                       id="checkbox_language_{{ language.id_language }}"
+                                                       onclick="checkLanguage({{ language.id_language }});"
+                                                       style="width: 25px; height: 25px; cursor: pointer; margin: 10px;"
+                                                        {% if language.is_active == 1 %} checked {% endif %}>
+                                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                        data-bs-target="#accordion_collapse_language_{{ language.id_language }}"
+                                                        aria-expanded="true"
+                                                        onclick="throttleToggleBackgroundColor(this.parentElement);">
+                                                    {{ language.name_language }}
+                                                </button>
+                                            </h2>
+                                            <div id="accordion_collapse_language_{{ language.id_language }}"
+                                                 class="accordion-collapse collapse show">
+                                                <div class="accordion-body">
+                                                    <ul class="list-group">
+                                                        {% for level in list_levels %}
+                                                            {% if level.id_tool == tool.id_tool %}
+                                                                <li class="list-group-item">
+                                                                    <input class="form-check-input flex-shrink-0"
+                                                                           type="checkbox" data-bs-toggle="popup-tip"
+                                                                           title="Activer ou désactiver le niveau pour cette langue uniquement."
+                                                                           id="checkbox_language_{{ language.id_language }}_level_{{ level.id_level }}"
+                                                                           onclick="checkLevel({{ language.id_language }}, {{ level.id_level }});"
+                                                                           style="width: 20px; height: 20px; cursor: pointer; margin-right: 10px;"
+                                                                            {% for active_level in list_active_level %}
+                                                                                {% if active_level.id_language == language.id_language and active_level.id_level == level.id_level %}
+                                                                                    checked
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                    >
+                                                                    <label style="cursor: pointer; user-select: none;"
+                                                                           for="checkbox_language_{{ language.id_language }}_level_{{ level.id_level }}">
+                                                                        {{ level.name_level }} ({{ level.level }})
+                                                                    </label>
+                                                                    <div style="position: absolute; right: 5px; top: 10px; {% if language['nbErrors_level_' ~ level.id_level] == 0 %} display: none; {% endif %}">
+                                                                        <span class="badge text-bg-danger d-flex justify-content-center align-items-center"
+                                                                              style="height: 20px; width: 20px;">{{ language['nbErrors_level_' ~ level.id_level] }}</span>
+                                                                    </div>
+                                                                </li>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    let lastExecutionTime = 0;
+    const throttleToggleBackgroundColor = throttle(toggleBackgroundColor, 400);
+
+    const tools = {{ tools|json_encode|raw }};
+    const list_languages = {{ list_languages|json_encode|raw }};
+    const list_levels = {{ list_levels|json_encode|raw }};
+    const list_active_level = {{ list_active_level|json_encode|raw }};
+
+    function goTo(id) {
+        window.location.href = '/tool/' + id;
+    }
+
+    async function delete_tool(id_tool) {
+        openModal();
+        document.getElementById("modalTitle").innerText = "Confirmer la suppression";
+        document.getElementById("modalBody").innerHTML = "Êtes vous sûr de vouloir supprimer cet outil ?<br>Cette action auras pour effet de supprimer toutes les langues et tous les logs associé à cet outil.";
+        return new Promise((resolve, reject) => {
+            document.getElementById('confirm').addEventListener('click', () => {
+                postRequest("/tool/delete/one", {id_tool: id_tool})
+                    .then(response => {
+                        show_success_message("Suppression réussie !");
+                        const toolCard = document.getElementById("tool_" + id_tool);
+                        if (toolCard) {
+                            toolCard.remove();
+                        }
+                        resolve();
+                    })
+                    .catch(error => {
+                        show_danger_message("La suppression a échoué : " + error);
+                        reject(error);
+                    });
+                closeModal();
+            });
+
+            document.getElementById('cancel').addEventListener('click', () => {
+                closeModal();
+            });
+        });
+    }
+
+    function open_diag() {
+        document.getElementById("formAddTool").classList.add("d-block");
+    }
+
+    function close_diag() {
+        document.getElementById("formAddTool").classList.remove("d-block");
+    }
+
+    function open_diag_update(id_tool, name, api_name) {
+        document.getElementById("id_tool").value = id_tool;
+        document.getElementById("name_update").value = name;
+        document.getElementById("api_name_update").value = api_name;
+        document.getElementById("formUpdateTool").classList.add("d-block");
+    }
+
+    function close_diag_update() {
+        document.getElementById("formUpdateTool").classList.remove("d-block");
+    }
+
+    for (const id in tools) {
+        if (tools[id].nbErrors !== "0") {
+            document.getElementById("tool_" + tools[id].id_tool).children[0].children[1].style.display = "flex";
+            document.getElementById("accordion_tool_" + tools[id].id_tool).children[0].children[0].children[0].children[0].style.display = "flex";
+        } else {
+            document.getElementById("tool_" + tools[id].id_tool).children[0].children[1].style.display = "none";
+            document.getElementById("accordion_tool_" + tools[id].id_tool).children[0].children[0].children[0].children[0].style.display = "none";
+        }
+    }
+
+    function changeView(type) {
+        if (type === "list") {
+            document.getElementById("album").style.display = "none";
+            document.getElementById("list").style.display = "";
+            document.getElementById("button_all").style.display = "";
+        } else {
+            document.getElementById("album").style.display = "";
+            document.getElementById("list").style.display = "none";
+            document.getElementById("button_all").style.display = "none";
+        }
+    }
+
+    function throttle(func, wait) {
+        let lastExecutionTime = 0;
+        return function (...args) {
+            const now = new Date().getTime();
+            if (now - lastExecutionTime >= wait) {
+                func(...args);
+                lastExecutionTime = now;
+            }
+        }
+    }
+
+    function toggleBackgroundColor(element) {
+        if (element.classList.contains('bg-blue')) {
+            element.classList.remove('bg-blue');
+            element.classList.add('bg-white');
+        } else {
+            element.classList.remove('bg-white');
+            element.classList.add('bg-blue');
+        }
+    }
+
+    function checkLanguage(id_language) {
+        postRequest("/tool/change/language", {id_language: id_language})
+            .then(response => {
+                if (document.getElementById("checkbox_language_" + id_language).checked) {
+                    let result = list_languages.filter(language => language.id_language === id_language);
+                    list_levels.forEach(level => {
+                        if (level.id_tool === parseInt(result[0].id_tool)) {
+                            postRequest("/tool/change/level", {
+                                id_language: id_language,
+                                id_level: level.id_level,
+                                status: true,
+                                to: true
+                            })
+                                .then(response => {
+
+                                })
+                                .catch(error => {
+                                    show_danger_message("La modification a échoué : " + error);
+                                });
+                            document.getElementById("checkbox_language_" + id_language + "_level_" + level.id_level).checked = true;
+                        }
+                    });
+                } else {
+                    let result = list_languages.filter(language => language.id_language === id_language);
+                    list_levels.forEach(level => {
+                        if (level.id_tool === parseInt(result[0].id_tool)) {
+                            postRequest("/tool/change/level", {
+                                id_language: id_language,
+                                id_level: level.id_level,
+                                status: true,
+                                to: false
+                            })
+                                .then(response => {
+
+                                })
+                                .catch(error => {
+                                    show_danger_message("La modification a échoué : " + error);
+                                });
+                            document.getElementById("checkbox_language_" + id_language + "_level_" + level.id_level).checked = false;
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                show_danger_message("La modification a échoué : " + error);
+            });
+    }
+
+    function checkLevel(id_language, id_level) {
+        postRequest("/tool/change/level", {id_language: id_language, id_level: id_level})
+            .then(response => {
+
+            })
+            .catch(error => {
+                show_danger_message("La modification a échoué : " + error);
+            });
+        let nbLevelCheck = 0;
+        list_languages.forEach(language => {
+            if (language.id_language === id_language) {
+                const id_tool = language.id_tool;
+                list_levels.forEach(level => {
+                    if (level.id_tool === id_tool) {
+                        if (document.getElementById("checkbox_language_" + id_language + "_level_" + level.id_level).checked) {
+                            nbLevelCheck++;
+                        }
+                    }
+                });
+            }
+        });
+        if (nbLevelCheck === 0) {
+            if (document.getElementById("checkbox_language_" + id_language).checked) {
+                postRequest("/tool/change/language", {id_language: id_language})
+                    .then(response => {
+
+                    })
+                    .catch(error => {
+                        show_danger_message("La modification a échoué : " + error);
+                    });
+                document.getElementById("checkbox_language_" + id_language).checked = false;
+            }
+        } else {
+            if (!document.getElementById("checkbox_language_" + id_language).checked) {
+                postRequest("/tool/change/language", {id_language: id_language})
+                    .then(response => {
+
+                    })
+                    .catch(error => {
+                        show_danger_message("La modification a échoué : " + error);
+                    });
+                document.getElementById("checkbox_language_" + id_language).checked = true;
+            }
+        }
+    }
+
+    function change_status_for_all_languages(active) {
+        openModal();
+        if (active) {
+            document.getElementById("modalTitle").innerText = "Activation des langues";
+            document.getElementById("modalBody").innerText = "Êtes-vous sûr de vouloir activer toutes les langues ?";
+        } else {
+            document.getElementById("modalTitle").innerText = "Désactivation des langues";
+            document.getElementById("modalBody").innerText = "Êtes-vous sûr de vouloir désactiver toutes les langues ?";
+        }
+
+        return new Promise((resolve, reject) => {
+            const confirmButton = document.getElementById('confirm');
+            const cancelButton = document.getElementById('cancel');
+
+            const handleConfirmClick = async () => {
+                confirmButton.disabled = true;
+                cancelButton.disabled = true;
+                confirmButton.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> <span class="visually-hidden" role="status">Loading...</span>';
+
+                document.getElementById("modalBody").innerHTML = `
+                <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" style="width: 0%"></div>
+                </div>
+            `;
+
+                const progressBar = document.getElementById("progressBar");
+                let totalTasks = 0;
+                list_languages.forEach(language => {
+                    const result = list_languages.filter(lg => lg.id_language === language.id_language);
+                    list_levels.forEach(level => {
+                        if (level.id_tool === parseInt(result[0].id_tool)) {
+                            totalTasks++;
+                        }
+                    });
+                });
+                let completedTasks = 0;
+
+                const updateProgressBar = async () => {
+                    completedTasks++;
+                    const progressPercentage = (completedTasks / totalTasks) * 100;
+                    progressBar.style.width = `${progressPercentage}%`;
+                    progressBar.setAttribute('aria-valuenow', progressPercentage);
+                    if (progressPercentage === 100) {
+                        await sleep(500);
+                    } else {
+                        await sleep(100);
+                    }
+                };
+
+                try {
+                    for (const language of list_languages) {
+                        await postRequest("/tool/change/language", {
+                            id_language: language.id_language,
+                            status: true,
+                            to: active
+                        });
+                        document.getElementById(`checkbox_language_${language.id_language}`).checked = active;
+                        const result = list_languages.filter(lg => lg.id_language === language.id_language);
+                        for (const level of list_levels) {
+                            if (level.id_tool === parseInt(result[0].id_tool)) {
+                                await postRequest("/tool/change/level", {
+                                    id_language: language.id_language,
+                                    id_level: level.id_level,
+                                    status: true,
+                                    to: active
+                                });
+                                document.getElementById(`checkbox_language_${language.id_language}_level_${level.id_level}`).checked = active;
+                                await updateProgressBar();
+                            }
+                        }
+                    }
+                    closeModal();
+                } catch (error) {
+                    show_danger_message("La modification a échoué : " + error);
+                } finally {
+                    confirmButton.disabled = false;
+                    cancelButton.disabled = false;
+                    confirmButton.innerHTML = 'Confirmer';
+                    resolve();
+                }
+            };
+
+            confirmButton.addEventListener('click', handleConfirmClick);
+            cancelButton.addEventListener('click', () => {
+                closeModal();
+                resolve();
+            });
+        });
+    }
+</script>
+
+<style>
+    .accordion-header {
+        transition: background-color 0.4s ease;
+    }
+
+    .accordion-header.bg-white {
+        background-color: rgb(255, 255, 255) !important;
+    }
+
+    .accordion-header.bg-blue {
+        background-color: rgb(207, 226, 255) !important;
+    }
+</style>

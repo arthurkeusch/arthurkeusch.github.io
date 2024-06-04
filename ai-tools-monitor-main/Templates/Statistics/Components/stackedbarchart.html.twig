@@ -1,0 +1,139 @@
+<div id="legend"></div>
+<div id="stackedBarChart"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+
+<script>
+    let data_stackedbarchar = {{ data|json_encode|raw }};
+    let tools_stackedbarchar = {{ tools|json_encode|raw }};
+
+    tools_stackedbarchar = tools_stackedbarchar.map(d => ({
+        id_tool: d.id_tool,
+        name_tool: d.name_tool
+    }));
+
+    data_stackedbarchar = data_stackedbarchar.map(d => ({
+        id_error_type: d.id_error_type,
+        name_error_type: d.name_error_type,
+        id_tool: d.id_tool,
+        name_tool: d.name_tool
+    }));
+
+    let newDataStackedBarChart = []
+
+    tools_stackedbarchar.forEach(tool => {
+        let nbErrorOFP = 0;
+        let nbErrorGPT = 0;
+        let nbErrorOther = 0;
+        data_stackedbarchar.forEach(data => {
+            if (tool.id_tool === data.id_tool) {
+                if (data.id_error_type === 1 || data.id_error_type === 2 || data.id_error_type === 3) {
+                    nbErrorOFP++;
+                } else if (data.id_error_type === 4 || data.id_error_type === 5) {
+                    nbErrorGPT++;
+                } else {
+                    nbErrorOther++;
+                }
+            }
+        });
+        newDataStackedBarChart.push({
+            'name_tool': tool.name_tool,
+            'source': 'API OnlineFormaPro',
+            'nb': nbErrorOFP,
+        });
+        newDataStackedBarChart.push({
+            'name_tool': tool.name_tool,
+            'source': 'API OpenIA',
+            'nb': nbErrorGPT,
+        });
+        newDataStackedBarChart.push({
+            'name_tool': tool.name_tool,
+            'source': 'Autre',
+            'nb': nbErrorOther,
+        });
+    });
+
+    data_stackedbarchar = newDataStackedBarChart;
+
+    function addStackedBarChart() {
+        let data = data_stackedbarchar;
+        const width = 928;
+        const height = 600;
+        const marginTop = 30; // Augmente la marge pour le titre
+        const marginRight = 10;
+        const marginBottom = 20;
+        const marginLeft = 40;
+
+        const series = d3.stack()
+            .keys(d3.union(data.map(d => d.source)))
+            .value(([, D], key) => D.get(key).nb)
+            (d3.index(data, d => d.name_tool, d => d.source));
+
+        const x = d3.scaleBand()
+            .domain(d3.groupSort(data, D => -d3.sum(D, d => d.nb), d => d.name_tool))
+            .range([marginLeft, width - marginRight])
+            .padding(0.1);
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(series, d => d3.max(d, d => d[1]))])
+            .rangeRound([height - marginBottom, marginTop]);
+
+        const color = d3.scaleOrdinal()
+            .domain(series.map(d => d.key))
+            .range(d3.schemeSpectral[series.length])
+            .unknown("#ccc");
+
+        const formatValue = x => isNaN(x) ? "N/A" : x.toLocaleString("en");
+
+        const svg = d3.create("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", [0, 0, width, height])
+            .attr("style", "max-width: 100%; height: auto;");
+
+        svg.append("g")
+            .selectAll()
+            .data(series)
+            .join("g")
+            .attr("fill", d => color(d.key))
+            .selectAll("rect")
+            .data(D => D.map(d => (d.key = D.key, d)))
+            .join("rect")
+            .attr("x", d => x(d.data[0]))
+            .attr("y", d => y(d[1]))
+            .attr("height", d => y(d[0]) - y(d[1]))
+            .attr("width", x.bandwidth())
+            .append("title")
+            .text(d => `${d.data[0]} ${d.key}\n${formatValue(d.data[1].get(d.key).nb)}`);
+
+        svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(d3.axisBottom(x).tickSizeOuter(0))
+            .call(g => g.selectAll(".domain").remove());
+
+        svg.append("g")
+            .attr("transform", `translate(${marginLeft},0)`)
+            .call(d3.axisLeft(y).ticks(null, "s"))
+            .call(g => g.selectAll(".domain").remove());
+
+        const legend = d3.legendColor()
+            .shapeWidth(150)
+            .shapePadding(5)
+            .cells(series.length)
+            .scale(color)
+            .orient('horizontal');
+
+        d3.select("#legend").append("svg")
+            .attr("id", "legend-svg")
+            .attr("width", width)
+            .attr("height", 50)
+            .attr("style", "max-width: 100%; height: auto;")
+            .append("g")
+            .attr("transform", "translate(50,0)")
+            .call(legend);
+
+        return Object.assign(svg.node(), {scales: {color}});
+    }
+
+    document.getElementById("stackedBarChart").append(addStackedBarChart());
+</script>

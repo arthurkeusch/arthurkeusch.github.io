@@ -1,0 +1,41 @@
+{% include 'Tools/Components/content_one_log.html.twig' with {
+    'informations': informations,
+    'completion_tokens': completion_tokens,
+    'prompt_tokens': prompt_tokens,
+    'total_tokens': total_tokens,
+    'response_message': response_message,
+    'params_message': params_message
+} %}
+
+<script>
+    const informations = {{ informations|json_encode|raw }};
+
+    function getColorLevel(level) {
+        switch (true) {
+            case (level <= 10 && level >= 0):
+                return "rgba(  0, 255,   0, 1)";
+            case (level <= 20 && level >= 0):
+                return "rgba(100, 255,   0, 1)";
+            case (level <= 30 && level >= 0):
+                return "rgba(150, 255,   0, 1)";
+            case (level <= 40 && level >= 0):
+                return "rgba(200, 255,   0, 1)";
+            case (level <= 50 && level >= 0):
+                return "rgba(255, 255,   0, 1)";
+            case (level <= 60 && level >= 0):
+                return "rgba(255, 200,   0, 1)";
+            case (level <= 70 && level >= 0):
+                return "rgba(255, 150,   0, 1)";
+            case (level <= 80 && level >= 0):
+                return "rgba(255, 100,   0, 1)";
+            case (level <= 90 && level >= 0):
+                return "rgba(255,  50,   0, 1)";
+            case (level <= 100 && level >= 0):
+                return "rgba(255,   0,   0, 1)";
+            default:
+                return "rgba(200, 200, 200, 1)";
+        }
+    }
+
+    document.getElementById("level_pastille_{{ informations.id_log }}").style.fill = getColorLevel(informations.level);
+</script>

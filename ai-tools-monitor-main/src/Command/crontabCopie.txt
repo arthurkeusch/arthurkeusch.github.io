@@ -1,0 +1,12 @@
+
+# Ceci est le contenue de mon faux fichier crontab.
+# Il vas me permettre de tester la sauvegarde d'un fichier et ça supprission.
+# Ca me permet de ne pas le faire directement avec le vrai fichier pour éviter les bourde.
+# Et ça me permet de voir comment je récupère du texte et voici l'exemple d'une commande CRON qui fonctionne :
+#
+# * * * * * cd /home/debian/Documents/ia-tools-monitor-main && php bin/console app:get-log
+#
+# Tous ce texte et en commentaire et ne dois pas disparaitre lors de la réécriture.
+
+
+* * * * * cd /home/debian/Documents/ia-tools-monitor-main && php bin/console app:get-log

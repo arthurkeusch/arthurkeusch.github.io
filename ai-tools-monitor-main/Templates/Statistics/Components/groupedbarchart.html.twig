@@ -1,0 +1,98 @@
+<div id="groupedbarchart" style="margin: auto;"></div>
+
+<script>
+    data_groupedbarchart = {{ data|json_encode|raw }};
+    document.getElementById("groupedbarchart").append(addGroupeBarChart());
+
+    function addGroupeBarChart() {
+        const width = 928;
+        const height = 600;
+        const marginTop = 10;
+        const marginRight = 10;
+        const marginBottom = 20;
+        const marginLeft = 60;
+
+        const fx = d3.scaleBand()
+            .domain(new Set(data_groupedbarchart.map(d => d.name_tool)))
+            .rangeRound([marginLeft, width - marginRight])
+            .paddingInner(0.1);
+
+        const levels = new Set(data_groupedbarchart.map(d => d.level));
+
+        const x = d3.scaleBand()
+            .domain(levels)
+            .rangeRound([0, fx.bandwidth()])
+            .padding(0.05);
+
+        const color = d3.scaleOrdinal()
+            .domain(levels)
+            .range(d3.schemeSpectral[levels.size])
+            .unknown("#ccc");
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(data_groupedbarchart, d => d.latency)]).nice()
+            .rangeRound([height - marginBottom, marginTop]);
+
+        const formatValue = x => isNaN(x) ? "N/A" : x.toLocaleString("en");
+
+        const svg = d3.create("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", [0, 0, width, height])
+            .attr("style", "max-width: 100%; height: auto;");
+
+        svg.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0)
+            .attr("x", 0 - (height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Temps de réponse moyen (ms)");
+
+        svg.append("g")
+            .selectAll()
+            .data(d3.group(data_groupedbarchart, d => d.name_tool))
+            .join("g")
+            .attr("transform", ([name_tool]) => `translate(${fx(name_tool)},0)`)
+            .selectAll()
+            .data(([, d]) => d)
+            .join("rect")
+            .attr("x", d => x(d.level))
+            .attr("y", d => y(d.latency))
+            .attr("width", x.bandwidth())
+            .attr("height", d => y(0) - y(d.latency))
+            .attr("fill", d => color(d.level));
+
+        svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(d3.axisBottom(fx).tickSizeOuter(0))
+            .call(g => g.selectAll(".domain").remove());
+
+        svg.append("g")
+            .attr("transform", `translate(${marginLeft},0)`)
+            .call(d3.axisLeft(y).ticks(null, "s"))
+            .call(g => g.selectAll(".domain").remove());
+
+        const legend = svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", `translate(${width - marginRight - 100}, ${marginTop})`)
+            .selectAll("g")
+            .data(levels)
+            .enter().append("g")
+            .attr("transform", (d, i) => `translate(0,${i * 20})`);
+
+        legend.append("rect")
+            .attr("x", 0)
+            .attr("width", 18)
+            .attr("height", 18)
+            .attr("fill", d => color(d));
+
+        legend.append("text")
+            .attr("x", 24)
+            .attr("y", 9)
+            .attr("dy", "0.35em")
+            .text(d => d);
+
+        return Object.assign(svg.node(), {scales: {color}});
+    }
+</script>

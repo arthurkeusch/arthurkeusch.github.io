@@ -1,0 +1,636 @@
+{% include 'Components/headers.html.twig' %}
+
+<div class="modal modal-sheet position-fixed align-items-center justify-content-center"
+     style="background: transparent; padding: 50px; top: 0; bottom: 0; left: 0; right: 0; max-width: calc(100% - 50px); margin: auto; border-radius: 20px;"
+     role="dialog" id="modalThread">
+    <div class="modal-dialog modal-fullscreen p-0 m-0 h-100" role="document">
+        <div class="modal-content rounded-4 shadow h-100" style="margin: auto;">
+            <div class="modal-header p-5 pb-4 border-bottom-0" style="margin: auto; max-width: calc(100% - 100px);">
+                <h1 id="threadTitle" class="fw-bold mb-0 fs-2">
+                    Chargement des données...
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close" onclick="hideThread()"
+                        style="position: absolute; right: 100px;">
+                </button>
+            </div>
+            <div id="threadContent" class="modal-body p-5 pt-0 overflow-auto"
+                 style="height: calc(100% - 100px); margin: auto; width: calc(100% - 10px);">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-1">
+        <div style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px;" data-bs-toggle="popup-tip"
+             title="Revenir à la liste des assistants">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+                 class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16"
+                 onclick="goBack()"
+                 style="cursor: pointer;">
+                <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"></path>
+            </svg>
+        </div>
+    </div>
+    <div class="col-9" style="margin-top: 22px;">
+        {% include 'Components/breadcrumb.html.twig' with {
+            'past': [
+                {'link': '/assistants', 'name': 'Assistants'}
+            ],
+            'current': informations.name_assistant
+        } %}
+    </div>
+</div>
+
+
+<div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px; margin-top: 10px;">
+    <div class="card-body">
+        <h1>{{ informations.name_assistant }}</h1>
+
+        <div class="container">
+            <div class="col" style="margin-bottom: 10px; width: 300px; margin-right: auto; margin-left: auto;">
+                <div class="card shadow-sm">
+                    <h5 class="text-center card-header">
+                        Nom dans l'API OpenAI
+                    </h5>
+                    <div class="card-body">
+                        <p class="text-center" style="margin: auto;">
+                            {{ informations.object_assistant.name }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion col" id="accordion_instructions" style="margin-top: 10px;">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#accordion_collapse_instructions" aria-expanded="false">
+                            Dernières instructions
+                        </button>
+                    </h2>
+                    <div id="accordion_collapse_instructions" class="accordion-collapse collapse">
+                        <div class="accordion-body" style="margin-right: 35px;">
+                            <pre style="white-space: pre-wrap;">{{ informations.object_assistant.instructions }}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% if threads is not empty %}
+    <div class="accordion" id="filterAccordion" style="margin-left: 20px; margin-right: 20px; margin-top: 20px;">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFilters">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">
+                    Filtres
+                </button>
+            </h2>
+            <div id="collapseFilters" class="accordion-collapse collapse" aria-labelledby="headingFilters"
+                 data-bs-parent="#filterAccordion">
+                <div class="accordion-body">
+                    <div class="container" id="filters">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="start_date">Date de début:</label>
+                                <input type="date" id="start_date" class="form-control" onchange="applyFilters()">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="end_date">Date de fin:</label>
+                                <input type="date" id="end_date" class="form-control" onchange="applyFilters()">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="show_errors">Afficher :</label>
+                                <select id="show_errors" class="form-control" onchange="applyFilters()">
+                                    <option value="all">Tous les threads</option>
+                                    <option value="only_errors">Seulement les erreurs</option>
+                                    <option value="no_errors">Sans erreurs</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="text-center" style="margin-top: 10px;">
+                            <p>Nombre de threads : <span id="nbThreadShow">{{ threads|length }}</span></p>
+                            <button class="btn btn-outline-dark" type="submit"
+                                    onclick="resetFilters()"
+                                    data-bs-toggle="popup-tip" title="Réinitialiser les filtres.">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                     fill="currentColor"
+                                     class="bi bi-ban" viewBox="0 0 16 16">
+                                    <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="margin-top: 20px;">
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr class="table-dark" style="height: 61px;">
+                <th scope="col" class="text-center">
+                    <input class="form-check-input flex-shrink-0" type="checkbox"
+                           id="checkbox_select" onclick="check()"
+                           style="width: 25px; height: 25px; cursor: pointer;"
+                           data-bs-toggle="popup-tip" title="Sélectionner tous les threads.">
+                </th>
+                <th scope="col" class="text-center" id="date_header">
+                    Date
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                         class="bi bi-arrow-down-up" viewBox="0 0 16 16"
+                         style="cursor: pointer;" onclick="filterDate()">
+                        <path fill-rule="evenodd"
+                              d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
+                    </svg>
+                </th>
+                <th scope="col" class="text-center" id="latency_header">
+                    Temps de réponse
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                         class="bi bi-arrow-down-up" viewBox="0 0 16 16"
+                         style="cursor: pointer;" onclick="filterLatency()">
+                        <path fill-rule="evenodd"
+                              d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
+                    </svg>
+                </th>
+                <th scope="col" class="text-center">
+                    <button
+                            class="btn btn-danger" type="submit"
+                            style="display: none;" id="button_delete_selection"
+                            onclick="deleteAllSelect()"
+                            data-bs-toggle="popup-tip" title="Supprimer la sélection."
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                             class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                        </svg>
+                    </button>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for thread in threads %}
+                <tr id="thread_{{ thread.id_thread }}">
+                    <th class="col-1 text-center">
+                        <input class="form-check-input flex-shrink-0" type="checkbox"
+                               id="checkbox_thread_{{ thread.id_thread }}" onclick="verifyCompare()"
+                               style="width: 25px; height: 25px; cursor: pointer;"
+                               data-bs-toggle="popup-tip" title="Sélectionner le thread.">
+                    </th>
+                    <td id="date_{{ thread.id_thread }}" class="col-3">
+                        {{ thread.date_thread }}
+                        {% if thread.isError != 0 %}
+                            <svg id="bug_{{ thread.id_thread }}" xmlns="http://www.w3.org/2000/svg" width="32"
+                                 height="32"
+                                 fill="red" class="bi bi-bug-fill" viewBox="0 0 16 16"
+                                 data-bs-toggle="popup-tip" title="Ce thread comporte une erreur.">
+                                <path d="M4.978.855a.5.5 0 1 0-.956.29l.41 1.352A5 5 0 0 0 3 6h10a5 5 0 0 0-1.432-3.503l.41-1.352a.5.5 0 1 0-.956-.29l-.291.956A5 5 0 0 0 8 1a5 5 0 0 0-2.731.811l-.29-.956z"/>
+                                <path d="M13 6v1H8.5v8.975A5 5 0 0 0 13 11h.5a.5.5 0 0 1 .5.5v.5a.5.5 0 1 0 1 0v-.5a1.5 1.5 0 0 0-1.5-1.5H13V9h1.5a.5.5 0 0 0 0-1H13V7h.5A1.5 1.5 0 0 0 15 5.5V5a.5.5 0 0 0-1 0v.5a.5.5 0 0 1-.5.5zm-5.5 9.975V7H3V6h-.5a.5.5 0 0 1-.5-.5V5a.5.5 0 0 0-1 0v.5A1.5 1.5 0 0 0 2.5 7H3v1H1.5a.5.5 0 0 0 0 1H3v1h-.5A1.5 1.5 0 0 0 1 11.5v.5a.5.5 0 1 0 1 0v-.5a.5.5 0 0 1 .5-.5H3a5 5 0 0 0 4.5 4.975"/>
+                            </svg>
+                        {% endif %}
+                    </td>
+                    <td id="latency_{{ thread.id_thread }}" class="col-3">
+                        {{ thread.latency_thread }} ms
+                    </td>
+                    <td class="text-center col-3">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-dark"
+                                    data-bs-toggle="popup-tip" title="Voir le thread."
+                                    onclick="goTo({{ thread.id_thread }})">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                     class="bi bi-eye" viewBox="0 0 16 16">
+                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                                </svg>
+                            </button>
+                            <button type="button" class="btn btn-outline-danger"
+                                    data-bs-toggle="popup-tip" title="Supprimer le thread."
+                                    onclick="delete_thread({{ thread.id_thread }})">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                     class="bi bi-trash3" viewBox="0 0 16 16">
+                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                </svg>
+                            </button>
+                            <button
+                                    id="compare_thread_button_{{ thread.id_thread }}"
+                                    class="btn btn-outline-info" type="submit" style="display: none;"
+                                    onclick="compareThread()" data-bs-toggle="popup-tip"
+                                    title="Comparer les threads."
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                     class="bi bi-file-diff" viewBox="0 0 16 16">
+                                    <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4m-2.5 6.5A.5.5 0 0 1 6 10h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5"/>
+                                    <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div style="margin-top: 20px;">
+        {% include 'Components/nodata.html.twig' with {
+            'message': "Aucun thread n'est disponible pour cet assistant."
+        } %}
+    </div>
+{% endif %}
+
+
+<script>
+    let informations = {{ informations|json_encode|raw }};
+    let threads = {{ threads|json_encode|raw }};
+    let orderDate = "DESC";
+    let orderLatency = "DESC";
+
+    function goBack() {
+        window.location.href = '/assistants';
+    }
+
+    function check() {
+        if (document.getElementById("checkbox_select").checked) {
+            selectAll();
+        } else {
+            unselectAll();
+        }
+        verifyCompare();
+    }
+
+    function selectAll() {
+        for (const id in threads) {
+            let input = document.getElementById("checkbox_thread_" + threads[id]['id_thread']);
+            if (document.getElementById("thread_" + threads[id]['id_thread']).style.display !== "none") {
+                input.checked = true;
+            } else {
+                input.checked = false;
+            }
+        }
+        verifyCompare();
+    }
+
+    function unselectAll() {
+        for (const id in threads) {
+            let input = document.getElementById("checkbox_thread_" + threads[id]['id_thread']);
+            if (document.getElementById("thread_" + threads[id]['id_thread']).style.display !== "none") {
+                input.checked = false;
+            }
+        }
+        verifyCompare();
+    }
+
+    function filterDate() {
+        resetOtherArrows("date_header");
+        const tableBody = document.querySelector('tbody');
+        const rows = Array.from(tableBody.querySelectorAll('tr'));
+        if (orderDate === "DESC") {
+            updateArrow("date_header", "ASC");
+            rows.sort((a, b) => {
+                const dateA = new Date(document.getElementById('date_' + a.id.split('_')[1]).textContent.trim());
+                const dateB = new Date(document.getElementById('date_' + b.id.split('_')[1]).textContent.trim());
+                return dateA - dateB;
+            });
+            orderDate = "ASC";
+        } else {
+            updateArrow("date_header", "DESC");
+            rows.sort((a, b) => {
+                const dateA = new Date(document.getElementById('date_' + a.id.split('_')[1]).textContent.trim());
+                const dateB = new Date(document.getElementById('date_' + b.id.split('_')[1]).textContent.trim());
+                return dateB - dateA;
+            });
+            orderDate = "DESC";
+        }
+        rows.forEach(row => tableBody.appendChild(row));
+    }
+
+    function filterLatency() {
+        resetOtherArrows("latency_header");
+        const tableBody = document.querySelector('tbody');
+        const rows = Array.from(tableBody.querySelectorAll('tr'));
+        if (orderLatency === "DESC") {
+            updateArrow("latency_header", "ASC");
+            rows.sort((a, b) => {
+                const latencyA = parseInt(document.getElementById('latency_' + a.id.split('_')[1]).textContent.trim());
+                const latencyB = parseInt(document.getElementById('latency_' + b.id.split('_')[1]).textContent.trim());
+                return latencyA - latencyB;
+            });
+            orderLatency = "ASC";
+        } else {
+            updateArrow("latency_header", "DESC");
+            rows.sort((a, b) => {
+                const latencyA = parseInt(document.getElementById('latency_' + a.id.split('_')[1]).textContent.trim());
+                const latencyB = parseInt(document.getElementById('latency_' + b.id.split('_')[1]).textContent.trim());
+                return latencyB - latencyA;
+            });
+            orderLatency = "DESC";
+        }
+        rows.forEach(row => tableBody.appendChild(row));
+    }
+
+    function resetOtherArrows(activeHeaderId) {
+        const headers = ["date_header", "latency_header"];
+        headers.forEach(headerId => {
+            if (headerId !== activeHeaderId) {
+                const header = document.getElementById(headerId);
+                const svg = header.querySelector('svg');
+                svg.innerHTML = '<path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>';
+            }
+        });
+    }
+
+    function updateArrow(headerId, order) {
+        const header = document.getElementById(headerId);
+        const svg = header.querySelector('svg');
+        svg.innerHTML = '';
+        if (order === "ASC") {
+            svg.innerHTML = '<path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/>';
+        } else if (order === "DESC") {
+            svg.innerHTML = '<path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/>';
+        } else {
+            svg.innerHTML = '<path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>';
+        }
+    }
+
+    async function deleteAllSelect() {
+        openModal();
+        document.getElementById("modalTitle").innerText = "Supprimer des threads";
+        document.getElementById("modalBody").innerText = "Êtes vous certains de vouloir supprimer ces threads ?";
+        return new Promise((resolve, reject) => {
+            document.getElementById('confirm').addEventListener('click', () => {
+                for (const id in threads) {
+                    let input = document.getElementById("checkbox_thread_" + threads[id]['id_thread']);
+                    if (input.checked) {
+                        delete_one_thread(threads[id]['id_thread'])
+                    }
+                }
+                verifyCompare();
+                closeModal();
+            });
+
+            document.getElementById('cancel').addEventListener('click', () => {
+                closeModal();
+            });
+        });
+    }
+
+    function verifyCompare() {
+        let nbCaseChecked = 0;
+        let nbCase = 0;
+        let listThreadsCheck = [];
+        let nbThreadShow = 0;
+
+        for (const id in threads) {
+            let input = document.getElementById("checkbox_thread_" + threads[id]['id_thread']);
+            if (document.getElementById("thread_" + threads[id]['id_thread']).style.display !== "none") {
+                nbThreadShow++;
+                if (input.checked) {
+                    nbCaseChecked++;
+                    listThreadsCheck.push(threads[id]['id_thread']);
+                }
+                nbCase++;
+                document.getElementById("compare_thread_button_" + threads[id]['id_thread']).style.display = "none";
+            }
+        }
+
+        document.getElementById("nbThreadShow").innerText = " " + nbThreadShow;
+        document.getElementById("checkbox_select").checked = nbCaseChecked === nbCase;
+
+        if (nbCaseChecked > 0) {
+            if (nbCaseChecked === 2) {
+                document.getElementById("compare_thread_button_" + listThreadsCheck[0]).style.display = "";
+                document.getElementById("compare_thread_button_" + listThreadsCheck[1]).style.display = "";
+            }
+            document.getElementById("download_dropdown").style.display = "flex";
+            document.getElementById("button_delete_selection").style.display = "";
+        } else {
+            if (nbThreadShow === 0) {
+                if (!document.getElementById("nodata_component")) {
+                    const tableBody = document.querySelector("tbody");
+                    const noDataRow = document.createElement("tr");
+                    const noDataCell = document.createElement("td");
+                    noDataRow.setAttribute("id", "nodata_component");
+                    noDataCell.setAttribute("colspan", "12");
+                    noDataCell.innerHTML = `{% include 'Components/nodata.html.twig' with {'message': 'Veuillez modifier les filtres. Aucun thread ne correspond à votre recherche.'} %}`;
+                    noDataRow.appendChild(noDataCell);
+                    tableBody.appendChild(noDataRow);
+                }
+            } else {
+                const noDataComponent = document.getElementById("nodata_component");
+                if (noDataComponent) {
+                    noDataComponent.remove();
+                }
+                document.getElementById("download_dropdown").style.display = "none";
+                document.getElementById("button_delete_selection").style.display = "none";
+            }
+        }
+    }
+
+    async function goTo(id_thread) {
+        showThread();
+        await getRequest("/assistants/thread", { id: id_thread })
+            .then(response => {
+                document.getElementById('threadTitle').innerHTML = 'Information du thread';
+                document.getElementById('threadContent').innerHTML = response;
+                document.querySelectorAll('.message-card pre').forEach(function (element) {
+                    if (element.textContent.length > 300) {
+                        const originalText = element.textContent;
+                        const truncatedText = originalText.substring(0, 300) + '...';
+
+                        element.textContent = truncatedText;
+                        element.classList.add('truncated');
+
+                        const showMoreLink = document.createElement('a');
+                        showMoreLink.href = '#';
+                        showMoreLink.textContent = 'Afficher plus';
+                        showMoreLink.classList.add('show-more');
+                        showMoreLink.addEventListener('click', function (event) {
+                            event.preventDefault();
+                            if (element.classList.contains('truncated')) {
+                                element.textContent = originalText;
+                                element.classList.remove('truncated');
+                                showMoreLink.textContent = 'Afficher moins';
+                            } else {
+                                element.textContent = truncatedText;
+                                element.classList.add('truncated');
+                                showMoreLink.textContent = 'Afficher plus';
+                            }
+                        });
+                        element.parentNode.appendChild(showMoreLink);
+                    }
+                });
+            })
+            .catch(error => {
+                show_danger_message("La récupération des données a échoué : " + error);
+            });
+    }
+
+    async function delete_thread(id_thread) {
+        openModal();
+        document.getElementById("modalTitle").innerText = "Supprimer un thread";
+        document.getElementById("modalBody").innerText = "Êtes vous sûr de vouloir supprimer ce thread ?";
+        return new Promise((resolve, reject) => {
+            document.getElementById('confirm').addEventListener('click', () => {
+                delete_one_thread(id_thread);
+                verifyCompare();
+                closeModal();
+            });
+
+            document.getElementById('cancel').addEventListener('click', () => {
+                closeModal();
+            });
+        });
+    }
+
+    async function delete_one_thread(id_thread) {
+        postRequest("/assistants/thread/delete", {id: id_thread})
+            .then(response => {
+                show_success_message("Suppression réussie !");
+                const card = document.getElementById("thread_" + id_thread);
+                if (card) {
+                    card.remove();
+                }
+            })
+            .catch(error => {
+                show_danger_message("La suppression a échoué : " + error);
+            });
+    }
+
+    async function compareThread() {
+        showThread();
+        let listId = [];
+        for (const id in threads) {
+            let input = document.getElementById("checkbox_thread_" + threads[id]['id_thread']);
+            if (document.getElementById("thread_" + threads[id]['id_thread']).style.display !== "none" && input.checked) {
+                listId.push(threads[id]['id_thread']);
+            }
+        }
+        await getRequest("/assistants/thread/compare", {thread1: listId[0], thread2: listId[1]})
+            .then(response => {
+                document.getElementById('threadTitle').innerHTML = 'Comparaison de threads';
+                document.getElementById('threadContent').innerHTML = response;
+                document.querySelectorAll('.message-card pre').forEach(function (element) {
+                    if (element.textContent.length > 300) {
+                        const originalText = element.textContent;
+                        const truncatedText = originalText.substring(0, 300) + '...';
+
+                        element.textContent = truncatedText;
+                        element.classList.add('truncated');
+
+                        const showMoreLink = document.createElement('a');
+                        showMoreLink.href = '#';
+                        showMoreLink.textContent = 'Afficher plus';
+                        showMoreLink.classList.add('show-more');
+                        showMoreLink.addEventListener('click', function (event) {
+                            event.preventDefault();
+                            if (element.classList.contains('truncated')) {
+                                element.textContent = originalText;
+                                element.classList.remove('truncated');
+                                showMoreLink.textContent = 'Afficher moins';
+                            } else {
+                                element.textContent = truncatedText;
+                                element.classList.add('truncated');
+                                showMoreLink.textContent = 'Afficher plus';
+                            }
+                        });
+                        element.parentNode.appendChild(showMoreLink);
+                    }
+                });
+            })
+            .catch(error => {
+                show_danger_message("La récupération des données a échoué : " + error);
+            });
+    }
+
+    {% if threads is not empty %}
+        document.addEventListener('DOMContentLoaded', function () {
+            window.addEventListener('scroll', function () {
+                const navBarHeight = document.querySelector('.navbar').offsetHeight;
+                const filterAccordion = document.getElementById('filterAccordion');
+                if (window.scrollY > navBarHeight) {
+                    filterAccordion.classList.add('fixed-top');
+                    filterAccordion.style.top = navBarHeight + 'px';
+                } else {
+                    filterAccordion.classList.remove('fixed-top');
+                    filterAccordion.style.top = 'auto';
+                }
+            });
+        });
+    {% endif %}
+
+    function applyFilters() {
+        const startDate = document.getElementById('start_date').value;
+        const endDate = document.getElementById('end_date').value;
+        const showErrors = document.getElementById('show_errors').value;
+        for (const id in threads) {
+            let thread = threads[id];
+            let threadElement = document.getElementById("thread_" + thread.id_thread);
+            let threadDate = new Date(thread.date_thread);
+            let showThread = true;
+            if (startDate && threadDate < new Date(startDate)) {
+                showThread = false;
+            }
+            if (endDate && threadDate > new Date(endDate)) {
+                showThread = false;
+            }
+            if (showErrors === "only_errors" && thread.isError === 0) {
+                showThread = false;
+            }
+            if (showErrors === "no_errors" && thread.isError !== 0) {
+                showThread = false;
+            }
+            if (showThread) {
+                threadElement.style.display = "";
+            } else {
+                threadElement.style.display = "none";
+            }
+        }
+        verifyCompare();
+    }
+
+    function resetFilters() {
+        document.getElementById('start_date').value = "";
+        document.getElementById('end_date').value = "";
+        document.getElementById('show_errors').value = "all";
+        applyFilters();
+    }
+
+    function showThread() {
+        document.getElementById('modalThread').classList.add("d-flex");
+    }
+
+    function hideThread() {
+        document.getElementById('modalThread').classList.remove("d-flex");
+        document.getElementById('threadContent').innerHTML = `
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>`;
+    }
+</script>
+
+
+<style>
+    .message-content.truncated {
+        max-height: 15em;
+        overflow: hidden;
+    }
+    .show-more {
+        display: block;
+        margin-top: 1em;
+        cursor: pointer;
+    }
+</style>

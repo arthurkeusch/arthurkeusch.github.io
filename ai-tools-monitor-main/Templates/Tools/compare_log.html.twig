@@ -1,0 +1,56 @@
+<div class="row row-cols-2 g-0">
+    <div class="col">
+        {% include 'Tools/Components/content_one_log.html.twig' with {
+            'informations': log1['informations'],
+            'completion_tokens': log1['completion_tokens'],
+            'prompt_tokens': log1['prompt_tokens'],
+            'total_tokens': log1['total_tokens'],
+            'response_message': log1['response_message'],
+            'params_message': log1['params_message']
+        } %}
+    </div>
+    <div class="col">
+        {% include 'Tools/Components/content_one_log.html.twig' with {
+            'informations': log2['informations'],
+            'completion_tokens': log2['completion_tokens'],
+            'prompt_tokens': log2['prompt_tokens'],
+            'total_tokens': log2['total_tokens'],
+            'response_message': log2['response_message'],
+            'params_message': log2['params_message']
+        } %}
+    </div>
+</div>
+
+<script>
+    const informations = {{ informations|json_encode|raw }};
+
+    function getColorLevel(level) {
+        switch (true) {
+            case (level <= 10 && level >= 0):
+                return "rgba(  0, 255,   0, 1)";
+            case (level <= 20 && level >= 0):
+                return "rgba(100, 255,   0, 1)";
+            case (level <= 30 && level >= 0):
+                return "rgba(150, 255,   0, 1)";
+            case (level <= 40 && level >= 0):
+                return "rgba(200, 255,   0, 1)";
+            case (level <= 50 && level >= 0):
+                return "rgba(255, 255,   0, 1)";
+            case (level <= 60 && level >= 0):
+                return "rgba(255, 200,   0, 1)";
+            case (level <= 70 && level >= 0):
+                return "rgba(255, 150,   0, 1)";
+            case (level <= 80 && level >= 0):
+                return "rgba(255, 100,   0, 1)";
+            case (level <= 90 && level >= 0):
+                return "rgba(255,  50,   0, 1)";
+            case (level <= 100 && level >= 0):
+                return "rgba(255,   0,   0, 1)";
+            default:
+                return "rgba(200, 200, 200, 1)";
+        }
+    }
+
+    document.getElementById("level_pastille_{{ log1['informations'].id_log }}").style.fill = getColorLevel({{ log1['informations'].level }});
+    document.getElementById("level_pastille_{{ log2['informations'].id_log }}").style.fill = getColorLevel({{ log2['informations'].level }});
+</script>

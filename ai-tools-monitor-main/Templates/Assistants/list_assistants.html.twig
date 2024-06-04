@@ -1,0 +1,525 @@
+{% include 'Components/headers.html.twig' %}
+
+<div class="modal modal-sheet position-fixed"
+     style="top: 0; bottom: 0; left: 0; right: 0; z-index: 1050; background: transparent;" tabindex="-1" role="dialog"
+     id="formAddAssistant">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+                <h1 class="fw-bold mb-0 fs-2">Ajouter un assistant</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close" onclick="close_diag()">
+                </button>
+            </div>
+            <div class="modal-body p-5 pt-0">
+                <form onsubmit="add_assistant(event)" method="POST">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="name_add" name="name_add" required>
+                        <label for="name_add">Nom de l'assistant</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="api_name_add" name="api_name_add"
+                               required>
+                        <label for="api_name_add">ID dans l'API d'OpenAI</label>
+                    </div>
+                    <button id="submit_add_assistant" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">
+                        Ajouter
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal modal-sheet position-fixed"
+     style="top: 0; bottom: 0; left: 0; right: 0; z-index: 1050; background: transparent;" tabindex="-1" role="dialog"
+     id="formAddAssistantExistant">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+                <h1 class="fw-bold mb-0 fs-2">Ajouter un assistant</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close" onclick="close_diag()">
+                </button>
+            </div>
+            <div class="modal-body p-5 pt-0">
+                <form onsubmit="add_assistant_existant(event)" method="POST">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="name_add_existant"
+                               name="name_add_existant" required>
+                        <label for="name_add_existant">Nom de l'assistant</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="api_name_add_existant" onchange="updateNameFromSelect()">
+                            <option selected>Echec de la récupération des assistants</option>
+                        </select>
+                        <label for="api_name_add_existant">ID dans l'API d'OpenAI</label>
+                    </div>
+                    <button id="submit_add_assistant_existant" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
+                            type="submit">
+                        Ajouter
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-sheet position-fixed"
+     style="top: 0; bottom: 0; left: 0; right: 0; z-index: 1050; background: transparent;" tabindex="-1" role="dialog"
+     id="formUpdateAssistant">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+                <h1 class="fw-bold mb-0 fs-2">Mise à jour d'un assistant</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close" onclick="close_diag()">
+                </button>
+            </div>
+            <div class="modal-body p-5 pt-0">
+                <form onsubmit="update_assistant(event)" method="POST">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="name_update" name="name_update" required>
+                        <label for="name_update">Nom de l'assistant</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="api_name_update" name="api_name_update"
+                               required>
+                        <label for="api_name_update">ID dans l'API d'OpenAI</label>
+                    </div>
+                    <input id="id_assistant" type="hidden">
+                    <button id="submit_update_assistant" class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
+                            type="submit">
+                        Mettre à jour
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px; margin-top: 10px;">
+    <div class="card-body">
+        <h1>{{ title }}</h1>
+        <div class="text-center">
+
+            <div class="text-center" style="margin-top: 10px;">
+                <button type="button" data-bs-toggle="popup-tip" class="btn btn-outline-dark"
+                        title="Ajouter un assistant en utilisant un ID."
+                        onclick="open_diag_add_assistant()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                         class="bi bi-input-cursor-text" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                              d="M5 2a.5.5 0 0 1 .5-.5c.862 0 1.573.287 2.06.566.174.099.321.198.44.286.119-.088.266-.187.44-.286A4.17 4.17 0 0 1 10.5 1.5a.5.5 0 0 1 0 1c-.638 0-1.177.213-1.564.434a3.5 3.5 0 0 0-.436.294V7.5H9a.5.5 0 0 1 0 1h-.5v4.272c.1.08.248.187.436.294.387.221.926.434 1.564.434a.5.5 0 0 1 0 1 4.17 4.17 0 0 1-2.06-.566A5 5 0 0 1 8 13.65a5 5 0 0 1-.44.285 4.17 4.17 0 0 1-2.06.566.5.5 0 0 1 0-1c.638 0 1.177-.213 1.564-.434.188-.107.335-.214.436-.294V8.5H7a.5.5 0 0 1 0-1h.5V3.228a3.5 3.5 0 0 0-.436-.294A3.17 3.17 0 0 0 5.5 2.5.5.5 0 0 1 5 2"/>
+                        <path d="M10 5h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4v1h4a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-4zM6 5V4H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v-1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/>
+                    </svg>
+                </button>
+                <button type="button" data-bs-toggle="popup-tip" class="btn btn-outline-dark"
+                        title="Ajouter un assistant en utilisant la liste des assistants existant."
+                        onclick="open_diag_add_assistant_existant()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                         class="bi bi-card-list" viewBox="0 0 16 16">
+                        <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
+                        <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="button_all" class="text-center" style="margin-top: 10px;">
+                <button type="button" class="btn btn-outline-dark" data-bs-toggle="popup-tip"
+                        title="Activer tous les assistants."
+                        onclick="change_status_for_all_assistant(true)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                         class="bi bi-check2-square" viewBox="0 0 16 16">
+                        <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5z"/>
+                        <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0"/>
+                    </svg>
+                </button>
+                <button type="button" class="btn btn-outline-dark" data-bs-toggle="popup-tip"
+                        title="Désactiver tous les assistants."
+                        onclick="change_status_for_all_assistant(false)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                         class="bi bi-dash-square" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                        <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="album py-5" id="album">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-xl-4 g-3">
+
+            {% for assistant in assistants %}
+                <div id="assistant_{{ assistant.id_assistant }}" class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header">
+                            <input class="form-check-input flex-shrink-0" type="checkbox" data-bs-toggle="popup-tip"
+                                   title="Activer ou désactiver la création de runs pour cet assistant."
+                                   id="checkbox_assistant_{{ assistant.id_assistant }}"
+                                    {% if assistant.isActive == 1 %} checked {% endif %}
+                                   style=" position: absolute; left: 5px; z-index: 1; width: 25px; height: 25px; cursor: pointer; display: flex;"
+                                   onclick="change_status_assistant({{ assistant.id_assistant }})"
+                            >
+                            <h5 id="name_assistant_{{ assistant.id_assistant }}"
+                                style="margin-right: 40px; margin-left: 20px;">
+                                {{ assistant.name_assistant }}
+                            </h5>
+                            {% if assistant.nbErrors != 0 %}
+                                <div style="position: absolute; right: 5px; top: 5px; display: flex;"
+                                     data-bs-toggle="popup-tip"
+                                     title="Nombre d'erreur qui ont eu lieu au cours des dernières 24 heures pour cet assistant.">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="red"
+                                         class="bi bi-bug-fill" viewBox="0 0 16 16">
+                                        <path d="M4.978.855a.5.5 0 1 0-.956.29l.41 1.352A5 5 0 0 0 3 6h10a5 5 0 0 0-1.432-3.503l.41-1.352a.5.5 0 1 0-.956-.29l-.291.956A5 5 0 0 0 8 1a5 5 0 0 0-2.731.811l-.29-.956z"/>
+                                        <path d="M13 6v1H8.5v8.975A5 5 0 0 0 13 11h.5a.5.5 0 0 1 .5.5v.5a.5.5 0 1 0 1 0v-.5a1.5 1.5 0 0 0-1.5-1.5H13V9h1.5a.5.5 0 0 0 0-1H13V7h.5A1.5 1.5 0 0 0 15 5.5V5a.5.5 0 0 0-1 0v.5a.5.5 0 0 1-.5.5zm-5.5 9.975V7H3V6h-.5a.5.5 0 0 1-.5-.5V5a.5.5 0 0 0-1 0v.5A1.5 1.5 0 0 0 2.5 7H3v1H1.5a.5.5 0 0 0 0 1H3v1h-.5A1.5 1.5 0 0 0 1 11.5v.5a.5.5 0 1 0 1 0v-.5a.5.5 0 0 1 .5-.5H3a5 5 0 0 0 4.5 4.975"/>
+                                    </svg>
+                                    <span class="badge text-bg-danger d-flex justify-content-center align-items-center"
+                                          style="height: 15px; width: 15px;">{{ assistant.nbErrors }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-dark"
+                                            data-bs-toggle="popup-tip" title="Voir l'assistant"
+                                            onclick="goTo({{ assistant.id_assistant }})">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                             fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-dark"
+                                            data-bs-toggle="popup-tip" title="Modifier les informations de l'assistant."
+                                            onclick="open_diag_update({{ assistant.id_assistant }})">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                             fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                            <path fill-rule="evenodd"
+                                                  d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="popup-tip"
+                                            title="Supprimer l'assistant. ATTENTION : Cette action vas supprimer l'assistant ainsi que toutes les runs qui y sont associé."
+                                            onclick="delete_assistant({{ assistant.id_assistant }})">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                             fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+<script>
+    let assistants = {{ assistants|json_encode|raw }};
+
+    function goTo(id_assistant) {
+        window.location.href = '/assistants/' + id_assistant;
+    }
+
+    function open_diag_add_assistant() {
+        document.getElementById("formAddAssistant").classList.add("d-block");
+    }
+
+    async function open_diag_add_assistant_existant() {
+        document.getElementById("formAddAssistantExistant").classList.add("d-block");
+        const selectElement = document.getElementById('api_name_add_existant');
+        const originalOptions = selectElement.innerHTML;
+        selectElement.innerHTML = `<option selected disabled>Chargement...</option>`;
+        await getRequest("/assistants/list/get", {})
+            .then(response => {
+                const data = JSON.parse(response).data;
+                selectElement.innerHTML = '';
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = item.name;
+                    selectElement.appendChild(option);
+                });
+                updateNameFromSelect()
+            })
+            .catch(error => {
+                show_danger_message("La récupération a échoué : " + error);
+                selectElement.innerHTML = originalOptions;
+            });
+    }
+
+    function updateNameFromSelect() {
+        const selectElement = document.getElementById('api_name_add_existant');
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        if (selectedOption) {
+            document.getElementById('name_add_existant').value = selectedOption.textContent;
+        }
+    }
+
+    function close_diag() {
+        document.getElementById("formAddAssistant").classList.remove("d-block");
+        document.getElementById("formUpdateAssistant").classList.remove("d-block");
+        document.getElementById("formAddAssistantExistant").classList.remove("d-block");
+    }
+
+    async function add_assistant(event) {
+        document.getElementById('submit_add_assistant').innerHTML = `
+            <div class="spinner-border text-light" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        `;
+        event.preventDefault();
+        const name = document.getElementById("name_add").value;
+        const api_name_add = document.getElementById("api_name_add").value;
+        await postRequest("/assistants/add/one", {name: name, api_name: api_name_add})
+            .then(response => {
+                show_success_message("L'assistant à été ajouté !");
+                addAssistantCard(JSON.parse(response).id, name, JSON.parse(response).assistant[0].object_assistant, 0);
+            })
+            .catch(error => {
+                show_danger_message("L'ajout à échoué : " + error);
+            });
+        close_diag();
+        document.getElementById('submit_add_assistant').innerHTML = `
+            Ajouter
+        `;
+    }
+
+    async function add_assistant_existant(event) {
+        document.getElementById('submit_add_assistant_existant').innerHTML = `
+            <div class="spinner-border text-light" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        `;
+        event.preventDefault();
+        const name = document.getElementById("name_add_existant").value;
+        const api_name_add = document.getElementById("api_name_add_existant").value;
+        await postRequest("/assistants/add/one", {name: name, api_name: api_name_add})
+            .then(response => {
+                show_success_message("L'assistant à été ajouté !");
+                addAssistantCard(JSON.parse(response).id, name, JSON.parse(response).assistant[0].object_assistant, 0);
+            })
+            .catch(error => {
+                show_danger_message("L'ajout à échoué : " + error);
+            });
+        close_diag();
+        document.getElementById('submit_add_assistant_existant').innerHTML = `
+            Ajouter
+        `;
+    }
+
+    function change_status_assistant(id_assistant) {
+        const status = document.getElementById("checkbox_assistant_" + id_assistant).checked;
+        postRequest("/assistants/update/status", {id_assistant: id_assistant, status: status})
+            .catch(error => {
+                show_danger_message("Echec de la mise à jour du status : " + error);
+            });
+    }
+
+    function open_diag_update(id_assistant) {
+        document.getElementById("formUpdateAssistant").classList.add("d-block");
+        for (const id in assistants) {
+            if (assistants[id]['id_assistant'] === id_assistant) {
+                document.getElementById("name_update").value = assistants[id]['name_assistant'];
+                document.getElementById("api_name_update").value = JSON.parse(assistants[id]['object_assistant']).id;
+                document.getElementById("id_assistant").value = id_assistant;
+            }
+        }
+    }
+
+    async function update_assistant(event) {
+        document.getElementById('submit_update_assistant').innerHTML = `
+            <div class="spinner-border text-light" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        `;
+        event.preventDefault();
+        const id_assistant = document.getElementById("id_assistant").value;
+        const name = document.getElementById("name_update").value;
+        const api_name = document.getElementById("api_name_update").value;
+        await postRequest("/assistants/update/one", {id_assistant: id_assistant, name: name, api_name: api_name})
+            .then(response => {
+                response = JSON.parse(response);
+                for (const id in assistants) {
+                    if (assistants[id]['id_assistant'] === parseInt(id_assistant)) {
+                        document.getElementById("name_assistant_" + id_assistant).innerText = name;
+                        assistants[id]['name_assistant'] = name;
+                        assistants[id]['object_assistant'] = response.new_object_assistant;
+                    }
+                }
+                show_success_message("L'assistant à été mis à jour !");
+            })
+            .catch(error => {
+                show_danger_message("La mise à jour à échouer : " + error);
+            });
+        close_diag();
+        document.getElementById('submit_update_assistant').innerHTML = `
+            Mettre à jour
+        `;
+    }
+
+    function addAssistantCard(id, name, object_assistant, nbErrors) {
+        const album = document.querySelector('#album .row');
+        assistants.push({
+            'id_assistant': id,
+            'isActive': 0,
+            'name_assistant': name,
+            'nbErrors': 0,
+            'object_assistant': object_assistant
+        });
+        const cardHTML = `
+        <div id="assistant_${id}" class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header">
+                    <input class="form-check-input flex-shrink-0" type="checkbox" data-bs-toggle="popup-tip"
+                           title="Activer ou désactiver la création de runs pour cet assistant."
+                           id="checkbox_assistant_${id}"
+                           style="position: absolute; left: 5px; z-index: 1; width: 25px; height: 25px; cursor: pointer; display: flex;"
+                           onclick="change_status_assistant(${id})"
+                    >
+                    <h5 style="margin-right: 40px; margin-left: 20px;">
+                        ${name}
+                    </h5>
+                    ${nbErrors != 0 ? `
+                    <div style="position: absolute; right: 5px; top: 5px; display: flex;" data-bs-toggle="popup-tip" title="Nombre d'erreur qui ont eu lieu au cours des dernières 24 heures pour cet assistant.">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="red" class="bi bi-bug-fill" viewBox="0 0 16 16">
+                            <path d="M4.978.855a.5.5 0 1 0-.956.29l.41 1.352A5 5 0 0 0 3 6h10a5 5 0 0 0-1.432-3.503l.41-1.352a.5.5 0 1 0-.956-.29l-.291.956A5 5 0 0 0 8 1a5 5 0 0 0-2.731.811l-.29-.956z"/>
+                            <path d="M13 6v1H8.5v8.975A5 5 0 0 0 13 11h.5a.5.5 0 0 1 .5.5v.5a.5.5 0 1 0 1 0v-.5a1.5 1.5 0 0 0-1.5-1.5H13V9h1.5a.5.5 0 0 0 0-1H13V7h.5A1.5 1.5 0 0 0 15 5.5V5a.5.5 0 0 0-1 0v.5a.5.5 0 0 1-.5.5zm-5.5 9.975V7H3V6h-.5a.5.5 0 0 1-.5-.5V5a.5.5 0 0 0-1 0v.5A1.5 1.5 0 0 0 2.5 7H3v1H1.5a.5.5 0 0 0 0 1H3v1h-.5A1.5 1.5 0 0 0 1 11.5v.5a.5.5 0 1 0 1 0v-.5a.5.5 0 0 1 .5-.5H3a5 5 0 0 0 4.5 4.975"/>
+                        </svg>
+                        <span class="badge text-bg-danger d-flex justify-content-center align-items-center" style="height: 15px; width: 15px;">${nbErrors}</span>
+                    </div>` : ''}
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-dark" data-bs-toggle="popup-tip" title="Voir l'assistant" onclick="goTo(${id})">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                                </svg>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-dark" data-bs-toggle="popup-tip" title="Modifier les informations de l'assistant." onclick="open_diag_update(${id})">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                </svg>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="popup-tip" title="Supprimer l'assistant. ATTENTION : Cette action vas supprimer l'assistant ainsi que toutes les runs qui y sont associé." onclick="delete_assistant(${id})">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+        album.insertAdjacentHTML('beforeend', cardHTML);
+    }
+
+    function change_status_for_all_assistant(status) {
+        openModal();
+        if (status) {
+            document.getElementById("modalTitle").innerText = "Activation des assistants";
+            document.getElementById("modalBody").innerText = "Êtes-vous sûr de vouloir activer tous les assistants ?";
+        } else {
+            document.getElementById("modalTitle").innerText = "Désactivation des assistants";
+            document.getElementById("modalBody").innerText = "Êtes-vous sûr de vouloir désactiver tous les assistants ?";
+        }
+        return new Promise((resolve, reject) => {
+            const confirmButton = document.getElementById('confirm');
+            const cancelButton = document.getElementById('cancel');
+
+            const handleConfirmClick = async () => {
+                confirmButton.disabled = true;
+                cancelButton.disabled = true;
+                confirmButton.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> <span class="visually-hidden" role="status">Loading...</span>';
+
+                document.getElementById("modalBody").innerHTML = `
+                <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" style="width: 0%"></div>
+                </div>
+            `;
+
+                const progressBar = document.getElementById("progressBar");
+                const totalTasks = assistants.length;
+                let completedTasks = 0;
+
+                const updateProgressBar = async () => {
+                    completedTasks++;
+                    const progressPercentage = (completedTasks / totalTasks) * 100;
+                    progressBar.style.width = `${progressPercentage}%`;
+                    progressBar.setAttribute('aria-valuenow', progressPercentage);
+                    if (progressPercentage === 100) {
+                        await sleep(500);
+                    } else {
+                        await sleep(100);
+                    }
+                };
+
+                try {
+                    for (const assistant of assistants) {
+                        await postRequest("/assistants/update/status", {
+                            id_assistant: assistant['id_assistant'],
+                            status: status
+                        }).catch(error => {
+                            show_danger_message("Echec de la mise à jour du status : " + error);
+                        });
+                        document.getElementById("checkbox_assistant_" + assistant['id_assistant']).checked = status;
+                        await updateProgressBar();
+                    }
+                    closeModal();
+                } catch (error) {
+                    show_danger_message("La modification a échoué : " + error);
+                } finally {
+                    confirmButton.disabled = false;
+                    cancelButton.disabled = false;
+                    confirmButton.innerHTML = 'Confirmer';
+                    resolve();
+                }
+            };
+
+            confirmButton.addEventListener('click', handleConfirmClick);
+            cancelButton.addEventListener('click', () => {
+                closeModal();
+                resolve();
+            });
+        });
+    }
+
+    async function delete_assistant(id_assistant) {
+        openModal();
+        document.getElementById("modalTitle").innerText = "Supprimer un assistant";
+        document.getElementById("modalBody").innerText = "Êtes-vous sûr de vouloir supprimer cet assistant ?";
+        return new Promise((resolve, reject) => {
+            document.getElementById('confirm').addEventListener('click', () => {
+                postRequest("/assistants/delete/one", {id_assistant: id_assistant})
+                    .then(response => {
+                        show_success_message("Suppression réussie !");
+                        document.getElementById(`assistant_${id_assistant}`).remove();
+                        resolve();
+                    })
+                    .catch(error => {
+                        show_danger_message("La suppression a échoué : " + error);
+                        reject(error);
+                    });
+                closeModal();
+            });
+
+            document.getElementById('cancel').addEventListener('click', () => {
+                closeModal();
+            });
+        });
+    }
+</script>

@@ -1,0 +1,189 @@
+<div class="content">
+    <div class="card shadow-sm" style="margin-right: 10px; margin-left: 10px;">
+        <div class="card-body">
+            <h1 style="text-align: center">{{ informations.date_thread | raw }}</h1>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-2" style="margin-bottom: 10px;">
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h4>ID thread</h4>
+                            <p class="card-text">
+                                {{ informations.id_thread }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h4>Statut</h4>
+                            <p class="card-text">
+                                {{ informations.object_run.status }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h4>Model</h4>
+                            <p class="card-text">
+                                {{ informations.object_run.model }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h4>Latence</h4>
+                            <p class="card-text">
+                                {{ informations.latency_thread }} ms
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% if informations.isError %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h4>Type d'erreur</h4>
+                                <p class="card-text">
+                                    {{ informations.name_error_type }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4>Messages dans le thread</h4>
+                        <main class="content">
+                            <div class="container p-0">
+                                <div class="card" style="align-content: end">
+                                    <div class="row g-0">
+                                        <div class="position-relative">
+                                            <div class="chat-messages p-4">
+                                                {% if informations.object_list_messages.data is empty %}
+                                                    {% include 'Components/message_card_from.html.twig' with {
+                                                        'role': "Serveur",
+                                                        'message': "Impossible de trouver des messages dans le thread.",
+                                                        'image': 'images_roles/serveur.jpg',
+                                                        'date': "now"|date("H:i:s", "Europe/Paris")
+                                                    } %}
+                                                {% else %}
+                                                    {% include 'Components/message_card_from.html.twig' with {
+                                                        'role': "System",
+                                                        'message': informations.instructions_assistant,
+                                                        'image': 'images_roles/system.png',
+                                                        'date': ''
+                                                    } %}
+                                                    {% for message in informations.object_list_messages.data %}
+                                                        {% set messageContent = "" %}
+                                                        {% for content in message.content %}
+                                                            {% if content.type == 'text' %}
+                                                                {% set messageContent = messageContent ~ content.text.value %}
+                                                            {% elseif content.type == 'image_file' %}
+                                                                {% set messageContent = messageContent ~ '<img src="' ~ content.image_file.url ~ '" alt="Image">' %}
+                                                            {% elseif content.type == 'image_url' %}
+                                                                {% set messageContent = messageContent ~ '<img src="' ~ content.image_url.url ~ '" alt="Image">' %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        {% if (message.role == 'system') %}
+                                                            {% include 'Components/message_card_from.html.twig' with {
+                                                                'role': "System",
+                                                                'message': messageContent,
+                                                                'image': 'images_roles/system.png',
+                                                                'date': ''
+                                                            } %}
+                                                        {% elseif (message.role == 'user') %}
+                                                            {% include 'Components/message_card_to.html.twig' with {
+                                                                'role': "User",
+                                                                'message': messageContent,
+                                                                'image': 'images_roles/user.png',
+                                                                'date': ''
+                                                            } %}
+                                                        {% else %}
+                                                            {% include 'Components/message_card_from.html.twig' with {
+                                                                'role': "Assistant",
+                                                                'message': messageContent,
+                                                                'image': 'images_roles/assistant.png',
+                                                                'date': ''
+                                                            } %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="row row-cols-1 row-cols-xl-2 g-2">
+
+                <div class="accordion col" id="accordion_run" style="margin-top: 10px;">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#accordion_collapse_run" aria-expanded="false">
+                                Run
+                            </button>
+                        </h2>
+                        <div id="accordion_collapse_run" class="accordion-collapse collapse">
+                            <div class="accordion-body" style="margin-right: 35px;">
+                                <pre style="white-space: pre-wrap;"><code
+                                            id="json-content">{{ informations.object_run|json_encode(constant('JSON_PRETTY_PRINT')) }}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion col" id="accordion_messages" style="margin-top: 10px;">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#accordion_collapse_messages" aria-expanded="false">
+                                Messages
+                            </button>
+                        </h2>
+                        <div id="accordion_collapse_messages" class="accordion-collapse collapse">
+                            <div class="accordion-body" style="margin-right: 35px;">
+                                <pre style="white-space: pre-wrap;"><code
+                                            id="json-content">{{ informations.object_list_messages|json_encode(constant('JSON_PRETTY_PRINT')) }}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion col" id="accordion_thread" style="margin-top: 10px;">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#accordion_collapse_thread" aria-expanded="false">
+                                Thread
+                            </button>
+                        </h2>
+                        <div id="accordion_collapse_thread" class="accordion-collapse collapse">
+                            <div class="accordion-body" style="margin-right: 35px;">
+                                <pre style="white-space: pre-wrap;"><code
+                                            id="json-content">{{ informations.object_thread|json_encode(constant('JSON_PRETTY_PRINT')) }}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,220 @@
+{% include 'Components/headers.html.twig' %}
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<div class="modal modal-sheet position-fixed align-items-center justify-content-center"
+     style="background: transparent; padding: 50px; top: 0; bottom: 0; left: 0; right: 0; max-width: calc(100% - 50px); margin: auto; border-radius: 20px;"
+     role="dialog" id="modalLog">
+    <div class="modal-dialog modal-fullscreen p-0 m-0 h-100" role="document">
+        <div class="modal-content rounded-4 shadow h-100" style="margin: auto;">
+            <div class="modal-header p-5 pb-4 border-bottom-0" style="margin: auto; max-width: calc(100% - 100px);">
+                <h1 id="logTitle" class="fw-bold mb-0 fs-2">
+                    Chargement des données...
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close" onclick="hideLog()"
+                        style="position: absolute; right: 100px;">
+                </button>
+            </div>
+            <div id="logContent" class="modal-body p-5 pt-0 overflow-auto"
+                 style="height: calc(100% - 100px); margin: auto; max-width: calc(100% - 100px);">
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-1">
+        <div style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+                 class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16"
+                 onclick="goBack({{ id_tool }})"
+                 style="cursor: pointer;">
+                <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"></path>
+            </svg>
+        </div>
+    </div>
+    <div class="col-9" style="margin-top: 22px;">
+        {% include 'Components/breadcrumb.html.twig' with {
+            'past': [
+                {'link': '/tool', 'name': 'Outils'},
+                {'link': '/tool/' ~ id_tool, 'name': name_tool}
+            ],
+            'current': 'Statistiques de ' ~ name_language
+        } %}
+    </div>
+</div>
+
+<h1 class="text-center">{{ title }}</h1>
+
+<div class="content" style="margin-top: 10px; margin-bottom: 10px;">
+    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
+        <div class="card-body">
+            <div class="row row-cols-1 row-cols-xl-2 p-3 g-3">
+
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <h3 class="text-center">
+                            Evolution du temps de réponse en fonction de l'heure
+                        </h3>
+                        <div class="input-group input-group-sm mb-3">
+                            <label class="input-group-text" for="log_scatter_plot" style="margin-left: 50px;">
+                                Nombre de log à afficher<br>
+                                (maximum {{ nbLogsMax }})
+                            </label>
+                            <input onkeypress="handleKeyPress(event)" type="number"
+                                   class="form-control" id="log_scatter_plot"
+                                   value="500" min="0" max="{{ nbLogsMax|json_encode|raw }}"
+                                   style="margin-right: 50px;">
+                        </div>
+                        <ul class="list-group list-group-horizontal mx-auto">
+                            {% for model in model_scatterplot %}
+                                <li class="list-group-item" style="cursor: pointer;">
+                                    <input class="form-check-input me-1" type="checkbox"
+                                           value="" id="model_scatterplot_{{ model.model }}" checked
+                                           onclick="filterScatterPlotData()" style="cursor: pointer;">
+                                    <label class="form-check-label" for="model_scatterplot_{{ model.model }}"
+                                           style="cursor: pointer; user-select: none;">
+                                        {{ model.model }}
+                                    </label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        {% if data_scatterplot is not empty %}
+                            {% include 'Statistics/Components/scatterplot.html.twig' with {
+                                'data': data_scatterplot,
+                                'model': model_scatterplot,
+                                'y_name': "Temps de réponse (ms)",
+                                'x_name': "Heure de la journée (hh:mm)",
+                                'to': '/tool/language/log/'
+                            } %}
+                        {% else %}
+                            {% include 'Components/nodata.html.twig' with {
+                                'message': "Des données sont manquantes veuillez ajouter plus de log
+                                        afin que ce graphique puisse s'afficher correctement."
+                            } %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <h3 class="text-center">Evolution du temps de réponse</h3>
+                        {% if data_linechart is not empty %}
+                            {% include 'Statistics/Components/linechart.html.twig' with {
+                                'data': data_linechart,
+                                'y_name': "Temps de réponse (ms)"
+                            } %}
+                        {% else %}
+                            {% include 'Components/nodata.html.twig' with {
+                                'message': "Des données sont manquantes veuillez ajouter plus de log
+                                        afin que ce graphique puisse s'afficher correctement."
+                            } %}
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let dataScatterPlot = {{ data_scatterplot|json_encode|raw }};
+    let modelScatterPlot = {{ model_scatterplot|json_encode|raw }};
+    let nbLogMax = {{ nbLogsMax|json_encode|raw }};
+    let id_language = {{ id_language|json_encode|raw }};
+
+    async function goTo(id) {
+        showLog();
+        await getRequest("/tool/language/log", {id: id})
+            .then(response => {
+                document.getElementById('logTitle').innerHTML = 'Information du log';
+                document.getElementById('logContent').innerHTML = response;
+            })
+            .catch(error => {
+                show_danger_message("La récupération des données a échoué : " + error);
+            });
+    }
+
+    function showLog() {
+        document.getElementById('modalLog').classList.add("d-flex");
+    }
+
+    function hideLog() {
+        document.getElementById('modalLog').classList.remove("d-flex");
+        document.getElementById('logContent').innerHTML = `
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>`;
+    }
+
+    function goBack() {
+        window.location.href = '/tool/' + {{ id_tool }};
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            filterScatterPlotData();
+        }
+    }
+
+    async function filterScatterPlotData() {
+        let answer = null;
+        let newModel = null;
+        if (document.getElementById("log_scatter_plot").value > 10) {
+            await getRequest("/tool/language/statistics/scatterplot", {
+                limit: document.getElementById("log_scatter_plot").value,
+                id_language: id_language
+            })
+                .then(response => {
+                    answer = JSON.parse(response);
+                    dataScatterPlot = answer.data;
+                    newModel = answer.model;
+
+                    if (newModel.length !== modelScatterPlot.length) {
+                        modelScatterPlot.forEach(oldModel => {
+                            const modelElement = document.getElementById("model_scatterplot_" + oldModel.model);
+                            const isModelPresent = newModel.some(newModel => newModel.model === oldModel.model);
+                            if (isModelPresent) {
+                                modelElement.parentNode.style.display = "";
+                            } else {
+                                modelElement.parentNode.style.display = "none";
+                                modelElement.parentNode.removeChild(modelElement.parentNode.childNodes[0]);
+                            }
+                        });
+                        modelScatterPlot = newModel;
+                    }
+
+                })
+                .catch(error => {
+                    show_danger_message("La récupération des données à échoué : " + error);
+                });
+        }
+        let newData = modelScatterPlot;
+        let nbNotCheck = 0;
+        for (let model in modelScatterPlot) {
+            if (!document.getElementById("model_scatterplot_" + modelScatterPlot[model].model).checked) {
+                nbNotCheck++;
+            }
+        }
+        if (nbNotCheck !== modelScatterPlot.length || answer !== null) {
+            for (let model in modelScatterPlot) {
+                for (let data in dataScatterPlot) {
+                    if (document.getElementById("model_scatterplot_" + modelScatterPlot[model].model).checked
+                        && modelScatterPlot[model].model === dataScatterPlot[data].model) {
+                        newData.push(dataScatterPlot[data]);
+                    }
+                }
+            }
+
+        }
+        setScatterPlot(newData);
+    }
+</script>

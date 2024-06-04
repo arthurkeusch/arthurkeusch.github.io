@@ -1,0 +1,405 @@
+{% include 'Components/headers.html.twig' %}
+
+<div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px; margin-top: 10px;">
+    <div class="card-body">
+        <h1>{{ title }}</h1>
+    </div>
+</div>
+
+
+<div class="album py-5" style="margin-right: 10px; margin-left: 10px; margin-top: -35px; user-select: none;">
+    <div class="row row-cols-1 g-2">
+        <div id="filtersAccordionContainer" class="accordion" id="filtersAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFilters">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">
+                        Filtres
+                    </button>
+                </h2>
+                <div id="collapseFilters" class="accordion-collapse collapse" aria-labelledby="headingFilters"
+                     data-bs-parent="#filtersAccordion">
+                    <div class="accordion-body">
+                        <div class="col">
+                            <div class="card shadow-sm">
+                                <div class="card-body text-center">
+                                    <div class="input-group mb-3">
+                                        <label for="start" class="input-group-text">Du</label>
+                                        <input style="cursor: pointer;" id="start" type="datetime-local"
+                                               class="form-control"
+                                               onchange="filter()">
+                                        <label for="end" class="input-group-text">au</label>
+                                        <input style="cursor: pointer;" id="end" type="datetime-local"
+                                               class="form-control"
+                                               onchange="filter()">
+                                    </div>
+                                    <label class="list-group-item d-flex gap-2" id="nbLogShow"
+                                           style="cursor: pointer; user-select: none;">
+                                        Nombre de backup : {{ list_backups | length }}
+                                    </label>
+                                    <button class="btn btn-outline-dark" type="submit" style="margin-top: 10px;"
+                                            onclick="stopFilter()"
+                                            data-bs-toggle="popup-tip" title="Réinitialiser les filtres.">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                             fill="currentColor"
+                                             class="bi bi-ban" viewBox="0 0 16 16">
+                                            <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div style="margin: -30px 40px 20px;">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-3" style="margin-top: 10px;">
+
+        <table class="table table-bordered table-striped" style="width: 350px; margin: auto;">
+            <thead>
+            <tr class="table-dark">
+                <th scope="col" class="text-center" style="width: 50px; height: 61px;">
+                    <input class="form-check-input flex-shrink-0" type="checkbox"
+                           id="checkbox_select" onclick="check()"
+                           style="width: 25px; height: 25px; cursor: pointer;"
+                           data-bs-toggle="popup-tip" title="Sélectionner tous les backups.">
+                </th>
+                <th scope="col" class="text-center" id="date_header" style="width: 200px;">
+                    Date
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                         class="bi bi-arrow-down-up" viewBox="0 0 16 16"
+                         style="cursor: pointer;" onclick="filterDate()">
+                        <path fill-rule="evenodd"
+                              d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
+                    </svg>
+                </th>
+                <th scope="col" class="text-center" style="width: 100px;">
+                    <button
+                            class="btn btn-danger" type="submit"
+                            style="display: none;" id="button_delete_selection"
+                            onclick="deleteAllSelect()"
+                            data-bs-toggle="popup-tip" title="Supprimer la sélection."
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                             class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                        </svg>
+                    </button>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for backup in list_backups %}
+                <tr id="backup_{{ backup.id_backup }}" style="width: 50px;">
+                    <th class="col-1 text-center">
+                        <input class="form-check-input flex-shrink-0" type="checkbox"
+                               id="checkbox_backup_{{ backup.id_backup }}" onclick="verifyCompare()"
+                               style="width: 25px; height: 25px; cursor: pointer;"
+                               data-bs-toggle="popup-tip" title="Sélectionner le backup.">
+                    </th>
+                    <td id="date_{{ backup.id_backup }}" class="col-3" style="width: 200px;">
+                        {{ backup.date_backup }}
+                    </td>
+                    <td class="text-center" style="width: 100px;">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-dark"
+                                    data-bs-toggle="popup-tip" title="Voir le backup."
+                                    onclick="goTo({{ backup.id_backup }})">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                     class="bi bi-eye" viewBox="0 0 16 16">
+                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                                </svg>
+                            </button>
+                            <button type="button" class="btn btn-outline-danger"
+                                    data-bs-toggle="popup-tip" title="Supprimer le backup."
+                                    onclick="delete_backup({{ backup.id_backup }})">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                     class="bi bi-trash3" viewBox="0 0 16 16">
+                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<script>
+    let backups = {{ list_backups | json_encode | raw }};
+
+    function check() {
+        for (const id in backups) {
+            let input = document.getElementById("checkbox_backup_" + backups[id]['id_backup']);
+            if (document.getElementById("backup_" + backups[id]['id_backup']).style.display === "") {
+                if (document.getElementById('checkbox_select').checked) {
+                    input.checked = true;
+                } else {
+                    input.checked = false;
+                }
+            } else {
+                input.checked = false;
+            }
+        }
+        verifyCompare();
+        compare();
+    }
+
+    function verifyCompare() {
+        const downloadDropdown = document.getElementById('download_dropdown');
+        for (const id in backups) {
+            let input = document.getElementById("checkbox_backup_" + backups[id]['id_backup']);
+            if (document.getElementById("backup_" + backups[id]['id_backup']).style.display === "") {
+                if (input.checked) {
+                    downloadDropdown.style.display = 'block';
+                    document.getElementById("button_delete_selection").style.display = "";
+                    return;
+                }
+            }
+        }
+        downloadDropdown.style.display = 'none';
+        document.getElementById("button_delete_selection").style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectAllCheckbox = document.getElementById('checkbox_select');
+        const checkboxes = document.querySelectorAll('input[id^="checkbox_backup_"]');
+        const downloadDropdown = document.getElementById('download_dropdown');
+
+        function check() {
+            const isChecked = selectAllCheckbox.checked;
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            verifyCompare();
+        }
+
+        function verifyCompare() {
+            const checked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            if (checked) {
+                downloadDropdown.style.display = '';
+            } else {
+                downloadDropdown.style.display = 'none';
+            }
+        }
+
+        selectAllCheckbox.addEventListener('change', check);
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', verifyCompare);
+        });
+
+        verifyCompare();
+    });
+
+    function filter() {
+        const start = document.getElementById('start').value;
+        const end = document.getElementById('end').value;
+        const rows = document.querySelectorAll('tbody tr');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const date = row.querySelector('td[id^="date_"]').textContent.trim();
+            if ((start && new Date(date) < new Date(start)) || (end && new Date(date) > new Date(end))) {
+                row.style.display = 'none';
+            } else {
+                row.style.display = '';
+                visibleCount++;
+            }
+        });
+        compare();
+        document.getElementById('nbLogShow').textContent = 'Nombre de backup : ' + visibleCount;
+    }
+
+    function stopFilter() {
+        document.getElementById('start').value = '';
+        document.getElementById('end').value = '';
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            row.style.display = '';
+        });
+        document.getElementById('nbLogShow').textContent = 'Nombre de backup : ' + rows.length;
+        compare();
+    }
+
+    let orderDate = "DESC";
+
+    function updateArrowDate(order) {
+        const arrowIcon = document.querySelector('#date_header svg');
+        arrowIcon.innerHTML = '';
+        if (order === "ASC") {
+            arrowIcon.innerHTML = '<path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/>';
+        } else if (order === "DESC") {
+            arrowIcon.innerHTML = '<path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708-.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/>';
+        }
+    }
+
+    function filterDate() {
+        const tableBody = document.querySelector('tbody');
+        const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+        if (orderDate === "DESC") {
+            updateArrowDate("ASC");
+            rows.sort((a, b) => {
+                const dateA = new Date(document.getElementById('date_' + a.id.split('_')[1]).textContent.trim());
+                const dateB = new Date(document.getElementById('date_' + b.id.split('_')[1]).textContent.trim());
+                return dateA - dateB;
+            });
+            orderDate = "ASC";
+        } else {
+            updateArrowDate("DESC");
+            rows.sort((a, b) => {
+                const dateA = new Date(document.getElementById('date_' + a.id.split('_')[1]).textContent.trim());
+                const dateB = new Date(document.getElementById('date_' + b.id.split('_')[1]).textContent.trim());
+                return dateB - dateA;
+            });
+            orderDate = "DESC";
+        }
+        rows.forEach(row => tableBody.appendChild(row));
+        compare();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const filtersAccordionContainer = document.getElementById('filtersAccordionContainer');
+        const navbarHeight = document.querySelector('.navbar').offsetHeight;
+        window.addEventListener('scroll', function () {
+            if (window.scrollY >= filtersAccordionContainer.offsetTop - navbarHeight) {
+                filtersAccordionContainer.classList.add('fixed-accordion');
+                filtersAccordionContainer.style.top = navbarHeight + 'px';
+            } else {
+                filtersAccordionContainer.classList.remove('fixed-accordion');
+                filtersAccordionContainer.style.top = 'auto';
+            }
+        });
+    });
+
+    function goTo(id_backup) {
+        window.location.href = "/backup/" + id_backup;
+    }
+
+    function deleteAllSelect() {
+        openModal();
+        document.getElementById("modalTitle").innerText = "Supprimer des backup";
+        document.getElementById("modalBody").innerText = "Êtes vous certains de vouloir supprimer ces backup ?";
+        return new Promise((resolve, reject) => {
+            const confirmButton = document.getElementById('confirm');
+            const cancelButton = document.getElementById('cancel');
+
+            const handleConfirmClick = async () => {
+                confirmButton.disabled = true;
+                cancelButton.disabled = true;
+                confirmButton.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> <span class="visually-hidden" role="status">Loading...</span>';
+
+                document.getElementById("modalBody").innerHTML = `
+                <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" style="width: 0%"></div>
+                </div>
+            `;
+
+                const progressBar = document.getElementById("progressBar");
+                let totalTasks = 0;
+                for (const backup of backups) {
+                    if (document.getElementById("backup_" + backup['id_backup']).style.display === "") {
+                        totalTasks++;
+                    }
+                }
+                let completedTasks = 0;
+
+                const updateProgressBar = async () => {
+                    completedTasks++;
+                    const progressPercentage = (completedTasks / totalTasks) * 100;
+                    progressBar.style.width = `${progressPercentage}%`;
+                    progressBar.setAttribute('aria-valuenow', progressPercentage);
+                    if (progressPercentage === 100) {
+                        await sleep(500);
+                    } else {
+                        await sleep(100);
+                    }
+                };
+
+                try {
+                    for (const backup of backups) {
+                        if (document.getElementById("backup_" + backup['id_backup']).style.display === "") {
+                            await postRequest("/backup/delete/one", {
+                                id_backup: backup['id_backup']
+                            }).catch(error => {
+                                show_danger_message("Echec de la mise à jour du status : " + error);
+                            });
+                            backups = backups.filter(backup => backup.id_backup !== backup['id_backup']);
+                            document.getElementById("backup_" + backup['id_backup']).remove();
+                            await updateProgressBar();
+                        }
+                    }
+                    closeModal();
+                    compare();
+                } catch (error) {
+                    show_danger_message("La suppression a échoué : " + error);
+                } finally {
+                    confirmButton.disabled = false;
+                    cancelButton.disabled = false;
+                    confirmButton.innerHTML = 'Confirmer';
+                    resolve();
+                }
+            };
+
+            confirmButton.addEventListener('click', handleConfirmClick);
+            cancelButton.addEventListener('click', () => {
+                closeModal();
+                resolve();
+            });
+        });
+    }
+
+    function delete_backup(id) {
+        openModal();
+        document.getElementById("modalTitle").innerText = "Supprimer un backup";
+        document.getElementById("modalBody").innerText = "Êtes-vous sûr de vouloir supprimer ce backup ?";
+        return new Promise((resolve, reject) => {
+            document.getElementById('confirm').addEventListener('click', () => {
+                postRequest("/backup/delete/one", {id_backup: id})
+                    .then(response => {
+                        document.getElementById("backup_" + id).remove();
+                        backups = backups.filter(backup => backup.id_backup !== id);
+                        show_success_message("Le backup à été supprimé !");
+                    })
+                    .catch(error => {
+                        show_danger_message("La suppression à échoué : " + error);
+                    });
+                closeModal();
+                compare();
+            });
+
+            document.getElementById('cancel').addEventListener('click', () => {
+                closeModal();
+            });
+        });
+    }
+
+    function compare() {
+        for (const backup of backups) {
+            if (document.getElementById("checkbox_backup_" + backup['id_backup']).checked && document.getElementById("backup_" + backup['id_backup']).style.display === "") {
+                document.getElementById("button_delete_selection").style.display = "";
+                return;
+            }
+        }
+        document.getElementById("button_delete_selection").style.display = "none";
+    }
+</script>
+
+<style>
+    .fixed-accordion {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        background-color: white;
+    }
+</style>

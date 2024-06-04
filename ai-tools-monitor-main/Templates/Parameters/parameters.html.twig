@@ -1,0 +1,841 @@
+{% include 'Components/headers.html.twig' %}
+
+<h1 class="text-center">{{ title }}</h1>
+
+<div class="content" style="margin-top: 10px; margin-bottom: 10px;">
+    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
+        <div class="card-body">
+
+
+            <div class="accordion" id="example_log">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#log"
+                                aria-expanded="false"
+                                aria-controls="log"
+                        >
+                            Afficher le dernier log
+                        </button>
+                    </h2>
+                    <div id="log" class="accordion-collapse collapse" data-bs-parent="#example_log">
+                        <div class="accordion-body">
+
+                            <div class="row row-cols-sm-2 row-cols-md-2 row-cols-xl-2 g-2">
+                                <div class="col">
+                                    <div class="card shadow-sm">
+                                        <div class="card-body">
+                                            <h4>Paramètres</h4>
+                                            {% if last_log.0.params_log is defined %}
+                                                <pre>
+                                                    <code id="json-content">{{ last_log.0.params_log }}</code>
+                                                </pre>
+                                            {% else %}
+                                                <p>
+                                                    Pas d'exemple disponible
+                                                </p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card shadow-sm">
+                                        <div class="card-body">
+                                            <h4>Réponse</h4>
+                                            {% if last_log.0.response_log is defined %}
+                                                <pre>
+                                                    <code id="json-content">{{ last_log.0.response_log }}</code>
+                                                </pre>
+                                            {% else %}
+                                                <p>
+                                                    Pas d'exemple disponible
+                                                </p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="album py-5">
+                <h2 style="text-align: center;">Entrer l'emplacement dans la réponse des éléments suivants</h2>
+                <br>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    {% for param in params %}
+                        <div class="col">
+                            <div class="card shadow-sm">
+                                <h6 style="text-align: center;">
+                                    <label for="{{ param.id_params }}">
+                                        {{ param.full_name_params }}
+                                    </label>
+                                </h6>
+                                <div class="card-body">
+                                    <input
+                                            id="{{ param.id_params }}"
+                                            type="text"
+                                            class="form-control"
+                                            value="{{ param.content_params }}"
+                                            oninput="updateParam('{{ param.id_params }}', this.value)"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="text-center" data-bs-toggle="popup-tip"
+                 title="Enregistrer les modifications dans la base de données.">
+                <button
+                        type="submit"
+                        class="btn btn-outline-dark"
+                        onclick="applyChanges()"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+                         class="bi bi-floppy2-fill" viewBox="0 0 16 16">
+                        <path d="M12 2h-2v3h2z"/>
+                        <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v13A1.5 1.5 0 0 0 1.5 16h13a1.5 1.5 0 0 0 1.5-1.5V2.914a1.5 1.5 0 0 0-.44-1.06L14.147.439A1.5 1.5 0 0 0 13.086 0zM4 6a1 1 0 0 1-1-1V1h10v4a1 1 0 0 1-1 1zM3 9h10a1 1 0 0 1 1 1v5H2v-5a1 1 0 0 1 1-1"/>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="content" style="margin-top: 10px; margin-bottom: 10px;">
+    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
+
+        <div class="card-body">
+            <h2 style="text-align: center;">Modifier les CRON de récupération des logs</h2>
+
+            <div class="album py-5">
+                <div id="messageCardCRONLog" role="alert"
+                     style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
+                    <span id="messageTextCRONLog">Message</span>
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                             class="bi bi-x-circle"
+                             viewBox="0 0 16 16" style="cursor: pointer" onclick="close_message_CRON()">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                    </span>
+                </div>
+                <br>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-6 g-3" id="album_CRON_log">
+                    {% for cron in CRON_info %}
+                        {% if cron.commande_CRON == "CRON_COMMANDE_GET_LOG" %}
+                            <div class="col" id="col_{{ cron.id_CRON }}">
+                                <div class="card shadow-sm">
+                                    <div class="card-body">
+                                        <div id="messageCardCRON_{{ cron.id_CRON }}" role="alert"
+                                             style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
+                                            <span id="messageTextCRON_{{ cron.id_CRON }}">Message</span>
+                                            <span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                 fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16"
+                                                 style="cursor: pointer"
+                                                 onclick="close_message_CRON_id({{ cron.id_CRON }})">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                            </svg>
+                                        </span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <input
+                                                    id="cron_{{ cron.id_CRON }}"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="{{ cron.expression_CRON }}"
+                                            >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                                                 fill="red" class="bi bi-x-circle" viewBox="0 0 16 16"
+                                                 data-bs-toggle="popup-tip"
+                                                 title="Supprimer le CRON. ATTENTION : Pour enregistrer les changements, cliqué sur la diskette."
+                                                 style="cursor: pointer;" onclick="deleteCRON({{ cron.id_CRON }})">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div id="messageCardCRONNewLog" role="alert"
+                                     style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
+                                    <span id="messageTextCRONNewLog">Message</span>
+                                    <span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                             fill="currentColor"
+                                             class="bi bi-x-circle"
+                                             viewBox="0 0 16 16" style="cursor: pointer"
+                                             onclick="close_message_CRON_new()">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <input id="cron_new_log" type="text" class="form-control">
+                                    <span style="cursor: pointer;" onclick="addCRONLog()" data-bs-toggle="popup-tip"
+                                          title="Ajouter un CRON. ATTENTION : Pour que les modifications soient enregistrées, cliquez sur la disquette.">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                                             fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                                          <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"/>
+                                        </svg>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button
+                        type="submit" class="btn btn-outline-dark" onclick="updateCRON()" data-bs-toggle="popup-tip"
+                        title="Enregistrer les modifications des CRON dans la base de donnée et dans crontab."
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+                         class="bi bi-floppy2-fill" viewBox="0 0 16 16">
+                        <path d="M12 2h-2v3h2z"/>
+                        <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v13A1.5 1.5 0 0 0 1.5 16h13a1.5 1.5 0 0 0 1.5-1.5V2.914a1.5 1.5 0 0 0-.44-1.06L14.147.439A1.5 1.5 0 0 0 13.086 0zM4 6a1 1 0 0 1-1-1V1h10v4a1 1 0 0 1-1 1zM3 9h10a1 1 0 0 1 1 1v5H2v-5a1 1 0 0 1 1-1"/>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="content" style="margin-top: 10px; margin-bottom: 10px;">
+    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
+
+        <div class="card-body">
+            <h2 style="text-align: center;">Modifier les CRON de récupération des threads</h2>
+
+            <div class="album py-5">
+                <div id="messageCardCRONThread" role="alert"
+                     style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
+                    <span id="messageTextCRONThread">Message</span>
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                             class="bi bi-x-circle"
+                             viewBox="0 0 16 16" style="cursor: pointer" onclick="close_message_CRON()">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                    </span>
+                </div>
+                <br>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-6 g-3" id="album_CRONThread">
+                    {% for cron in CRON_info %}
+                        {% if cron.commande_CRON == "CRON_COMMANDE_GET_THREAD" %}
+                            <div class="col" id="col_{{ cron.id_CRON }}">
+                                <div class="card shadow-sm">
+                                    <div class="card-body">
+                                        <div id="messageCardCRON_{{ cron.id_CRON }}" role="alert"
+                                             style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
+                                            <span id="messageTextCRON_{{ cron.id_CRON }}">Message</span>
+                                            <span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                 fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16"
+                                                 style="cursor: pointer"
+                                                 onclick="close_message_CRON_id({{ cron.id_CRON }})">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                            </svg>
+                                        </span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <input
+                                                    id="cron_{{ cron.id_CRON }}"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="{{ cron.expression_CRON }}"
+                                            >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                                                 fill="red" class="bi bi-x-circle" viewBox="0 0 16 16"
+                                                 data-bs-toggle="popup-tip"
+                                                 title="Supprimer le CRON. ATTENTION : Pour enregistrer les changements, cliqué sur la diskette."
+                                                 style="cursor: pointer;" onclick="deleteCRON({{ cron.id_CRON }})">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div id="messageCardCRONNewThread" role="alert"
+                                     style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
+                                    <span id="messageTextCRONNewThread">Message</span>
+                                    <span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                             fill="currentColor"
+                                             class="bi bi-x-circle"
+                                             viewBox="0 0 16 16" style="cursor: pointer"
+                                             onclick="close_message_CRON_new_thread()">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <input id="cron_new_thread" type="text" class="form-control">
+                                    <span style="cursor: pointer;" onclick="addCRONThread()" data-bs-toggle="popup-tip"
+                                          title="Ajouter un CRON. ATTENTION : Pour que les modifications soient enregistrées, cliquez sur la disquette.">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                                             fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                                          <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"/>
+                                        </svg>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button
+                        type="submit" class="btn btn-outline-dark" onclick="updateCRON()" data-bs-toggle="popup-tip"
+                        title="Enregistrer les modifications des CRON dans la base de donnée et dans crontab."
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+                         class="bi bi-floppy2-fill" viewBox="0 0 16 16">
+                        <path d="M12 2h-2v3h2z"/>
+                        <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v13A1.5 1.5 0 0 0 1.5 16h13a1.5 1.5 0 0 0 1.5-1.5V2.914a1.5 1.5 0 0 0-.44-1.06L14.147.439A1.5 1.5 0 0 0 13.086 0zM4 6a1 1 0 0 1-1-1V1h10v4a1 1 0 0 1-1 1zM3 9h10a1 1 0 0 1 1 1v5H2v-5a1 1 0 0 1 1-1"/>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="content" style="margin-top: 10px; margin-bottom: 10px;">
+    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
+
+        <div class="card-body">
+            <h2 style="text-align: center;">Modifier les CRON de récupération des backup des assistants</h2>
+
+            <div class="album py-5">
+                <div id="messageCardCRONBackupAssistant" role="alert"
+                     style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
+                    <span id="messageTextCRONBackupAssistant">Message</span>
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                             class="bi bi-x-circle"
+                             viewBox="0 0 16 16" style="cursor: pointer" onclick="close_message_CRON_backup_assistant()">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                    </span>
+                </div>
+                <br>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-6 g-3" id="album_CRON">
+                    {% for cron in CRON_info %}
+                        {% if cron.commande_CRON == "CRON_COMMANDE_GET_BACKUP_ASSISTANTS" %}
+                            <div class="col" id="col_{{ cron.id_CRON }}">
+                                <div class="card shadow-sm">
+                                    <div class="card-body">
+                                        <div id="messageCardCRON_{{ cron.id_CRON }}" role="alert"
+                                             style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
+                                            <span id="messageTextCRON_{{ cron.id_CRON }}">Message</span>
+                                            <span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                 fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16"
+                                                 style="cursor: pointer"
+                                                 onclick="close_message_CRON_id({{ cron.id_CRON }})">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                            </svg>
+                                        </span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <input
+                                                    id="cron_{{ cron.id_CRON }}"
+                                                    type="text"
+                                                    class="form-control"
+                                                    value="{{ cron.expression_CRON }}"
+                                            >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                                                 fill="red" class="bi bi-x-circle" viewBox="0 0 16 16"
+                                                 data-bs-toggle="popup-tip"
+                                                 title="Supprimer le CRON. ATTENTION : Pour enregistrer les changements, cliqué sur la diskette."
+                                                 style="cursor: pointer;" onclick="deleteCRON({{ cron.id_CRON }})">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div id="messageCardCRONNewBackupAssistant" role="alert"
+                                     style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
+                                    <span id="messageTextCRONNewBackupAssistant">Message</span>
+                                    <span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                             fill="currentColor"
+                                             class="bi bi-x-circle"
+                                             viewBox="0 0 16 16" style="cursor: pointer"
+                                             onclick="close_message_CRON_new_backup_assistant()">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <input id="cron_new_backup_assistant" type="text" class="form-control">
+                                    <span style="cursor: pointer;" onclick="addCRONBackupAssistant()" data-bs-toggle="popup-tip"
+                                          title="Ajouter un CRON. ATTENTION : Pour que les modifications soient enregistrées, cliquez sur la disquette.">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
+                                             fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                                          <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"/>
+                                        </svg>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button
+                        type="submit" class="btn btn-outline-dark" onclick="updateCRON()" data-bs-toggle="popup-tip"
+                        title="Enregistrer les modifications des CRON dans la base de donnée et dans crontab."
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+                         class="bi bi-floppy2-fill" viewBox="0 0 16 16">
+                        <path d="M12 2h-2v3h2z"/>
+                        <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v13A1.5 1.5 0 0 0 1.5 16h13a1.5 1.5 0 0 0 1.5-1.5V2.914a1.5 1.5 0 0 0-.44-1.06L14.147.439A1.5 1.5 0 0 0 13.086 0zM4 6a1 1 0 0 1-1-1V1h10v4a1 1 0 0 1-1 1zM3 9h10a1 1 0 0 1 1 1v5H2v-5a1 1 0 0 1 1-1"/>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    let params = {{ params|json_encode|raw }};
+    let CRON = {{ CRON_info|json_encode|raw }};
+
+    function updateParam(id, value) {
+        const index = params.findIndex(param => param.id_params === id);
+        if (index !== -1) {
+            params[index].content_params = value;
+        }
+    }
+
+    function applyChanges() {
+        openModal();
+        document.getElementById("modalTitle").innerText = "Mettre à jours les paramètres de la réponse";
+        document.getElementById("modalBody").innerText = "Êtes vous certains de vouloir mettre à jour les paramètres de la réponse ?\n";
+        return new Promise((resolve, reject) => {
+            document.getElementById('confirm').addEventListener('click', () => {
+                for (const param of params) {
+                    postRequest("/parameters/update/one", {id_param: param.id_params, value: param.content_params})
+                        .then(response => {
+                            show_success_message("Mise à jour réussie !");
+                        })
+                        .catch(error => {
+                            show_danger_message("La mise à jour a échoué : " + error);
+                        });
+                }
+                closeModal();
+            });
+
+            document.getElementById('cancel').addEventListener('click', () => {
+                closeModal();
+            });
+        });
+    }
+
+    function updateCRON() {
+        openModal();
+        document.getElementById("modalTitle").innerText = "Mettre à jour le fichier crontab";
+        document.getElementById("modalBody").innerText = "Êtes vous certains de vouloir mettre à jour le fichier ?\nCette action auras pour effet de remplacer les CRON du fichier par ceux de la base de donnée.";
+        return new Promise((resolve, reject) => {
+            document.getElementById('confirm').addEventListener('click', async () => {
+                let nbError = 0;
+                let nbNull = 0;
+                for (const cron of CRON) {
+                    const id = cron.id_CRON;
+                    let value = document.getElementById("cron_" + id).value;
+                    if (value !== null) {
+                        let isValide;
+                        await postRequest("/parameters/cron/validation", {value: value})
+                            .then(response => {
+                                isValide = true;
+                                close_message_CRON_id(id);
+                            })
+                            .catch(error => {
+                                nbError++;
+                                isValide = false;
+                                show_danger_message_CRON_id("La mise à jour a échoué : L'expression CRON est invalide !", id);
+                            });
+                        if (isValide) {
+                            postRequest("/parameters/update/cron", {id: id, value: value})
+                                .then(response => {
+                                    close_message_CRON_id(id);
+                                })
+                                .catch(error => {
+                                    nbError++;
+                                    show_danger_message_CRON_id("La mise à jour a échoué : " + error, id);
+                                });
+                        }
+                    } else {
+                        nbNull++;
+                    }
+                }
+                if (nbNull === CRON.length) {
+                    postRequest("/parameters/stop/cron", {})
+                        .then(response => {
+                            close_message_CRON();
+                            show_warning_message("Le processus CRON à été arréter car aucun CRON ne lui à été donné !")
+                        })
+                        .catch(error => {
+                            nbError++;
+                            show_danger_message("L'arrêt du processus CRON à échoué : " + error);
+                        });
+                }
+                if (nbError === 0) {
+                    show_success_message("Tous les CRON on été mis à jour !");
+                } else {
+                    show_danger_message("Il y a eu " + nbError + " erreur(s) !");
+                }
+                closeModal();
+            });
+            document.getElementById('cancel').addEventListener('click', () => {
+                closeModal();
+            });
+        });
+    }
+
+    function show_success_message_CRON(message) {
+        document.getElementById("messageTextCRON").textContent = message;
+        document.getElementById("messageCardCRON").style.display = "flex";
+        document.getElementById("messageCardCRON").className = "alert alert-success";
+    }
+
+    function show_warning_message_CRON(message) {
+        document.getElementById("messageTextCRON").textContent = message;
+        document.getElementById("messageCardCRON").style.display = "flex";
+        document.getElementById("messageCardCRON").className = "alert alert-warning";
+    }
+
+    function show_danger_message_CRON(message) {
+        document.getElementById("messageTextCRON").textContent = message;
+        document.getElementById("messageCardCRON").style.display = "flex";
+        document.getElementById("messageCardCRON").className = "alert alert-danger";
+    }
+
+    function show_success_message_CRON_id(message, id) {
+        document.getElementById("messageTextCRON_" + id).textContent = message;
+        document.getElementById("messageCardCRON_" + id).style.display = "flex";
+        document.getElementById("messageCardCRON_" + id).className = "alert alert-success";
+    }
+
+    function show_warning_message_CRON_id(message, id) {
+        document.getElementById("messageTextCRON_" + id).textContent = message;
+        document.getElementById("messageCardCRON_" + id).style.display = "flex";
+        document.getElementById("messageCardCRON_" + id).className = "alert alert-warning";
+    }
+
+    function show_danger_message_CRON_id(message, id) {
+        document.getElementById("messageTextCRON_" + id).textContent = message;
+        document.getElementById("messageCardCRON_" + id).style.display = "flex";
+        document.getElementById("messageCardCRON_" + id).className = "alert alert-danger";
+    }
+
+    function show_success_message_CRON_new(message) {
+        document.getElementById("messageTextCRONNewLog").textContent = message;
+        document.getElementById("messageCardCRONNewLog").style.display = "flex";
+        document.getElementById("messageCardCRONNewLog").className = "alert alert-success";
+    }
+
+    function show_warning_message_CRON_new(message) {
+        document.getElementById("messageTextCRONNewLog").textContent = message;
+        document.getElementById("messageCardCRONNewLog").style.display = "flex";
+        document.getElementById("messageCardCRONNewLog").className = "alert alert-warning";
+    }
+
+    function show_danger_message_CRON_new(message) {
+        document.getElementById("messageTextCRONNewLog").textContent = message;
+        document.getElementById("messageCardCRONNewLog").style.display = "flex";
+        document.getElementById("messageCardCRONNewLog").className = "alert alert-danger";
+    }
+
+    function show_success_message_CRON_new_thread(message) {
+        document.getElementById("messageTextCRONNewThread").textContent = message;
+        document.getElementById("messageCardCRONNewThread").style.display = "flex";
+        document.getElementById("messageCardCRONNewThread").className = "alert alert-success";
+    }
+
+    function show_warning_message_CRON_new_thread(message) {
+        document.getElementById("messageTextCRONNewThread").textContent = message;
+        document.getElementById("messageCardCRONNewThread").style.display = "flex";
+        document.getElementById("messageCardCRONNewThread").className = "alert alert-warning";
+    }
+
+    function show_danger_message_CRON_new_thread(message) {
+        document.getElementById("messageTextCRONNewThread").textContent = message;
+        document.getElementById("messageCardCRONNewThread").style.display = "flex";
+        document.getElementById("messageCardCRONNewThread").className = "alert alert-danger";
+    }
+
+    function show_success_message_CRON_new_backup_assistant(message) {
+        document.getElementById("messageTextCRONNewBackupAssistant").textContent = message;
+        document.getElementById("messageCardCRONNewBackupAssistant").style.display = "flex";
+        document.getElementById("messageCardCRONNewBackupAssistant").className = "alert alert-success";
+    }
+
+    function show_warning_message_CRON_new_backup_assistant(message) {
+        document.getElementById("messageTextCRONNewBackupAssistant").textContent = message;
+        document.getElementById("messageCardCRONNewBackupAssistant").style.display = "flex";
+        document.getElementById("messageCardCRONNewBackupAssistant").className = "alert alert-warning";
+    }
+
+    function show_danger_message_CRON_new_backup_assistant(message) {
+        document.getElementById("messageTextCRONNewBackupAssistant").textContent = message;
+        document.getElementById("messageCardCRONNewBackupAssistant").style.display = "flex";
+        document.getElementById("messageCardCRONNewBackupAssistant").className = "alert alert-danger";
+    }
+
+    function close_message_CRON() {
+        document.getElementById("messageCardCRON").style.display = "none";
+    }
+
+    function close_message_CRON_id(id) {
+        document.getElementById("messageCardCRON_" + id).style.display = "none";
+    }
+
+    function close_message_CRON_new() {
+        document.getElementById("messageCardCRONNewLog").style.display = "none";
+    }
+
+    function close_message_CRON_new_thread() {
+        document.getElementById("messageCardCRONNewThread").style.display = "none";
+    }
+
+    function close_message_CRON_new_backup_assistant() {
+        document.getElementById("messageCardCRONNewBackupAssistant").style.display = "none";
+    }
+
+    async function addCRONLog() {
+        const value = document.getElementById("cron_new_log").value;
+        let isValide;
+        await postRequest("/parameters/cron/validation", {value: value})
+            .then(response => {
+                isValide = true;
+            })
+            .catch(error => {
+                isValide = false;
+                show_danger_message_CRON_new("L'ajout a échoué : L'expression CRON est invalide !");
+            });
+        if (isValide) {
+            postRequest("/parameters/add/cron", {value: value, commande: 'CRON_COMMANDE_GET_LOG'})
+                .then(response => {
+                    response = JSON.parse(response);
+                    show_success_message_CRON_new("Le CRON à été ajouté avec succès !");
+                    addCardCRON(response.id, value, 'album_CRON_log');
+                    CRON.push({"id_CRON": response.id, "expression_CRON": value, "commande_CRON": "CRON_COMMANDE_GET_LOG"})
+                })
+                .catch(error => {
+                    show_danger_message_CRON_new("L'ajout a échoué : " + error);
+                });
+        }
+    }
+
+    async function addCRONThread() {
+        const value = document.getElementById("cron_new_thread").value;
+        let isValide;
+        await postRequest("/parameters/cron/validation", {value: value})
+            .then(response => {
+                isValide = true;
+            })
+            .catch(error => {
+                isValide = false;
+                show_danger_message_CRON_new_thread("L'ajout a échoué : L'expression CRON est invalide !");
+            });
+        if (isValide) {
+            postRequest("/parameters/add/cron", {value: value, commande: 'CRON_COMMANDE_GET_THREAD'})
+                .then(response => {
+                    response = JSON.parse(response);
+                    show_success_message_CRON_new_thread("Le CRON à été ajouté avec succès !");
+                    addCardCRON(response.id, value, 'album_CRONThread');
+                    CRON.push({"id_CRON": response.id, "expression_CRON": value, "commande_CRON": "CRON_COMMANDE_GET_THREAD"})
+                })
+                .catch(error => {
+                    show_danger_message_CRON_new_thread("L'ajout a échoué : " + error);
+                });
+        }
+    }
+
+    async function addCRONBackupAssistant() {
+        const value = document.getElementById("cron_new_backup_assistant").value;
+        let isValide;
+        await postRequest("/parameters/cron/validation", {value: value})
+            .then(response => {
+                isValide = true;
+            })
+            .catch(error => {
+                isValide = false;
+                show_danger_message_CRON_new_backup_assistant("L'ajout a échoué : L'expression CRON est invalide !");
+            });
+        if (isValide) {
+            postRequest("/parameters/add/cron", {value: value, commande: 'CRON_COMMANDE_GET_BACKUP_ASSISTANTS'})
+                .then(response => {
+                    response = JSON.parse(response);
+                    show_success_message_CRON_new_backup_assistant("Le CRON à été ajouté avec succès !");
+                    addCardCRON(response.id, value, 'album_CRON');
+                    CRON.push({"id_CRON": response.id, "expression_CRON": value, "commande_CRON": "CRON_COMMANDE_GET_BACKUP_ASSISTANTS"})
+                })
+                .catch(error => {
+                    show_danger_message_CRON_new_backup_assistant("L'ajout a échoué : " + error);
+                });
+        }
+    }
+
+    function addCardCRON(id, value, albumId) {
+        const albumCRON = document.getElementById(albumId);
+
+        const newDiv = document.createElement("div");
+        newDiv.classList.add("col");
+        newDiv.id = "col_" + id;
+
+        const cardDiv = document.createElement("div");
+        cardDiv.classList.add("card", "shadow-sm");
+
+        const cardBodyDiv = document.createElement("div");
+        cardBodyDiv.classList.add("card-body");
+
+        const messageCardDiv = document.createElement("div");
+        messageCardDiv.id = "messageCardCRON_" + id;
+        messageCardDiv.setAttribute("role", "alert");
+        messageCardDiv.style.display = "none";
+        messageCardDiv.style.justifyContent = "space-between";
+        messageCardDiv.style.alignItems = "center";
+        messageCardDiv.style.margin = "10px";
+
+        const messageTextSpan = document.createElement("span");
+        messageTextSpan.id = "messageTextCRON_" + id;
+        messageTextSpan.textContent = "Message";
+
+        const closeSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        closeSvg.setAttribute("width", "32");
+        closeSvg.setAttribute("height", "32");
+        closeSvg.setAttribute("fill", "currentColor");
+        closeSvg.setAttribute("class", "bi bi-x-circle");
+        closeSvg.setAttribute("viewBox", "0 0 16 16");
+        closeSvg.style.cursor = "pointer";
+        closeSvg.onclick = function () {
+            close_message_CRON_id(id);
+        };
+
+        const path1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path1.setAttribute("d", "M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16");
+
+        const path2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path2.setAttribute("d", "M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708");
+
+        closeSvg.appendChild(path1);
+        closeSvg.appendChild(path2);
+
+        messageCardDiv.appendChild(messageTextSpan);
+        messageCardDiv.appendChild(closeSvg);
+
+        const cronInput = document.createElement("input");
+        cronInput.id = "cron_" + id;
+        cronInput.setAttribute("type", "text");
+        cronInput.classList.add("form-control");
+        cronInput.setAttribute("value", value);
+
+        const closeSvg2 = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        closeSvg2.setAttribute("width", "40");
+        closeSvg2.setAttribute("height", "40");
+        closeSvg2.setAttribute("fill", "currentColor");
+        closeSvg2.setAttribute("class", "bi bi-x-circle");
+        closeSvg2.setAttribute("viewBox", "0 0 16 16");
+        closeSvg2.style.cursor = "pointer";
+        closeSvg2.onclick = function () {
+            deleteCRON(id);
+        }
+
+        const path3 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path3.setAttribute("d", "M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16");
+
+        const path4 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path4.setAttribute("d", "M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708");
+
+        closeSvg2.appendChild(path3);
+        closeSvg2.appendChild(path4);
+
+        const divBetween = document.createElement("div");
+        divBetween.classList.add("d-flex", "justify-content-between");
+
+        divBetween.appendChild(cronInput);
+        divBetween.appendChild(closeSvg2);
+
+        cardBodyDiv.appendChild(messageCardDiv);
+        cardBodyDiv.appendChild(divBetween);
+
+        cardDiv.appendChild(cardBodyDiv);
+
+        newDiv.appendChild(cardDiv);
+
+        const beforeLastElement = albumCRON.children[albumCRON.children.length - 1];
+        albumCRON.insertBefore(newDiv, beforeLastElement);
+    }
+
+    function deleteCRON(id) {
+        openModal();
+        document.getElementById("modalTitle").innerText = "Supprimer un CRON de la BDD";
+        document.getElementById("modalBody").innerText = "Êtes vous certains de vouloir supprimer ce CRON ?\nCette action auras pour effet de supprimer CRON de la base de donnée.\n";
+        return new Promise((resolve, reject) => {
+            document.getElementById('confirm').addEventListener('click', () => {
+                postRequest("/parameters/delete/cron", {id: id})
+                    .then(response => {
+                        show_success_message("Le CRON à été supprimer avec succès !");
+                        document.getElementById("col_" + id).parentNode.removeChild(document.getElementById("col_" + id));
+                    })
+                    .catch(error => {
+                        show_danger_message("La suppression a échoué : " + error);
+                    });
+                closeModal();
+            });
+            document.getElementById('cancel').addEventListener('click', () => {
+                closeModal();
+            });
+        });
+    }
+</script>

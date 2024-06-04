@@ -1,0 +1,620 @@
+{% include 'Components/headers.html.twig' %}
+
+<div class="row">
+    <div class="col-1">
+        <div style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px;"
+             title="Revenir à la liste des outils"
+             data-bs-toggle="popup-tip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+                 class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16"
+                 onclick="goBack({{ informations.id_tool }})"
+                 style="cursor: pointer;">
+                <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"></path>
+            </svg>
+        </div>
+    </div>
+    <div class="col-9" style="margin-top: 22px;">
+        {% include 'Components/breadcrumb.html.twig' with {
+            'past': [
+                {'link': '/tool', 'name': 'Outils'}
+            ],
+            'current': informations.name_tool
+        } %}
+    </div>
+</div>
+
+<div class="modal modal-sheet position-fixed"
+     style="top: 0; bottom: 0; left: 0; right: 0; z-index: 1050; background: transparent;" tabindex="-1" role="dialog"
+     id="formAddLanguage">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+                <h1 class="fw-bold mb-0 fs-2">Ajouter une langue</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        onclick="close_diag()">
+                </button>
+            </div>
+            <div class="modal-body p-5 pt-0">
+                <form class="" action="{{ path('form_add_language') }}" method="POST" enctype="multipart/form-data">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="full_name" name="full_name" required>
+                        <label for="full_name">Nom complet</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="short_name" name="short_name" required>
+                        <label for="short_name">Acronyme</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="file" class="form-control rounded-3" id="image" name="image">
+                        <label for="image">Image</label>
+                    </div>
+                    <input type="hidden" id="id_tool" name="id_tool" value="{{ informations.id_tool }}">
+                    <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Ajouter</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-sheet position-fixed"
+     style="top: 0; bottom: 0; left: 0; right: 0; z-index: 1050; background: transparent;" tabindex="-1" role="dialog"
+     id="formAddLevel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+                <h1 class="fw-bold mb-0 fs-2">Ajouter un niveau</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        onclick="close_diag_add_level()">
+                </button>
+            </div>
+            <div class="modal-body p-5 pt-0">
+                <form class="" action="{{ path('form_add_level') }}" method="POST" enctype="multipart/form-data">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="name" name="name" required>
+                        <label for="name">Nom</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" min="0" max="100" class="form-control rounded-3" id="level" name="level"
+                               required>
+                        <label for="level">Niveau</label>
+                    </div>
+                    <input type="hidden" id="id_tool" name="id_tool" value="{{ informations.id_tool }}">
+                    <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Ajouter</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-sheet position-fixed"
+     style="top: 0; bottom: 0; left: 0; right: 0; z-index: 1050; background: transparent;" tabindex="-1" role="dialog"
+     id="formUpdateTool">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+                <h1 class="fw-bold mb-0 fs-2">Mettre à jour une langue</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        onclick="close_diag_update()">
+                </button>
+            </div>
+            <div class="modal-body p-5 pt-0">
+                <form class="" action="{{ path('form_update_language') }}" method="POST" enctype="multipart/form-data">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="name_update" name="name_update" required>
+                        <label for="name_update">Nom de la langue</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="short_name_update"
+                               name="short_name_update" required>
+                        <label for="short_name_update">Acronyme</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="file" class="form-control rounded-3" id="image_update" name="image_update">
+                        <label for="image_update">Image</label>
+                    </div>
+                    <input type="hidden" id="id_language" name="id_language" value="">
+                    <input type="hidden" id="id_tool_update" name="id_tool_update" value="{{ informations.id_tool }}">
+                    <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Modifier</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
+        {% set imagePath = 'images/images_tools/' ~ informations.image_tool %}
+        {% if informations.image_tool != "" %}
+            <img src="{{ asset(imagePath) }}" class="rounded-top" alt="Image de l'outil">
+        {% else %}
+            <img src="{{ asset('images/images_tools/default_image.svg') }}" alt="Image par défaut" class="rounded-top">
+        {% endif %}
+        <div class="card-body text-center">
+            <h1>{{ informations.name_tool }}</h1>
+
+            <div class="justify-content-evenly d-flex">
+                <div>
+                    <button type="button"
+                            class="btn btn-outline-dark"
+                            style="margin-bottom: 10px;"
+                            onclick="open_diag()"
+                            data-bs-toggle="popup-tip"
+                            title="Ajouter une langue à cet outil.">
+                        Ajouter une langue
+                    </button>
+                    <br>
+                    {% if languages is not empty %}
+                        <button type="button"
+                                title="Activer toutes les langues et tous les niveaux de l'outil"
+                                class="btn btn-outline-dark"
+                                data-bs-toggle="popup-tip"
+                                onclick="change_status_for_all_languages(true, {{ informations.id_tool }})">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                 class="bi bi-check2-square" viewBox="0 0 16 16">
+                                <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5z"/>
+                                <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0"/>
+                            </svg>
+                        </button>
+                        <button type="button"
+                                title="Désactiver toutes les langues et tous les niveaux de l'outil"
+                                class="btn btn-outline-dark"
+                                data-bs-toggle="popup-tip"
+                                onclick="change_status_for_all_languages(false, {{ informations.id_tool }})">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                 class="bi bi-dash-square" viewBox="0 0 16 16">
+                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
+                            </svg>
+                        </button>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <button type="button"
+                            data-bs-toggle="popup-tip"
+                            title="Ajouter un niveau à l'outil.&#10;Les niveaux sont partagés par toutes les langues de l'outil."
+                            class="btn btn-outline-dark"
+                            style="margin-bottom: 10px;"
+                            onclick="open_diag_add_level()">
+                        Ajouter un niveau
+                    </button>
+                    <div class="list-group card" style="width: 200px;">
+                        {% for level in levels %}
+                            <label id="level_{{ level.id_level }}"
+                                   class="list-group-item d-flex gap-2"
+                                   style="cursor: pointer;">
+                                <span>{{ level.name_level }} <small>({{ level.level }})</small></span>
+                                <div style="position: absolute; right: 10px;"
+                                     data-bs-toggle="popup-tip"
+                                     title="Supprimer un niveau pour l'outil. ATTENTION : Les niveaux sont partagés par toutes les langues. Supprimer un niveau supprime tous les logs qui y sont associés."
+                                     onclick="delete_level({{ level.id_level }}); event.stopPropagation();">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                         fill="red" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                                    </svg>
+                                </div>
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% if languages is empty %}
+        <h2 style="text-align: center; margin-top: 20px;">Aucune langue n'est disponible pour cet outil.</h2>
+    {% else %}
+        <div class="album py-5">
+            <div class="container">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-xl-4 g-3">
+                    {% for language in languages %}
+                        <div class="col" id="language_{{ language.id_language }}">
+                            <div class="card h-100 shadow-sm">
+                                {% set imagePath = 'images/images_tools/' ~ language.image_language %}
+                                {% if language.image_language != "" %}
+                                    <img src="{{ asset(imagePath) }}" class="rounded-top"
+                                         alt="Image de la conversation">
+                                {% else %}
+                                    <img src="{{ asset('images/images_tools/default_image.svg') }}"
+                                         alt="Image par défaut" class="rounded-top">
+                                {% endif %}
+                                <input class="form-check-input flex-shrink-0"
+                                       type="checkbox" data-bs-toggle="popup-tip"
+                                       title="Activer ou désactiver la création de logs pour cette langue et ses niveaux."
+                                       id="checkbox_language_{{ language.id_language }}"
+                                        {% if language.is_active %} checked {% endif %}
+                                       style=" position: absolute; left: 5px; z-index: 1; width: 25px; height: 25px; cursor: pointer; display: flex;"
+                                       onclick="change_status_language({{ language.id_language }}); event.stopPropagation();"
+                                >
+                                <div style="position: absolute; right: 40px; top: 5px; display: flex;"
+                                     data-bs-toggle="popup-tip"
+                                     title="Nombre d'erreurs qui sont survenues au cours des 24 dernières heures pour cette langue">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="red"
+                                         class="bi bi-bug-fill" viewBox="0 0 16 16">
+                                        <path d="M4.978.855a.5.5 0 1 0-.956.29l.41 1.352A5 5 0 0 0 3 6h10a5 5 0 0 0-1.432-3.503l.41-1.352a.5.5 0 1 0-.956-.29l-.291.956A5 5 0 0 0 8 1a5 5 0 0 0-2.731.811l-.29-.956z"/>
+                                        <path d="M13 6v1H8.5v8.975A5 5 0 0 0 13 11h.5a.5.5 0 0 1 .5.5v.5a.5.5 0 1 0 1 0v-.5a1.5 1.5 0 0 0-1.5-1.5H13V9h1.5a.5.5 0 0 0 0-1H13V7h.5A1.5 1.5 0 0 0 15 5.5V5a.5.5 0 0 0-1 0v.5a.5.5 0 0 1-.5.5zm-5.5 9.975V7H3V6h-.5a.5.5 0 0 1-.5-.5V5a.5.5 0 0 0-1 0v.5A1.5 1.5 0 0 0 2.5 7H3v1H1.5a.5.5 0 0 0 0 1H3v1h-.5A1.5 1.5 0 0 0 1 11.5v.5a.5.5 0 1 0 1 0v-.5a.5.5 0 0 1 .5-.5H3a5 5 0 0 0 4.5 4.975"/>
+                                    </svg>
+                                    <span class="badge text-bg-danger d-flex justify-content-center align-items-center"
+                                          style="height: 15px; width: 15px;">{{ language.nbErrors }}</span>
+                                </div>
+                                <div class="divStatsLogo" data-bs-toggle="popup-tip"
+                                     title="Afficher les statistiques de cette langue."
+                                     onclick="goToStatistics({{ language.id_language }})">
+                                    <svg style="margin: auto"
+                                         xmlns="http://www.w3.org/2000/svg" width="25" height="25"
+                                         fill="currentColor"
+                                         class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                              d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
+                                    </svg>
+                                </div>
+                                <div class="card-body">
+                                    <h4>{{ language.name_language }}</h4>
+
+                                    <div class="list-group" style="margin-bottom: 10px;">
+                                        {% for level in levels %}
+                                            <label id="language_{{ language.id_language }}level_{{ level.id_level }}"
+                                                   class="list-group-item d-flex gap-2"
+                                                   style="cursor: pointer;">
+                                                <input
+                                                        class="form-check-input flex-shrink-0" type="checkbox"
+                                                        data-bs-toggle="popup-tip"
+                                                        title="Activer ou désactiver le niveau {{ level.name_level }} pour {{ language.name_language }}"
+                                                        id="language_{{ language.id_language }}_level_{{ level.id_level }}"
+                                                        {% if language.active_level_id is defined and level.id_level in language.active_level_id|split(',') %}
+                                                            checked
+                                                        {% endif %}
+                                                        onclick="change_status_level({{ language.id_language }}, {{ level.id_level }}); event.stopPropagation();"
+                                                >
+                                                <span>{{ level.name_level }} <small>({{ level.level }})</small></span>
+                                                <div style="position: absolute; right: 10px; {% if language['nbErrors_level_' ~ level.id_level] == 0 %} display: none; {% endif %}"
+                                                     data-bs-toggle="popup-tip"
+                                                     title="Nombre d'erreurs survenues au cours des dernières 24 heures pour le niveau {{ level.name_level }} dans {{ language.name_language }}">
+                                                    <span class="badge text-bg-danger d-flex justify-content-center align-items-center"
+                                                          style="height: 20px; width: 20px;">{{ language['nbErrors_level_' ~ level.id_level] }}</span>
+                                                </div>
+                                            </label>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <div class="btn-group">
+                                            <button type="button" data-bs-toggle="popup-tip"
+                                                    title="Voir la langue."
+                                                    class="btn btn-sm btn-outline-dark"
+                                                    onclick="goTo({{ language.id_language }})">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                                     fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                                                </svg>
+                                            </button>
+                                            <button type="button" data-bs-toggle="popup-tip"
+                                                    title="Modifier les informations sur la langue."
+                                                    class="btn btn-sm btn-outline-dark"
+                                                    onclick="open_diag_update({{ language.id_language }}, '{{ language.name_language|replace({"'": "\\'"}) }}', '{{ language.short_name_language }}');">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                                     fill="currentColor" class="bi bi-pencil-square"
+                                                     viewBox="0 0 16 16">
+                                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                                    <path fill-rule="evenodd"
+                                                          d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                                </svg>
+                                            </button>
+                                            <button type="button" data-bs-toggle="popup-tip"
+                                                    title="Supprimer la langue. ATTENTION : Cette action a pour effet de supprimer tous les logs qui sont associés à cette langue."
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="delete_language({{ language.id_language }}); event.stopPropagation();">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                                     fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    const languages = {{ languages|json_encode|raw }};
+    const levels = {{ levels|json_encode|raw }};
+
+    function goTo(id) {
+        window.location.href = '/tool/language/' + id;
+    }
+
+    function goBack() {
+        window.location.href = '/';
+    }
+
+    function goToStatistics(id_language) {
+        window.location.href = '/tool/language/statistics/' + id_language;
+    }
+
+    function change_status_language(id_language) {
+        postRequest("/tool/change/language", {id_language: id_language})
+            .then(response => {
+                if (document.getElementById("checkbox_language_" + id_language).checked) {
+                    levels.forEach(level => {
+                        postRequest("/tool/change/level", {
+                            id_language: id_language,
+                            id_level: level.id_level,
+                            status: true,
+                            to: true
+                        })
+                            .then(response => {
+
+                            })
+                            .catch(error => {
+                                show_danger_message("La modification a échoué : " + error);
+                            });
+                        document.getElementById("language_" + id_language + "_level_" + level.id_level).checked = true;
+                    });
+                } else {
+                    levels.forEach(level => {
+                        postRequest("/tool/change/level", {
+                            id_language: id_language,
+                            id_level: level.id_level,
+                            status: true,
+                            to: false
+                        })
+                            .then(response => {
+
+                            })
+                            .catch(error => {
+                                show_danger_message("La modification a échoué : " + error);
+                            });
+                        document.getElementById("language_" + id_language + "_level_" + level.id_level).checked = false;
+                    });
+                }
+            })
+            .catch(error => {
+                show_danger_message("La modification a échoué : " + error);
+            });
+    }
+
+    function change_status_level(id_language, id_level) {
+        postRequest("/tool/change/level", {id_language: id_language, id_level: id_level})
+            .then(response => {
+
+            })
+            .catch(error => {
+                show_danger_message("La modification a échoué : " + error);
+            });
+        let nbLevelCheck = 0;
+        languages.forEach(language => {
+            if (language.id_language === id_language) {
+                levels.forEach(level => {
+                    if (document.getElementById("language_" + id_language + "_level_" + level.id_level).checked) {
+                        nbLevelCheck++;
+                    }
+                });
+            }
+        });
+        if (nbLevelCheck === 0) {
+            if (document.getElementById("checkbox_language_" + id_language).checked) {
+                postRequest("/tool/change/language", {id_language: id_language})
+                    .then(response => {
+
+                    })
+                    .catch(error => {
+                        show_danger_message("La modification a échoué : " + error);
+                    });
+                document.getElementById("checkbox_language_" + id_language).checked = false;
+            }
+        } else {
+            if (!document.getElementById("checkbox_language_" + id_language).checked) {
+                postRequest("/tool/change/language", {id_language: id_language})
+                    .then(response => {
+
+                    })
+                    .catch(error => {
+                        show_danger_message("La modification a échoué : " + error);
+                    });
+                document.getElementById("checkbox_language_" + id_language).checked = true;
+            }
+        }
+    }
+
+    function change_status_for_all_languages(activate, id_tool) {
+        openModal();
+        if (activate) {
+            document.getElementById("modalTitle").innerText = "Activation des langues";
+            document.getElementById("modalBody").innerText = "Êtes-vous sûr de vouloir activer toutes les langues ?";
+        } else {
+            document.getElementById("modalTitle").innerText = "Désactivation des langues";
+            document.getElementById("modalBody").innerText = "Êtes-vous sûr de vouloir désactiver toutes les langues ?";
+        }
+
+        return new Promise((resolve, reject) => {
+            const confirmButton = document.getElementById('confirm');
+            const cancelButton = document.getElementById('cancel');
+
+            const handleConfirmClick = async () => {
+                confirmButton.disabled = true;
+                cancelButton.disabled = true;
+                confirmButton.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> <span class="visually-hidden" role="status">Loading...</span>';
+
+                document.getElementById("modalBody").innerHTML = `
+                <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" style="width: 0%"></div>
+                </div>
+            `;
+
+                const progressBar = document.getElementById("progressBar");
+                const totalTasks = languages.length * levels.length;
+                let completedTasks = 0;
+
+                const updateProgressBar = async () => {
+                    completedTasks++;
+                    const progressPercentage = (completedTasks / totalTasks) * 100;
+                    progressBar.style.width = `${progressPercentage}%`;
+                    progressBar.setAttribute('aria-valuenow', progressPercentage);
+                    if (progressPercentage === 100) {
+                        await sleep(500);
+                    } else {
+                        await sleep(100);
+                    }
+                };
+
+                try {
+                    for (const language of languages) {
+                        await postRequest("/tool/change/language", {
+                            id_language: language.id_language,
+                            status: true,
+                            to: activate
+                        });
+                        document.getElementById(`checkbox_language_${language.id_language}`).checked = activate;
+                        for (const level of levels) {
+                            await postRequest("/tool/change/level", {
+                                id_language: language.id_language,
+                                id_level: level.id_level,
+                                status: true,
+                                to: activate
+                            });
+                            document.getElementById(`language_${language.id_language}_level_${level.id_level}`).checked = activate;
+                            await updateProgressBar();
+                        }
+                    }
+                    closeModal();
+                } catch (error) {
+                    show_danger_message("La modification a échoué : " + error);
+                } finally {
+                    confirmButton.disabled = false;
+                    cancelButton.disabled = false;
+                    confirmButton.innerHTML = 'Confirmer';
+                    resolve();
+                }
+            };
+
+            confirmButton.addEventListener('click', handleConfirmClick);
+            cancelButton.addEventListener('click', () => {
+                closeModal();
+                resolve();
+            });
+        });
+    }
+
+    function delete_language(id_language) {
+        openModal();
+        document.getElementById("modalTitle").innerText = "Supprimer une langue";
+        document.getElementById("modalBody").innerText = "Êtes-vous sûr de vouloir supprimer cette langue ?";
+        return new Promise((resolve, reject) => {
+            document.getElementById('confirm').addEventListener('click', () => {
+                postRequest("/tool/language/delete/one", {id_language: id_language})
+                    .then(response => {
+                        show_success_message("Suppression réussie !");
+                        const toolCard = document.getElementById("language_" + id_language);
+                        if (toolCard) {
+                            toolCard.remove();
+                        }
+                    })
+                    .catch(error => {
+                        show_danger_message("La suppression a échoué : " + error);
+                    });
+                closeModal();
+            });
+
+            document.getElementById('cancel').addEventListener('click', () => {
+                closeModal();
+            });
+        });
+    }
+
+    function open_diag() {
+        document.getElementById("formAddLanguage").classList.add("d-block");
+    }
+
+    function close_diag() {
+        document.getElementById("formAddLanguage").classList.remove("d-block");
+    }
+
+    function open_diag_update(id_language, name, short_name) {
+        document.getElementById("id_language").value = id_language;
+        document.getElementById("name_update").value = name;
+        document.getElementById("short_name_update").value = short_name;
+        document.getElementById("formUpdateTool").classList.add("d-block");
+    }
+
+    function close_diag_update() {
+        document.getElementById("formUpdateTool").classList.remove("d-block");
+    }
+
+    for (const id in languages) {
+        if (languages[id].nbErrors !== 0) {
+            document.getElementById("language_" + languages[id].id_language).children[0].children[2].style.display = "flex";
+        } else {
+            document.getElementById("language_" + languages[id].id_language).children[0].children[2].style.display = "none";
+        }
+    }
+
+    function open_diag_add_level() {
+        document.getElementById("formAddLevel").classList.add("d-block");
+    }
+
+    function close_diag_add_level() {
+        document.getElementById("formAddLevel").classList.remove("d-block");
+    }
+
+    function delete_level(id_level) {
+        openModal();
+        document.getElementById("modalTitle").innerText = "Supprimer un niveau";
+        document.getElementById("modalBody").innerText = "Êtes-vous certain de vouloir supprimer ce niveau ?\nCette action aura pour effet de supprimer tous les logs associés à ce niveau.\n";
+        return new Promise((resolve, reject) => {
+            document.getElementById('confirm').addEventListener('click', () => {
+                postRequest("/tool/level/delete", {id_level: id_level})
+                    .then(response => {
+                        show_success_message("Le niveau a été supprimé avec succès !");
+                        for (const id_language in languages) {
+                            document.getElementById("language_" + languages[id_language].id_language + "level_" + id_level).remove();
+                        }
+                    })
+                    .catch(error => {
+                        show_danger_message("La suppression a échoué : " + error);
+                    });
+                closeModal();
+            });
+            document.getElementById('cancel').addEventListener('click', () => {
+                closeModal();
+            });
+        });
+    }
+</script>
+
+<style>
+    .divStatsLogo:hover {
+        opacity: 1;
+    }
+
+    .divStatsLogo {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        display: flex;
+        background-color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 5px;
+        cursor: pointer;
+        opacity: 0.7;
+    }
+</style>
