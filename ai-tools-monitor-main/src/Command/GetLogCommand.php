@@ -74,7 +74,7 @@ class GetLogCommand extends Command
                             "level" => $level_value[0]['level']
                         ];
                         try {
-                            $prompt = $this->curlRequest("https://dev-pf.onlineformapro.com/php5/restapi/ai/get-tool-parameters/", [
+                            $prompt = $this->curlRequest("link_to_ofp_api", [
                                 [CURLOPT_RETURNTRANSFER, true],
                                 [CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'Access-Token: ' . $API_KEY_OFP]],
                                 [CURLOPT_POST, true],
