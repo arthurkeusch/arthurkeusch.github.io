@@ -2,11 +2,15 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" rel="stylesheet">
     <link href="styles/index.css" rel="stylesheet" type="text/css">
     <title>CV</title>
-    <link rel="icon" type="image/x-icon" href="images/logo.jpg">
+    <link href="images/logo.jpg" rel="icon" type="image/x-icon">
+    <script crossorigin="anonymous" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -18,280 +22,305 @@
 </nav>
 <br><br><br><br>
 <h1 class="text-center">
-    Arthur KEUSCH étudiant en 2<sup>ème</sup> année en BUT Informatique à l'IUT Nord Franche-Comté
+    Arthur KEUSCH<br>
+    étudiant en 2<sup>ème</sup> année en BUT Informatique<br>
+    à l'IUT Nord Franche-Comté
 </h1>
 
-<div class="album py-5">
 
-    <div class="container">
-        <br>
-        <h1 id="formation"> Formation : </h1>
-        <hr>
-        <br>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            <div class="col">
-                <div class=" card shadow-sm h-100 d-flex flex-column">
-                    <div class="card-body">
-                        <h5>IUT Nord Franche-Comté, <a href="http://www.iut-bm.univ-fcomte.fr/">Belfort</a> :<sub>
-                            (anciennement IUT BM)</sub></h5>
-                        <img class="images_cv" src="images/New-Logo-IUT.png" alt="Logo IUT Nord Franche-Comté"
-                             style="width: 200px; height: auto; display: block; margin: auto;">
-                        <hr>
-                        <ul>
-                            <li>
-                                <U>2<sup>ème</sup> année en BUT Informatique :</U> Apprentissage de nouveaux langages
-                                informatique et frameworks dans le cadre d'un projet universitaire :
-                                <ul>
-                                    <li>NodeJS, PostgreSQL</li>
-                                </ul>
-                            </li>
-                        </ul>
-                        <hr>
-                        <ul>
-                            <li>
-                                <U>1<sup>ère</sup> année en BUT Informatique :</U> Apprentissage de nouveaux langages
-                                informatique et frameworks dans le cadre de projets universitaires :
-                                <ul>
-                                    <li>HTML, CSS, Python, Java, JavaScript, C, MySQL, Flask</li>
-                                </ul>
-                            </li>
-                        </ul>
-                        <hr>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">Septembre 2022 - Aujourd'hui</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="container" style="margin-bottom: 80px;">
+    <h1 id="formation">Formation</h1>
+    <hr>
+    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-xl-3 g-3">
 
-            <div class="col">
-                <div class=" card shadow-sm h-100 d-flex flex-column">
-                    <div class="card-body">
-                        <h5>Lycée Les Haberges, <a href="https://www.lyc-leshaberges.ac-besancon.fr/">Vesoul</a> :</h5>
-                        <img src="images/Haberge.jpg" alt="Photo Lycée Haberges"
-                             style="width: 200px; height: auto; display: block; margin: auto;">
-                        <hr>
-                        <ul>
-                            <li>Obtention du Bac Général mention Assez Bien.</li>
-                        </ul>
-                        <hr>
-                        <ul>
-                            <li><U>Terminale Générale :</U></li>
+        <div class="col">
+            <div class=" card shadow-sm h-100 d-flex flex-column">
+                <div class="card-body d-flex flex-column">
+                    <h5>IUT Nord Franche-Comté, <a href="http://www.iut-bm.univ-fcomte.fr/">Belfort</a><sub>
+                        (anciennement IUT BM)</sub></h5>
+                    <img alt="Logo IUT Nord Franche-Comté" class="images_cv" src="images/New-Logo-IUT.png"
+                         style="width: auto; height: 100px; display: block; margin: 0 auto;">
+                    <hr class="mb-3" style="margin-top: 10px;">
+                    <p class="card-text" style="margin-top: 0; margin-bottom: 0;">
+                    <ul>
+                        <li>
+                            <U>2<sup>ème</sup> année en BUT Informatique :</U> Apprentissage de nouveaux langages
+                            informatique et frameworks dans le cadre d'un projet universitaire et d'un stage :
                             <ul>
-                                <li>SES <sub>(Sciences Economiques et Sociales)</sub></li>
-                                <li>HGGSP <sub>(Histoire, Géographie, Géopolitique et Sciences Politiques)</sub></li>
-                                <li>Option Sport</li>
+                                <li>NodeJS/VueJS, PostgreSQL, PHP/Symfony</li>
                             </ul>
-                        </ul>
-                        <hr>
-                        <ul>
-                            <li><U>Première Générale :</U></li>
+                        </li>
+                    </ul>
+                    <hr>
+                    <ul>
+                        <li>
+                            <U>1<sup>ère</sup> année en BUT Informatique :</U> Apprentissage de nouveaux langages
+                            informatique et frameworks dans le cadre de projets universitaires :
                             <ul>
-                                <li>SES</li>
-                                <li>HGGSP</li>
-                                <li>NSI <sub>(Numérique et Sciences Informatique)</sub></li>
-                                <li>Option Sport</li>
+                                <li>HTML, CSS, Python, Java, JavaScript, C, MySQL, Flask</li>
                             </ul>
-                        </ul>
-                        <hr>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">Septembre 2019 - Juin 2022</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class=" card shadow-sm h-100 d-flex flex-column">
-                    <div class="card-body">
-                        <h5>Collège Gérôme, Vesoul :</h5>
-                        <img src="images/Gerome.jpg" alt="Photo collège Gérôme"
-                             style="width: 200px; height: auto; display: block; margin: auto;">
-                        <hr>
-                        <p class="card-text">
-                            Obtention du DNB mention Très Bien.
-                        </p>
-                        <hr>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">Septembre 2015 - Juin 2019</small>
-                        </div>
+                        </li>
+                    </ul>
+                    </p>
+                    <hr class="mt-auto mb-3" style="margin-top: 0; margin-bottom: 0;">
+                    <div class="d-flex justify-content-between align-items-center" style="margin-top: 0;">
+                        <small class="text-muted">Septembre 2022 - Aujourd'hui</small>
                     </div>
                 </div>
             </div>
         </div>
-        <div>
-            <canvas id="myChart"></canvas>
+
+        <div class="col">
+            <div class=" card shadow-sm h-100 d-flex flex-column">
+                <div class="card-body d-flex flex-column">
+                    <h5>Lycée Les Haberges, <a href="https://www.lyc-leshaberges.ac-besancon.fr/">Vesoul</a></h5>
+                    <img alt="Photo Lycée Haberges" src="images/Haberge.jpg"
+                         style="width: auto; height: 100px; display: block; margin: 0 auto;">
+                    <hr class="mb-3" style="margin-top: 10px;">
+                    <p class="card-text" style="margin-top: 0; margin-bottom: 0;">
+                    <ul>
+                        <li>Obtention du Bac Général mention Assez Bien.</li>
+                    </ul>
+                    <hr>
+                    <ul>
+                        <li><U>Terminale Générale :</U></li>
+                        <ul>
+                            <li>SES <sub>(Sciences Economiques et Sociales)</sub></li>
+                            <li>HGGSP <sub>(Histoire, Géographie, Géopolitique et Sciences Politiques)</sub></li>
+                            <li>Option Sport</li>
+                        </ul>
+                    </ul>
+                    <hr>
+                    <ul>
+                        <li><U>Première Générale :</U></li>
+                        <ul>
+                            <li>SES</li>
+                            <li>HGGSP</li>
+                            <li>NSI <sub>(Numérique et Sciences Informatique)</sub></li>
+                            <li>Option Sport</li>
+                        </ul>
+                    </ul>
+                    </p>
+                    <hr class="mt-auto mb-3" style="margin-top: 0; margin-bottom: 0;">
+                    <div class="d-flex justify-content-between align-items-center" style="margin-top: 0;">
+                        <small class="text-muted">Septembre 2019 - Juin 2022</small>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
-<div class="album py-5">
-    <div class="container">
-        <h1 id="experiences"> Expériences :</h1>
-        <hr>
-        <br>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            <div class="col">
-                <div class=" card shadow-sm h-100 d-flex flex-column">
-                    <div class="card-body">
-                        <h5>Expérience professionnelle :</h5>
-                        <img src="images/Fenaco.jpg" alt="Photo façade Fenaco"
-                             style="width: 200px; height: auto; display: block; margin: auto;">
-                        <hr>
-                        <p class="card-text">
-                            Ouvrier polyvalent chez <a
-                                href="https://www.fenaco-landesprodukte.ch/fr/organisation/leman-fruits/">Fenaco</a>.
-                        <ul>
-                            <li>Travail à la chaine</li>
-                            <li>Maintenance de machines industrielles (filtres, précalibreuse, frigo, ...)</li>
-                        </ul>
-                        </p>
-                        <hr>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">Juillet 2022 et juillet 2023</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class=" card shadow-sm h-100 d-flex flex-column">
-                    <div class="card-body">
-                        <h5>Aides et travaux divers :</h5>
-                        <img src="images/Champs.webp" alt="Photo verger avec arbres"
-                             style="width: 200px; height: auto; display: block; margin: auto;">
-                        <hr>
-                        <ul>
-                            <li>Tonte régulière d'un verger de ±400 arbres, tonte de jardins de particuliers.</li>
-                            <li>Création (SketchUp 2017 et Cura) et réalisation d’objets avec mon imprimante 3D.</li>
-                            <li>Création de sites web (JavaScript, HTML, CSS, SQL, Flask).</li>
-                            <li>Montages vidéos (Filmora12, Pinnacle Studio 22).</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class=" card shadow-sm h-100 d-flex flex-column">
-                    <div class="card-body">
-                        <h5>Gendarmerie de Vesoul, Observation de métiers :</h5>
-                        <img src="images/Gendarmerie.jfif" alt="Photo Gendarmerie"
-                             style="width: 200px; height: auto; display: block; margin: auto;">
-                        <hr>
-                        <p class="card-text">
-                            Stage de découverte de 3<sup>ème</sup>.
-                        </p>
-                        <hr>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">12 au 14 Décembre 2018</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class=" card shadow-sm h-100 d-flex flex-column">
-                    <div class="card-body">
-                        <h5>Théâtre Edwige Feuillière, Son-lumière et sécurité :</h5>
-                        <img src="images/Theatre.jfif" alt="Photo Théâtre Edwige Feuillière"
-                             style="width: 200px; height: auto; display: block; margin: auto;">
-                        <hr>
-                        <p class="card-text">
-                            Stage de découverte de 3<sup>ème</sup>.
-                        </p>
-                        <hr>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">10 et 11 Décembre 2018</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class=" card shadow-sm h-100 d-flex flex-column">
-                    <div class="card-body">
-                        <h5>Jumelage et voyage :</h5>
-                        <img src="images/Dornstetten.jfif" alt="Photo jumelage"
-                             style="width: 200px; height: auto; display: block; margin: auto;">
-                        <hr>
-                        <p class="card-text">
-                        <ul>
-                            <li>Participation aux activités du jumelage avec <a
-                                    href="https://www.google.fr/maps/place/72280+Dornstetten,+Allemagne/@48.8709629,6.6949864,6.5z/data=!4m5!3m4!1s0x47974a112680a69d:0x90114a79979ce39b!8m2!3d48.4711448!4d8.4991121">Dornstetten</a>
-                                (Allemagne) :
-                            </li>
-                            <ul>
-                                <li>Vente de produits régionaux.</li>
-                                <li>Immersion seul au collège pendant une semaine.</li>
-                                <li>Echange scolaire à <a
-                                        href="https://www.google.fr/maps/place/Gerlingen,+Allemagne/@49.8350195,3.741272,5.75z/data=!4m5!3m4!1s0x4799d90cd48c6907:0xd7c5776a6f878659!8m2!3d48.7989751!4d9.0657713">Gerlingen</a>
-                                    (Allemagne).
-                                </li>
-                            </ul>
-                            <li>
-                                <a href="https://www.google.fr/maps/dir/70360+Scey-sur-Sa%C3%B4ne-et-Saint-Albin/Munich,+Allemagne/Vienne,+Autriche/Budapest,+Hongrie/Alba+Iulia,+Roumanie/Boto%C8%99ani,+Roumanie/@47.5559692,12.7358833,6.75z/data=!4m38!4m37!1m5!1m1!1s0x4792ea0f996bff0d:0x409ce34b30efb10!2m2!1d5.967205!2d47.665185!1m5!1m1!1s0x479e75f9a38c5fd9:0x10cb84a7db1987d!2m2!1d11.5819805!2d48.1351253!1m5!1m1!1s0x476d079e5136ca9f:0xfdc2e58a51a25b46!2m2!1d16.3738189!2d48.2081743!1m5!1m1!1s0x4741c334d1d4cfc9:0x400c4290c1e1160!2m2!1d19.040235!2d47.497912!1m5!1m1!1s0x474ea80cce754875:0xe9b0f44e8e45cd05!2m2!1d23.5804886!2d46.0732725!1m5!1m1!1s0x4734ebd7d24fab11:0xfc093f7416c4f8ab!2m2!1d26.6658127!2d47.7406537!3e0?entry=ttu">Road
-                                    trip</a> (août 2023) de plus de 4 000 km en voiture depuis la France jusqu'à l'Est
-                                de la Roumanie (Moldavie) en plusieurs étapes (Munich, Vienne, Budapest, ...)
-                            </li>
-                        </ul>
-                        </p>
-                        <hr>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">Depuis 2017</small>
-                        </div>
+        <div class="col">
+            <div class=" card shadow-sm h-100 d-flex flex-column">
+                <div class="card-body d-flex flex-column">
+                    <h5>Collège Gérôme, Vesoul</h5>
+                    <img alt="Photo collège Gérôme" src="images/Gerome.jpg"
+                         style="width: auto; height: 100px; display: block; margin: 0 auto;">
+                    <hr class="mb-3" style="margin-top: 10px;">
+                    <p class="card-text" style="margin-top: 0; margin-bottom: 0;">
+                        Obtention du DNB mention Très Bien.
+                    </p>
+                    <hr class="mt-auto mb-3" style="margin-top: 0; margin-bottom: 0;">
+                    <div class="d-flex justify-content-between align-items-center" style="margin-top: 0;">
+                        <small class="text-muted">Septembre 2015 - Juin 2019</small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="align-content-around" style="margin-top: 20px;">
+        <canvas id="myChart"></canvas>
+    </div>
 </div>
 
-<div class="album py-5">
-    <div class="container">
-        <h1 id="autres"> Autres : </h1>
-        <hr>
-        <br>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
-            <div class="col">
-                <div class=" card shadow-sm h-100 d-flex flex-column">
-                    <div class="card-body">
-                        <h5>Compétences :</h5>
-                        <img src="images/Competences.jpg" alt="Dessin compétences"
-                             style="width: 200px; height: auto; display: block; margin: auto;">
-                        <hr>
-                        <p class="card-text">
-                        <ul>
-                            <li>Sérieux, rigoureux, apprécie l'humour, autonome, apprécie le contact avec les
-                                personnes.
-                            </li>
-                            <li>Anglais niveau B1</li>
-                            <li>Allemand niveau A2</li>
-                        </ul>
-                        </p>
+<div class="container" style="margin-bottom: 80px;">
+    <h1 id="experiences">Expériences</h1>
+    <hr>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+        <div class="col">
+            <div class="card shadow-sm h-100 d-flex flex-column">
+                <div class="card-body d-flex flex-column">
+                    <h5>Expérience professionnelle informatique</h5>
+                    <img alt="Photo façade Fenaco" src="images/Portfolio/OnlineFormaPro.png"
+                         style="width: auto; height: 100px; display: block; margin: 0 auto;">
+                    <hr class="mb-3" style="margin-top: 10px;">
+                    <p class="card-text" style="margin-top: 0; margin-bottom: 0;">
+                        Stagiaire à <a href="https://www.onlineformapro.com/">OnlineFormaPro</a>
+                    <ul>
+                        <li>Développement d'une application web intégrant l'IA</li>
+                        <li><a href="./portfolio_stage.html">Portfolio du stage</a></li>
+                    </ul>
+                    </p>
+                    <hr class="mt-auto mb-3">
+                    <div class="d-flex justify-content-between align-items-center" style="margin-top: 0;">
+                        <small class="text-muted">22 avril 2024 - 21 juin 2024 (9 semaines)</small>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="col">
-                <div class=" card shadow-sm h-100 d-flex flex-column">
-                    <div class="card-body">
-                        <h5>Loisirs :</h5>
-                        <img src="images/Loisirs.jpg" alt="Images loisirs"
-                             style="width: 200px; height: auto; display: block; margin: auto;">
-                        <hr>
-                        <p class="card-text">
-                        <ul>
-                            <li>Informatique / Programmation</li>
-                            <li>Passionné d’ingénierie sonore et lumière en spectacle</li>
-                            <li>Jeux vidéo / réalité augmentée</li>
-                            <li>Cinéma (science-fiction et action)</li>
-                            <li>Passionné de pâtisserie et de desserts</li>
-                            <li>Pratique en club de VTT pendant 7 ans (2015 - 2022)</li>
-                            <li>Pratique du ski tous les hivers (depuis 2010)</li>
-                        </ul>
-                        </p>
+        <div class="col">
+            <div class=" card shadow-sm h-100 d-flex flex-column">
+                <div class="card-body d-flex flex-column">
+                    <h5>Expérience professionnelle</h5>
+                    <img alt="Photo façade Fenaco" src="images/Fenaco.jpg"
+                         style="width: auto; height: 100px; display: block; margin: 0 auto;">
+                    <hr class="mb-3" style="margin-top: 10px;">
+                    <p class="card-text" style="margin-top: 0; margin-bottom: 0;">
+                        Ouvrier polyvalent chez <a
+                            href="https://www.inoverde.ch/fr/organisation/leman-fruits">Inoverde (Fenaco)</a>.
+                    <ul>
+                        <li>Travail à la chaine</li>
+                        <li>Maintenance de machines industrielles (filtres, précalibreuse, frigo, ...)</li>
+                    </ul>
+                    </p>
+                    <hr class="mt-auto mb-3">
+                    <div class="d-flex justify-content-between align-items-center" style="margin-top: 0;">
+                        <small class="text-muted">Juillet 2022 et juillet 2023</small>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class=" card shadow-sm h-100 d-flex flex-column">
+                <div class="card-body">
+                    <h5>Aides et travaux divers</h5>
+                    <img alt="Photo verger avec arbres" src="images/Champs.webp"
+                         style="width: auto; height: 100px; display: block; margin: auto;">
+                    <hr>
+                    <ul>
+                        <li>Tonte régulière d'un verger de ±400 arbres, tonte de jardins de particuliers.</li>
+                        <li>Création (SketchUp 2017 et Cura) et réalisation d’objets avec mon imprimante 3D.</li>
+                        <li>Création de sites web (JavaScript, HTML, CSS, SQL, Flask).</li>
+                        <li>Montages vidéos (Filmora12, Pinnacle Studio 22).</li>
+                    </ul>
+                    <hr class="mt-auto mb-3">
+                    <div class="d-flex justify-content-between align-items-center" style="margin-top: 0;">
+                        <small class="text-muted">2010 - Aujourd'hui</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class=" card shadow-sm h-100 d-flex flex-column">
+                <div class="card-body d-flex flex-column">
+                    <h5>Gendarmerie de Vesoul, Observation de métiers</h5>
+                    <img alt="Photo Gendarmerie" src="images/Gendarmerie.jfif"
+                         style="width: auto; height: 100px; display: block; margin: 0 auto;">
+                    <hr class="mb-3" style="margin-top: 10px;">
+                    <p class="card-text" style="margin-top: 0; margin-bottom: 0;">
+                        Stage de découverte de 3<sup>ème</sup>.
+                    </p>
+                    <hr class="mt-auto mb-3" style="margin-top: 0; margin-bottom: 0;">
+                    <div class="d-flex justify-content-between align-items-center" style="margin-top: 0;">
+                        <small class="text-muted">12 au 14 décembre 2018</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class=" card shadow-sm h-100 d-flex flex-column">
+                <div class="card-body d-flex flex-column">
+                    <h5>Théâtre Edwige Feuillière, Son-lumière et sécurité</h5>
+                    <img alt="Photo Théâtre Edwige Feuillière" src="images/Theatre.jfif"
+                         style="width: auto; height: 100px; display: block; margin: 0 auto;">
+                    <hr class="mb-3" style="margin-top: 10px;">
+                    <p class="card-text" style="margin-top: 0; margin-bottom: 0;">
+                        Stage de découverte de 3<sup>ème</sup>.
+                    </p>
+                    <hr class="mt-auto mb-3" style="margin-top: 0; margin-bottom: 0;">
+                    <div class="d-flex justify-content-between align-items-center" style="margin-top: 0;">
+                        <small class="text-muted">10 et 11 décembre 2018</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class=" card shadow-sm h-100 d-flex flex-column">
+                <div class="card-body d-flex flex-column">
+                    <h5>Jumelage et voyage</h5>
+                    <img alt="Photo jumelage" src="images/Dornstetten.jfif"
+                         style="width: auto; height: 100px; display: block; margin: 0 auto;">
+                    <hr class="mb-3" style="margin-top: 10px;">
+                    <p class="card-text" style="margin-top: 0; margin-bottom: 0;">
+                    <ul>
+                        <li>Participation aux activités du jumelage avec <a
+                                href="https://www.google.fr/maps/place/72280+Dornstetten,+Allemagne/@48.8709629,6.6949864,6.5z/data=!4m5!3m4!1s0x47974a112680a69d:0x90114a79979ce39b!8m2!3d48.4711448!4d8.4991121">Dornstetten</a>
+                            (Allemagne) :
+                        </li>
+                        <ul>
+                            <li>Vente de produits régionaux.</li>
+                            <li>Immersion seul au collège pendant une semaine.</li>
+                            <li>Echange scolaire à <a
+                                    href="https://www.google.fr/maps/place/Gerlingen,+Allemagne/@49.8350195,3.741272,5.75z/data=!4m5!3m4!1s0x4799d90cd48c6907:0xd7c5776a6f878659!8m2!3d48.7989751!4d9.0657713">Gerlingen</a>
+                                (Allemagne).
+                            </li>
+                        </ul>
+                        <li>
+                            <a href="https://www.google.fr/maps/dir/70360+Scey-sur-Sa%C3%B4ne-et-Saint-Albin/Munich,+Allemagne/Vienne,+Autriche/Budapest,+Hongrie/Alba+Iulia,+Roumanie/Boto%C8%99ani,+Roumanie/@47.5559692,12.7358833,6.75z/data=!4m38!4m37!1m5!1m1!1s0x4792ea0f996bff0d:0x409ce34b30efb10!2m2!1d5.967205!2d47.665185!1m5!1m1!1s0x479e75f9a38c5fd9:0x10cb84a7db1987d!2m2!1d11.5819805!2d48.1351253!1m5!1m1!1s0x476d079e5136ca9f:0xfdc2e58a51a25b46!2m2!1d16.3738189!2d48.2081743!1m5!1m1!1s0x4741c334d1d4cfc9:0x400c4290c1e1160!2m2!1d19.040235!2d47.497912!1m5!1m1!1s0x474ea80cce754875:0xe9b0f44e8e45cd05!2m2!1d23.5804886!2d46.0732725!1m5!1m1!1s0x4734ebd7d24fab11:0xfc093f7416c4f8ab!2m2!1d26.6658127!2d47.7406537!3e0?entry=ttu">Road
+                                trip</a> (août 2023) de plus de 4 000 km en voiture depuis la France jusqu'à l'Est
+                            de la Roumanie (Moldavie) en plusieurs étapes (Munich, Vienne, Budapest, ...)
+                        </li>
+                    </ul>
+                    </p>
+                    <hr class="mt-auto mb-3" style="margin-top: 0; margin-bottom: 0;">
+                    <div class="d-flex justify-content-between align-items-center" style="margin-top: 0;">
+                        <small class="text-muted">Depuis 2017</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container" style="margin-bottom: 80px;">
+    <h1 id="autres">Autres</h1>
+    <hr>
+    <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 g-3">
+
+        <div class="col">
+            <div class=" card shadow-sm h-100 d-flex flex-column">
+                <div class="card-body">
+                    <h5>Compétences</h5>
+                    <img alt="Dessin compétences" src="images/Competences.jpg"
+                         style="width: 200px; height: auto; display: block; margin: auto;">
+                    <hr>
+                    <p class="card-text">
+                    <ul>
+                        <li>Sérieux, rigoureux, apprécie l'humour, autonome, apprécie le contact avec les
+                            personnes.
+                        </li>
+                        <li>Anglais niveau B1</li>
+                        <li>Allemand niveau A2</li>
+                    </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class=" card shadow-sm h-100 d-flex flex-column">
+                <div class="card-body">
+                    <h5>Loisirs</h5>
+                    <img alt="Images loisirs" src="images/Loisirs.jpg"
+                         style="width: 200px; height: auto; display: block; margin: auto;">
+                    <hr>
+                    <p class="card-text">
+                    <ul>
+                        <li>Informatique / Programmation</li>
+                        <li>Passionné d’ingénierie sonore et lumière en spectacle</li>
+                        <li>Jeux vidéo / réalité augmentée</li>
+                        <li>Cinéma (science-fiction et action)</li>
+                        <li>Passionné de pâtisserie et de desserts</li>
+                        <li>Pratique en club de VTT pendant 7 ans (2015 - 2022)</li>
+                        <li>Pratique du ski tous les hivers (depuis 2010)</li>
+                    </ul>
+                    </p>
                 </div>
             </div>
         </div>
@@ -313,17 +342,15 @@
     </p>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const ctx = document.getElementById('myChart');
     new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Flask', 'Python', 'SQL', 'HTML', 'CSS', 'JavaScript', 'Java', 'C', 'PostgreSQL', 'NodeJS'],
+            labels: ['Flask', 'Python', 'MySQL', 'HTML', 'CSS', 'JavaScript', 'Java', 'C', 'PostgreSQL', 'NodeJS/VueJS', 'PHP/Symfony', 'C++'],
             datasets: [{
                 label: 'Niveau de compétence informatique dans les langages et frameworks (auto-évaluation)',
-                data: [70, 70, 75, 60, 30, 80, 80, 60, 30, 30],
+                data: [70, 70, 75, 70, 50, 90, 80, 40, 75, 80, 80, 40],
                 borderWidth: 1
             }]
         },
