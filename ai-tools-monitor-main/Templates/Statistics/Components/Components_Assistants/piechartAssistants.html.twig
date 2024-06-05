@@ -1,0 +1,78 @@
+<div id="piechart_assistants"></div>
+
+<script>
+    let data_piechart_assistants = {{ data|json_encode|raw }};
+
+    function addPieChartAssistants() {
+        const height = Math.min(width, 500);
+        const radius = Math.min(width, height) / 2;
+
+        const arc = d3.arc()
+            .innerRadius(radius * 0.67)
+            .outerRadius(radius - 1);
+
+        const pie = d3.pie()
+            .padAngle(1 / radius)
+            .sort(null)
+            .value(d => d.value);
+
+        const color = d3.scaleOrdinal()
+            .domain(data_piechart_assistants.map(d => d.name))
+            .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), data_piechart_assistants.length).reverse());
+
+        const svg = d3.create("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", [-width / 2, -height / 2, width, height])
+            .attr("style", "max-width: 100%; height: auto;");
+
+        svg.append("g")
+            .selectAll()
+            .data(pie(data_piechart_assistants))
+            .join("path")
+            .attr("fill", d => color(d.data.name))
+            .attr("d", arc)
+            .append("title")
+            .text(d => `${d.data.value.toLocaleString()}`);
+
+        svg.append("g")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", 12)
+            .attr("text-anchor", "middle")
+            .selectAll("text")
+            .data(pie(data_piechart_assistants))
+            .join("text")
+            .attr("transform", d => `translate(${arc.centroid(d)})`)
+            .call(text => text.append("tspan")
+                .attr("y", "-0.4em")
+                .attr("font-weight", "bold")
+                .text(d => d.data.name))
+            .each(wrapText);
+
+        function wrapText(d) {
+            const self = d3.select(this);
+            const words = d.data.name.split(/\s+/).reverse();
+            const lineHeight = 1.1;
+            const x = 0;
+            const dy = 1.1;
+            let line = [];
+            let lineNumber = 0;
+            let tspan = self.text(null).append("tspan").attr("x", x).attr("dy", `${dy}em`);
+            let word;
+            while ((word = words.pop())) {
+                line.push(word);
+                tspan.text(line.join(" "));
+                if (tspan.node().getComputedTextLength() > 80) {
+                    line.pop();
+                    tspan.text(line.join(" "));
+                    line = [word];
+                    tspan = self.append("tspan").attr("x", x).attr("dy", `${++lineNumber * lineHeight + dy}em`).text(word);
+                }
+            }
+        }
+
+        return svg.node();
+    }
+
+    document.getElementById("piechart_assistants").appendChild(addPieChartAssistants());
+</script>

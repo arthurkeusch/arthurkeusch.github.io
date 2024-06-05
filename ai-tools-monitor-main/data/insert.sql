@@ -1,9 +1,9 @@
 INSERT INTO Tools(image_tool, name_tool, api_name_tool)
-VALUES ('my_english_buddy.jpg', 'Outils de langue', 'buddies'),
+VALUES ('my_english_buddy.jpg', 'Outils de langues', 'buddies'),
        ('th_itexpertai.jpg', 'IT Expert IA', 'it-expert'),
        ('th_ittrainingia.jpg', 'IT Training IA', 'it-training'),
        ('th_recrutia.jpg', 'Recrut\'IA', 'recrutia'),
-       ('th_ia_vente.jpg', 'Outils de ventes', 'sales'),
+       ('th_ia_vente.jpg', 'Outils de vente', 'sales'),
        ('th_samsia.jpg', 'SAMS\'IA', 'samsia'),
        ('th_orientia.jpg', 'Orient\'IA', 'secretaries');
 
@@ -26,12 +26,12 @@ INSERT INTO Levels(name_level, level)
 VALUES ('Débutant', 30),
        ('Intermédiaire', 60),
        ('Expert', 90),
-       ('Defaut', 100),
-       ('Defaut', 100),
-       ('Defaut', 100),
-       ('Defaut', 100),
-       ('Defaut', 100),
-       ('Defaut', 100);
+       ('Défaut', 100),
+       ('Défaut', 100),
+       ('Défaut', 100),
+       ('Défaut', 100),
+       ('Défaut', 100),
+       ('Défaut', 100);
 
 INSERT INTO Parameters(id_params, full_name_params, content_params)
 VALUES (1, 'Emplacement dans la réponse des messages', 'choices'),
@@ -54,7 +54,7 @@ VALUES (1, 'Erreur lors de la requête à l\'API d\'OnlineFormaPro'),
        (5, 'Erreur dans la réponse de l\'API d\'OpenAI'),
        (6, 'Erreur lors de l\'exécution du script'),
        (7, 'Erreur dans la réponse de l\'API d\'OpenAI : La réponse est incomplète'),
-       (8, 'Erreur dans la réponse de l\'API d\'OpenAI : Le run à échoué'),
+       (8, 'Erreur dans la réponse de l\'API d\'OpenAI : Le run a échoué'),
        (9, 'Erreur lors de la requête à l\'API d\'OpenAI : Impossible de récupérer les messages');
 
 INSERT INTO levels_tools(id_tool, id_level)

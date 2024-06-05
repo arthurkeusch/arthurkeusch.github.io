@@ -989,4 +989,36 @@ GROUP BY L.id_level;
     {
         return $this->download_data($request, 'Logs', 'log');
     }
+
+
+    /**
+     * Récupère le niveau du log.
+     *
+     * @param Request $request L'objet Request contenant les données de la requête.
+     *
+     * @return JsonResponse Une réponse JSON indiquant le statut de la suppression.
+     */
+    #[Route('/tool/log/level', name: 'get_level_log', methods: ['POST'])]
+    public function get_level_log(Request $request): JsonResponse
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            $id = $data['id'];
+            $level = $this->select("
+SELECT level
+FROM Logs
+JOIN Levels L on L.id_level = Logs.id_level
+WHERE id_log = $id;
+");
+            return new JsonResponse([
+                'status' => 'success',
+                'level' => $level[0]['level']
+            ], Response::HTTP_OK);
+        } catch (Exception $e) {
+            return new JsonResponse([
+                'status' => 'error',
+                'message' => "Echec de la récupération : " . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

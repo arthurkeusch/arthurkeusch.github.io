@@ -445,9 +445,188 @@
     </div>
 </div>
 
+
+<div class="content" style="margin-top: 10px; margin-bottom: 10px;">
+    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
+
+        <div class="card-body">
+            <h2 style="text-align: center;">Gestion de la base de données</h2>
+
+            <script>
+                function convertOctet(size) {
+                    let formattedSize;
+                    if (size < 1000 ) {
+                        formattedSize = `${size} o`;
+                    } else if (size >= 1000 && size < 1000000) {
+                        formattedSize = `${(size / 1000).toLocaleString('fr-FR')} Ko`;
+                    } else if (size >= 1000000 && size < 1000000000) {
+                        formattedSize = `${(size / 1000000).toLocaleString('fr-FR')} Mo`;
+                    } else {
+                        formattedSize = `${(size / 1000000000).toLocaleString('fr-FR')} Go`;
+                    }
+                    return formattedSize.replace('.', ',');
+                }
+            </script>
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header">
+                            <h5 class="card-title text-center">
+                                Taille totale de la base de données
+                            </h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <script>
+                                document.write(convertOctet({{ bdd_total_size|json_encode|raw }}));
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header">
+                            <h5 class="card-title text-center">
+                                Taille totale des données
+                            </h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <script>
+                                document.write(convertOctet({{ bdd_total_size_data|json_encode|raw }}));
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header">
+                            <h5 class="card-title text-center">
+                                Taille totale de la perte d'espace
+                            </h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <script>
+                                document.write(convertOctet({{ bdd_total_size_free|json_encode|raw }}));
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <table class="table table-bordered table-striped" style="margin-top: 20px; max-width: 800px; margin-right: auto; margin-left: auto;">
+                <thead>
+                <tr class="table-dark" style="height: 61px;">
+                    <th scope="col" class="text-center">
+                        Nom
+                    </th>
+                    <th scope="col" class="text-center" id="date_header">
+                        Lignes
+                    </th>
+                    <th scope="col" class="text-center" id="level_header">
+                        Taille des données
+                    </th>
+                    <th scope="col" class="text-center" id="latency_header">
+                        Taille de la perte d'espace
+                    </th>
+                    <th scope="col" class="text-center" id="latency_header">
+                        Taille totale
+                    </th>
+                    <th scope="col" class="text-center">
+                        <button
+                                class="btn btn-success" type="submit" id="button_delete_selection"
+                                data-bs-toggle="popup-tip" onclick="optimizeAll()"
+                                title="Optimiser toute la base de données.">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
+                                <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2M3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.39.39 0 0 0-.029-.518z"/>
+                                <path fill-rule="evenodd" d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.95 11.95 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0"/>
+                            </svg>
+                        </button>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for table in info_bdd %}
+                    <tr id="table_{{ table.name }}">
+                        <th class="col-2">
+                            {{ table.name }}
+                        </th>
+                        <td class="col-2">
+                            {{ table.rows }}
+                        </td>
+                        <td class="col-2">
+                            <script>
+                                document.write(convertOctet({{ table.data_size }}));
+                            </script>
+                        </td>
+                        <td class="col-2">
+                            <script>
+                                document.write(convertOctet({{ table.data_free }}));
+                            </script>
+                        </td>
+                        <td class="col-2">
+                            <script>
+                                document.write(convertOctet({{ table.data_total }}));
+                            </script>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-outline-success"
+                                        onclick="optimizeTable('{{ table.name }}')"
+                                        data-bs-toggle="popup-tip" title="Optimiser la table.">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
+                                        <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2M3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.39.39 0 0 0-.029-.518z"/>
+                                        <path fill-rule="evenodd" d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.95 11.95 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0"/>
+                                    </svg>
+                                </button>
+                                <button type="button" class="btn btn-outline-danger"
+                                        onclick="deleteDataTable('{{ table.name }}')"
+                                        data-bs-toggle="popup-tip" title="Supprimer le contenu table.">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                         class="bi bi-trash3" viewBox="0 0 16 16">
+                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+</div>
+
 <script>
     let params = {{ params|json_encode|raw }};
     let CRON = {{ CRON_info|json_encode|raw }};
+    let bdd = {{ info_bdd|json_encode|raw }};
+
+    function optimizeAll() {
+        //Ajouter animation de chargement comme dans list_tools.
+        bdd.forEach(table => {
+            optimizeTable(table.name);
+        });
+    }
+
+    function deleteDataTable(name) {
+        //Ajouter validation comme dans list_tools.
+    }
+
+    function optimizeTable(name) {
+        postRequest("/parameters/optimize/one", {name: name})
+            .then(response => {
+                show_success_message("Optimisation réussie !");
+            })
+            .catch(error => {
+                show_danger_message("L'optimisation a échoué : " + error);
+            });
+    }
 
     function updateParam(id, value) {
         const index = params.findIndex(param => param.id_params === id);

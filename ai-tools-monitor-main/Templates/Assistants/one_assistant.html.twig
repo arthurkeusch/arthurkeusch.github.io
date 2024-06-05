@@ -10,7 +10,7 @@
                     Chargement des données...
                 </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-label="Close" onclick="hideThread()"
+                        aria-label="Fermer" onclick="hideThread()"
                         style="position: absolute; right: 100px;">
                 </button>
             </div>
@@ -18,14 +18,13 @@
                  style="height: calc(100% - 100px); margin: auto; width: calc(100% - 10px);">
                 <div class="d-flex justify-content-center">
                     <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                        <span class="visually-hidden">Chargement...</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 
 <div class="row">
     <div class="col-1">
@@ -48,7 +47,6 @@
         } %}
     </div>
 </div>
-
 
 <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px; margin-top: 10px;">
     <div class="card-body">
@@ -103,11 +101,11 @@
                     <div class="container" id="filters">
                         <div class="row">
                             <div class="col-md-4">
-                                <label for="start_date">Date de début:</label>
+                                <label for="start_date">Date de début :</label>
                                 <input type="date" id="start_date" class="form-control" onchange="applyFilters()">
                             </div>
                             <div class="col-md-4">
-                                <label for="end_date">Date de fin:</label>
+                                <label for="end_date">Date de fin :</label>
                                 <input type="date" id="end_date" class="form-control" onchange="applyFilters()">
                             </div>
                             <div class="col-md-4">
@@ -250,7 +248,6 @@
     </div>
 {% endif %}
 
-
 <script>
     let informations = {{ informations|json_encode|raw }};
     let threads = {{ threads|json_encode|raw }};
@@ -367,7 +364,7 @@
     async function deleteAllSelect() {
         openModal();
         document.getElementById("modalTitle").innerText = "Supprimer des threads";
-        document.getElementById("modalBody").innerText = "Êtes vous certains de vouloir supprimer ces threads ?";
+        document.getElementById("modalBody").innerText = "Êtes-vous sûr de vouloir supprimer ces threads ?";
         return new Promise((resolve, reject) => {
             document.getElementById('confirm').addEventListener('click', () => {
                 for (const id in threads) {
@@ -440,7 +437,7 @@
 
     async function goTo(id_thread) {
         showThread();
-        await getRequest("/assistants/thread", { id: id_thread })
+        await getRequest("/assistants/thread", {id: id_thread})
             .then(response => {
                 document.getElementById('threadTitle').innerHTML = 'Information du thread';
                 document.getElementById('threadContent').innerHTML = response;
@@ -480,7 +477,7 @@
     async function delete_thread(id_thread) {
         openModal();
         document.getElementById("modalTitle").innerText = "Supprimer un thread";
-        document.getElementById("modalBody").innerText = "Êtes vous sûr de vouloir supprimer ce thread ?";
+        document.getElementById("modalBody").innerText = "Êtes-vous sûr de vouloir supprimer ce thread ?";
         return new Promise((resolve, reject) => {
             document.getElementById('confirm').addEventListener('click', () => {
                 delete_one_thread(id_thread);
@@ -555,19 +552,19 @@
     }
 
     {% if threads is not empty %}
-        document.addEventListener('DOMContentLoaded', function () {
-            window.addEventListener('scroll', function () {
-                const navBarHeight = document.querySelector('.navbar').offsetHeight;
-                const filterAccordion = document.getElementById('filterAccordion');
-                if (window.scrollY > navBarHeight) {
-                    filterAccordion.classList.add('fixed-top');
-                    filterAccordion.style.top = navBarHeight + 'px';
-                } else {
-                    filterAccordion.classList.remove('fixed-top');
-                    filterAccordion.style.top = 'auto';
-                }
-            });
+    document.addEventListener('DOMContentLoaded', function () {
+        window.addEventListener('scroll', function () {
+            const navBarHeight = document.querySelector('.navbar').offsetHeight;
+            const filterAccordion = document.getElementById('filterAccordion');
+            if (window.scrollY > navBarHeight) {
+                filterAccordion.classList.add('fixed-top');
+                filterAccordion.style.top = navBarHeight + 'px';
+            } else {
+                filterAccordion.classList.remove('fixed-top');
+                filterAccordion.style.top = 'auto';
+            }
         });
+    });
     {% endif %}
 
     function applyFilters() {
@@ -616,18 +613,18 @@
         document.getElementById('threadContent').innerHTML = `
         <div class="d-flex justify-content-center">
             <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">Chargement...</span>
             </div>
         </div>`;
     }
 </script>
-
 
 <style>
     .message-content.truncated {
         max-height: 15em;
         overflow: hidden;
     }
+
     .show-more {
         display: block;
         margin-top: 1em;

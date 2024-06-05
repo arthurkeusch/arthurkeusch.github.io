@@ -7,14 +7,11 @@ use PDO;
 use PDOException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use function Sodium\add;
 
 /**
- * Pour lancer la commande :
+ * Pour exécuter la commande :
  *
  * php bin/console app:get-backup-assistants
  */
@@ -24,8 +21,8 @@ class GetBackUpAssistantsCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setDescription('Permet de faire une sauvegarde des assistants.')
-            ->setHelp('Cette commande permet de faire une sauvegarde des assistants.');
+            ->setDescription('Permet de sauvegarder les assistants.')
+            ->setHelp('Cette commande permet de sauvegarder les assistants.');
     }
 
     /**
@@ -85,7 +82,7 @@ class GetBackUpAssistantsCommand extends Command
                     $list_assistants[] = $assistant;
                 }
             } else {
-                throw new Exception("La réponse de l'API d'OpenIA ne contient pas les éléments attendus.");
+                throw new Exception("La réponse de l'API d'OpenAI ne contient pas les éléments attendus.");
             }
             $last_id = $assistants->last_id;
             $has_more = $assistants->has_more;
@@ -126,7 +123,7 @@ class GetBackUpAssistantsCommand extends Command
                     $nbErrors++;
                 }
                 if ($nbErrors > 100) {
-                    throw new Exception("Trop d'erreurs sont survenus ! Le script à été stoppé.");
+                    throw new Exception("Trop d'erreurs sont survenues ! Le script a été stoppé.");
                 }
             }
         } catch (Exception $e) {
@@ -136,9 +133,9 @@ class GetBackUpAssistantsCommand extends Command
             return Command::FAILURE;
         }
 
-        $output->writeln("Tous les assistants ont été récupéré !");
+        $output->writeln("Tous les assistants ont été récupérés !");
 
-        $output->writeln("Enregistrement des assistant dans la base de donnée...");
+        $output->writeln("Enregistrement des assistants dans la base de données...");
 
         $id_backup = $this->insertBackUp();
 
@@ -147,7 +144,7 @@ class GetBackUpAssistantsCommand extends Command
         }
 
         if ($isError) {
-            $output->writeln("<comment>$nbErrors erreurs sont survenus !</>");
+            $output->writeln("<comment>$nbErrors erreurs sont survenues !</>");
             return Command::FAILURE;
         } else {
             $output->writeln('<info>Tous les assistants ont été enregistré avec succès !</>');
@@ -161,7 +158,7 @@ class GetBackUpAssistantsCommand extends Command
     private function curlRequest($to, $options): string
     {
         if ($to === null || $to === "") {
-            throw new Exception("<error>L'URL n'as pas été renseigné !</>\n");
+            throw new Exception("<error>L'URL n'a pas été renseignée !</>\n");
         }
         $curl = curl_init($to);
         foreach ($options as $option) {

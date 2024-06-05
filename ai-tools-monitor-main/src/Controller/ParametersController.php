@@ -38,12 +38,35 @@ SELECT *
 FROM Levels
 ORDER BY level;
 ");
+        $info_table = $this->select("
+SHOW TABLE STATUS;
+");
+        $info_bdd = [];
+        $bdd_total_size = 0;
+        $bdd_total_size_data = 0;
+        $bdd_total_size_free = 0;
+        foreach ($info_table as $table) {
+            $info_bdd[] = [
+                'name' => $table['Name'],
+                'rows' => $table['Rows'],
+                'data_size' => $table['Data_length'],
+                'data_free' => $table['Data_free'],
+                'data_total' => $table['Data_length'] + $table['Data_free']
+            ];
+            $bdd_total_size += $table['Data_length'] + $table['Data_free'];
+            $bdd_total_size_data += $table['Data_length'];
+            $bdd_total_size_free += $table['Data_free'];
+        }
         return $this->render('Parameters/parameters.html.twig', [
             'title' => 'Paramètres',
             'params' => $params,
             'last_log' => $last_log,
             'CRON_info' => $CRON,
-            'levels' => $levels
+            'levels' => $levels,
+            'info_bdd' => $info_bdd,
+            'bdd_total_size' => $bdd_total_size,
+            'bdd_total_size_data' => $bdd_total_size_data,
+            'bdd_total_size_free' => $bdd_total_size_free
         ]);
     }
 
@@ -386,6 +409,34 @@ WHERE id_level = $id;
             return new JsonResponse([
                 'status' => 'error',
                 'message' => 'Echec de la mise à jour : ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * Valide une expression CRON.
+     *
+     * @param Request $request La requête contenant l'expression CRON à valider.
+     * @return JsonResponse La réponse JSON indiquant le statut de validation et un message associé.
+     */
+    #[Route('/parameters/optimize/one', name: 'optimize_table', methods: ['POST'])]
+    public function optimize_table(Request $request): JsonResponse
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            $name = $data['name'];
+            $this->select("
+OPTIMIZE TABLE $name;
+");
+            return new JsonResponse([
+                'status' => '200',
+                'message' => 'Optimisation réussi'
+            ], Response::HTTP_OK);
+        } catch (Exception $e) {
+            return new JsonResponse([
+                'status' => '500',
+                'message' => 'Echec de l\'optimisation : ' . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

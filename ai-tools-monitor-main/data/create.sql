@@ -67,7 +67,6 @@ CREATE TABLE Logs
     FOREIGN KEY (id_level) REFERENCES Levels (id_level)
 );
 
-
 CREATE TABLE levels_tools
 (
     id_tool  INT,

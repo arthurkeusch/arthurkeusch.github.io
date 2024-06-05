@@ -20,6 +20,94 @@ class StatisticsController extends DefaultController
     #[Route('/statistics', name: 'list_statistics', methods: ['GET'])]
     public function list_statistics(): Response
     {
+        return $this->render('Statistics/list_statistics.html.twig', [
+            'title' => 'Statistiques'
+        ]);
+    }
+
+
+    /**
+     * Affiche une liste de statistiques pour les assistants.
+     *
+     * @return Response La réponse HTTP avec les données des statistiques.
+     */
+    #[Route('/statistics/assistants', name: 'list_statistics_assistants', methods: ['GET'])]
+    public function list_statistics_assistants(): Response
+    {
+        $data_boxplotGroupByHours_assistants = $this->select("
+SELECT date_thread, latency_thread, isError
+FROM Threads;
+");
+        $data_linechart_assistant = $this->select("
+SELECT
+    DATE_FORMAT(date_thread, '%Y-%m-%d') AS date,
+    MAX(latency_thread) AS max_latency,
+    MIN(latency_thread) AS min_latency,
+    (
+        SELECT AVG(latency_thread)
+        FROM (
+                 SELECT
+                     latency_thread,
+                     DATE(date_thread) AS thread_date,
+                     ROW_NUMBER() OVER (PARTITION BY DATE(date_thread) ORDER BY latency_thread) AS row_num,
+                     COUNT(*) OVER (PARTITION BY DATE(date_thread)) AS total_rows
+                 FROM Threads
+                 WHERE isError = 0
+             ) AS sorted_threads
+        WHERE row_num IN (FLOOR((total_rows + 1) / 2), CEIL((total_rows + 1) / 2))
+          AND thread_date = DATE(outer_threads.date_thread)
+    ) AS average_latency
+FROM Threads AS outer_threads
+WHERE isError = 0
+GROUP BY DATE(date_thread)
+ORDER BY date_thread;
+");
+        $data_piechart_assistant = $this->select("
+
+SELECT ET.id_error_type, name_error_type AS name, COUNT(*) AS value
+FROM Threads
+JOIN Errors_Types ET on ET.id_error_type = Threads.id_error_type
+GROUP BY ET.id_error_type;
+");
+        $data_boxplot_assistants = $this->select("
+SELECT id_thread, latency_thread, id_assistant
+FROM Threads
+WHERE isError = 0;
+");
+        $assistants_boxplot_assistants = $this->select("
+SELECT id_assistant, name_assistant
+FROM Assistants;
+");
+        $data_stackedbarchart_assistants = $this->select("
+SELECT id_assistant, id_error_type
+FROM Threads
+WHERE isError = 1;
+");
+        $assistants_stackedbarchart_assistants = $this->select("
+SELECT id_assistant, name_assistant
+FROM Assistants;
+");
+        return $this->render('Statistics/statistics_assistants.html.twig', [
+            'title' => 'Statistiques des assistants',
+            'data_boxplotGroupByHours_assistants' => $data_boxplotGroupByHours_assistants,
+            'data_linechart_assistant' => $data_linechart_assistant,
+            'data_piechart_assistant' => $data_piechart_assistant,
+            'data_boxplot_assistants' => $data_boxplot_assistants,
+            'assistants_boxplot_assistants' => $assistants_boxplot_assistants,
+            'data_stackedbarchart_assistants' => $data_stackedbarchart_assistants,
+            'assistants_stackedbarchart_assistants' => $assistants_stackedbarchart_assistants
+        ]);
+    }
+
+
+    /**
+     * Affiche une liste de statistiques pour les outils.
+     *
+     * @return Response La réponse HTTP avec les données des statistiques.
+     */
+    #[Route('/statistics/tools', name: 'list_statistics_tools', methods: ['GET'])]
+    public function list_statistics_tools(): Response
+    {
         $nbLogs = $this->select("
 SELECT COUNT(*)
 FROM Logs;
@@ -163,7 +251,7 @@ FROM levels_tools
 SELECT id_log, date_log, id_language, id_level
 FROM Logs;
 ");
-        return $this->render('Statistics/list_statistics.html.twig', [
+        return $this->render('Statistics/statistics_tools.html.twig', [
             'title' => 'Statistiques',
             'nbLogsMax' => $nbLogs[0]['COUNT(*)'],
             'data_scatterplot' => $data_scatterplot,

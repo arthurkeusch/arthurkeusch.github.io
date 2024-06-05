@@ -52,7 +52,7 @@
                     </div>
                     <div class="form-floating mb-3">
                         <select class="form-select" id="api_name_add_existant" onchange="updateNameFromSelect()">
-                            <option selected>Echec de la récupération des assistants</option>
+                            <option selected>Échec de la récupération des assistants</option>
                         </select>
                         <label for="api_name_add_existant">ID dans l'API d'OpenAI</label>
                     </div>
@@ -106,7 +106,7 @@
 
             <div class="text-center" style="margin-top: 10px;">
                 <button type="button" data-bs-toggle="popup-tip" class="btn btn-outline-dark"
-                        title="Ajouter un assistant en utilisant un ID."
+                        title="Ajouter un assistant en utilisant un identifiant."
                         onclick="open_diag_add_assistant()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                          class="bi bi-input-cursor-text" viewBox="0 0 16 16">
@@ -116,7 +116,7 @@
                     </svg>
                 </button>
                 <button type="button" data-bs-toggle="popup-tip" class="btn btn-outline-dark"
-                        title="Ajouter un assistant en utilisant la liste des assistants existant."
+                        title="Ajouter un assistant en utilisant la liste des assistants existants."
                         onclick="open_diag_add_assistant_existant()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                          class="bi bi-card-list" viewBox="0 0 16 16">
@@ -127,7 +127,7 @@
             </div>
             <div id="button_all" class="text-center" style="margin-top: 10px;">
                 <button type="button" class="btn btn-outline-dark" data-bs-toggle="popup-tip"
-                        title="Activer tous les assistants."
+                        title="Activer tous les assistants"
                         onclick="change_status_for_all_assistant(true)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                          class="bi bi-check2-square" viewBox="0 0 16 16">
@@ -136,7 +136,7 @@
                     </svg>
                 </button>
                 <button type="button" class="btn btn-outline-dark" data-bs-toggle="popup-tip"
-                        title="Désactiver tous les assistants."
+                        title="Désactiver tous les assistants"
                         onclick="change_status_for_all_assistant(false)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                          class="bi bi-dash-square" viewBox="0 0 16 16">
@@ -171,7 +171,7 @@
                             {% if assistant.nbErrors != 0 %}
                                 <div style="position: absolute; right: 5px; top: 5px; display: flex;"
                                      data-bs-toggle="popup-tip"
-                                     title="Nombre d'erreur qui ont eu lieu au cours des dernières 24 heures pour cet assistant.">
+                                     title="Nombre d'erreurs qui ont eu lieu au cours des dernières 24 heures pour cet assistant.">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="red"
                                          class="bi bi-bug-fill" viewBox="0 0 16 16">
                                         <path d="M4.978.855a.5.5 0 1 0-.956.29l.41 1.352A5 5 0 0 0 3 6h10a5 5 0 0 0-1.432-3.503l.41-1.352a.5.5 0 1 0-.956-.29l-.291.956A5 5 0 0 0 8 1a5 5 0 0 0-2.731.811l-.29-.956z"/>
@@ -195,7 +195,7 @@
                                         </svg>
                                     </button>
                                     <button type="button" class="btn btn-sm btn-outline-dark"
-                                            data-bs-toggle="popup-tip" title="Modifier les informations de l'assistant."
+                                            data-bs-toggle="popup-tip" title="Modifier les informations de l'assistant"
                                             onclick="open_diag_update({{ assistant.id_assistant }})">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
                                              fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -206,7 +206,7 @@
                                     </button>
                                     <button type="button" class="btn btn-sm btn-outline-danger"
                                             data-bs-toggle="popup-tip"
-                                            title="Supprimer l'assistant. ATTENTION : Cette action vas supprimer l'assistant ainsi que toutes les runs qui y sont associé."
+                                            title="Supprimer l'assistant. ATTENTION : Cette action va supprimer l'assistant ainsi que toutes les runs qui y sont associées."
                                             onclick="delete_assistant({{ assistant.id_assistant }})">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
                                              fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -283,11 +283,11 @@
         const api_name_add = document.getElementById("api_name_add").value;
         await postRequest("/assistants/add/one", {name: name, api_name: api_name_add})
             .then(response => {
-                show_success_message("L'assistant à été ajouté !");
+                show_success_message("L'assistant a été ajouté !");
                 addAssistantCard(JSON.parse(response).id, name, JSON.parse(response).assistant[0].object_assistant, 0);
             })
             .catch(error => {
-                show_danger_message("L'ajout à échoué : " + error);
+                show_danger_message("L'ajout a échoué : " + error);
             });
         close_diag();
         document.getElementById('submit_add_assistant').innerHTML = `
@@ -306,11 +306,11 @@
         const api_name_add = document.getElementById("api_name_add_existant").value;
         await postRequest("/assistants/add/one", {name: name, api_name: api_name_add})
             .then(response => {
-                show_success_message("L'assistant à été ajouté !");
+                show_success_message("L'assistant a été ajouté !");
                 addAssistantCard(JSON.parse(response).id, name, JSON.parse(response).assistant[0].object_assistant, 0);
             })
             .catch(error => {
-                show_danger_message("L'ajout à échoué : " + error);
+                show_danger_message("L'ajout a échoué : " + error);
             });
         close_diag();
         document.getElementById('submit_add_assistant_existant').innerHTML = `
@@ -322,7 +322,7 @@
         const status = document.getElementById("checkbox_assistant_" + id_assistant).checked;
         postRequest("/assistants/update/status", {id_assistant: id_assistant, status: status})
             .catch(error => {
-                show_danger_message("Echec de la mise à jour du status : " + error);
+                show_danger_message("Échec de la mise à jour du statut : " + error);
             });
     }
 
@@ -357,10 +357,10 @@
                         assistants[id]['object_assistant'] = response.new_object_assistant;
                     }
                 }
-                show_success_message("L'assistant à été mis à jour !");
+                show_success_message("L'assistant a été mis à jour !");
             })
             .catch(error => {
-                show_danger_message("La mise à jour à échouer : " + error);
+                show_danger_message("La mise à jour a échoué : " + error);
             });
         close_diag();
         document.getElementById('submit_update_assistant').innerHTML = `
@@ -391,7 +391,7 @@
                         ${name}
                     </h5>
                     ${nbErrors != 0 ? `
-                    <div style="position: absolute; right: 5px; top: 5px; display: flex;" data-bs-toggle="popup-tip" title="Nombre d'erreur qui ont eu lieu au cours des dernières 24 heures pour cet assistant.">
+                    <div style="position: absolute; right: 5px; top: 5px; display: flex;" data-bs-toggle="popup-tip" title="Nombre d'erreurs qui ont eu lieu au cours des dernières 24 heures pour cet assistant.">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="red" class="bi bi-bug-fill" viewBox="0 0 16 16">
                             <path d="M4.978.855a.5.5 0 1 0-.956.29l.41 1.352A5 5 0 0 0 3 6h10a5 5 0 0 0-1.432-3.503l.41-1.352a.5.5 0 1 0-.956-.29l-.291.956A5 5 0 0 0 8 1a5 5 0 0 0-2.731.811l-.29-.956z"/>
                             <path d="M13 6v1H8.5v8.975A5 5 0 0 0 13 11h.5a.5.5 0 0 1 .5.5v.5a.5.5 0 1 0 1 0v-.5a1.5 1.5 0 0 0-1.5-1.5H13V9h1.5a.5.5 0 0 0 0-1H13V7h.5A1.5 1.5 0 0 0 15 5.5V5a.5.5 0 0 0-1 0v.5a.5.5 0 0 1-.5.5zm-5.5 9.975V7H3V6h-.5a.5.5 0 0 1-.5-.5V5a.5.5 0 0 0-1 0v.5A1.5 1.5 0 0 0 2.5 7H3v1H1.5a.5.5 0 0 0 0 1H3v1h-.5A1.5 1.5 0 0 0 1 11.5v.5a.5.5 0 1 0 1 0v-.5a.5.5 0 0 1 .5-.5H3a5 5 0 0 0 4.5 4.975"/>
@@ -408,13 +408,13 @@
                                     <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
                                 </svg>
                             </button>
-                            <button type="button" class="btn btn-sm btn-outline-dark" data-bs-toggle="popup-tip" title="Modifier les informations de l'assistant." onclick="open_diag_update(${id})">
+                            <button type="button" class="btn btn-sm btn-outline-dark" data-bs-toggle="popup-tip" title="Modifier les informations de l'assistant" onclick="open_diag_update(${id})">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                     <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                                 </svg>
                             </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="popup-tip" title="Supprimer l'assistant. ATTENTION : Cette action vas supprimer l'assistant ainsi que toutes les runs qui y sont associé." onclick="delete_assistant(${id})">
+                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="popup-tip" title="Supprimer l'assistant. ATTENTION : Cette action va supprimer l'assistant ainsi que toutes les runs qui y sont associées." onclick="delete_assistant(${id})">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                                     <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
                                 </svg>
@@ -474,7 +474,7 @@
                             id_assistant: assistant['id_assistant'],
                             status: status
                         }).catch(error => {
-                            show_danger_message("Echec de la mise à jour du status : " + error);
+                            show_danger_message("Échec de la mise à jour du statut : " + error);
                         });
                         document.getElementById("checkbox_assistant_" + assistant['id_assistant']).checked = status;
                         await updateProgressBar();

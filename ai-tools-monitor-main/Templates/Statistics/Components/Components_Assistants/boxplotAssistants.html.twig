@@ -1,0 +1,186 @@
+<div id="piechart_assistants"></div>
+
+<ul class="list-group list-group-horizontal mx-auto">
+    <li class="list-group-item" style="cursor: pointer;">
+        <input class="form-check-input me-1" type="radio"
+               value="" id="all_points_assistants"
+               onclick="showBoxPlotPointsAssistants(1)" style="cursor: pointer;">
+        <label class="form-check-label" for="all_points_assistants"
+               style="cursor: pointer; user-select: none;">
+            Tous les points
+        </label>
+    </li>
+    <li class="list-group-item" style="cursor: pointer;">
+        <input class="form-check-input me-1" type="radio"
+               value="" id="outliers_points_assistants" checked
+               onclick="showBoxPlotPointsAssistants(2)" style="cursor: pointer;">
+        <label class="form-check-label" for="outliers_points_assistants"
+               style="cursor: pointer; user-select: none;">
+            Uniquement les valeurs aberrantes
+        </label>
+    </li>
+    <li class="list-group-item" style="cursor: pointer;">
+        <input class="form-check-input me-1" type="radio"
+               value="" id="no_points_assistants"
+               onclick="showBoxPlotPointsAssistants(3)" style="cursor: pointer;">
+        <label class="form-check-label" for="no_points_assistants"
+               style="cursor: pointer; user-select: none;">
+            Ne rien afficher
+        </label>
+    </li>
+</ul>
+<br>
+
+<div id="boxplotAssistants"></div>
+
+<script>
+    async function showBoxPlotPointsAssistants(number) {
+        const svgNode = await addBoxPlotAssistants(number);
+        const boxplotDiv = document.getElementById("boxplotAssistants");
+        boxplotDiv.innerHTML = '';
+        boxplotDiv.appendChild(svgNode);
+    }
+
+    let data_boxplotAssistants = {{ data|json_encode|raw }};
+    let assistants_boxplotAssistants = {{ assistants|json_encode|raw }};
+
+    let newData_boxplotAssistants = [];
+    data_boxplotAssistants.forEach((thread) => {
+        newData_boxplotAssistants.push({id_tool: thread.id_assistant, latency: thread.latency_thread, id_log: thread.id_thread});
+    });
+    data_boxplotAssistants = newData_boxplotAssistants;
+
+    async function addBoxPlotAssistants(stylePointe) {
+        const width = 928;
+        const height = 600;
+        const marginTop = 20;
+        const marginRight = 20;
+        const marginBottom = 30;
+        const marginLeft = 40;
+
+        const x = d3.scaleBand()
+            .domain(assistants_boxplotAssistants.map(tool => tool.name_assistant))
+            .range([marginLeft, width - marginRight])
+            .paddingInner(0.1)
+            .paddingOuter(0.5);
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(data_boxplotAssistants, d => d.latency)]).nice()
+            .range([height - marginBottom, marginTop]);
+
+        const svg = d3.create("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", [0, 0, width, height])
+            .attr("style", "max-width: 100%; height: auto; font: 10px sans-serif;")
+            .attr("text-anchor", "middle");
+
+        svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(d3.axisBottom(x).tickSizeOuter(0));
+
+        svg.append("g")
+            .attr("transform", `translate(${marginLeft},0)`)
+            .call(d3.axisLeft(y).ticks(null, "s"))
+            .call(g => g.select(".domain").remove());
+
+        svg.append("text")
+            .attr("text-anchor", "start")
+            .attr("x", marginLeft - 5)
+            .attr("y", marginTop - 10)
+            .attr("font-size", "12px")
+            .text("Temps de réponse (ms)");
+
+        assistants_boxplotAssistants.forEach(tool => {
+            let latencies = data_boxplotAssistants.filter(log => log.id_tool === tool.id_assistant).map(log => log.latency);
+
+            if (latencies.length > 0) {
+                latencies.sort(d3.ascending);
+                const q1 = d3.quantile(latencies, 0.25);
+                const median = d3.quantile(latencies, 0.50);
+                const q3 = d3.quantile(latencies, 0.75);
+                const interQuantileRange = q3 - q1;
+                const min = Math.max(d3.min(latencies), q1 - 1.5 * interQuantileRange);
+                const max = Math.min(d3.max(latencies), q3 + 1.5 * interQuantileRange);
+                const outliers = latencies.filter(v => v < min || v > max);
+
+                const g = svg.append("g");
+
+                g.append("line")
+                    .attr("x1", x(tool.name_assistant) + x.bandwidth() / 2)
+                    .attr("x2", x(tool.name_assistant) + x.bandwidth() / 2)
+                    .attr("y1", y(min))
+                    .attr("y2", y(max))
+                    .attr("stroke", "currentColor");
+
+                g.append("rect")
+                    .attr("x", x(tool.name_assistant))
+                    .attr("y", y(q3))
+                    .attr("width", x.bandwidth())
+                    .attr("height", y(q1) - y(q3))
+                    .attr("fill", "#ddd");
+
+                g.append("line")
+                    .attr("x1", x(tool.name_assistant))
+                    .attr("x2", x(tool.name_assistant) + x.bandwidth())
+                    .attr("y1", y(median))
+                    .attr("y2", y(median))
+                    .attr("stroke", "currentColor")
+                    .attr("stroke-width", 2);
+
+                function addPoints(points, g) {
+                    const circles = g.append("g")
+                        .attr("fill", "currentColor")
+                        .attr("fill-opacity", 0.5)
+                        .attr("stroke", "none")
+                        .attr("transform", `translate(${x(tool.name_assistant) + x.bandwidth() / 2},0)`)
+                        .selectAll("circle")
+                        .data(points)
+                        .enter()
+                        .append("circle")
+                        .attr("r", 2)
+                        .attr("cx", (d, i) => (Math.random() - 0.5) * x.bandwidth() * 0.4)
+                        .attr("cy", d => y(d.latency))
+                        .style("cursor", "pointer")
+                        .attr("data-id-log", d => d.id_log)
+                        .on("mouseover", function () {
+                            d3.select(this).attr("r", 4).attr("fill-opacity", 1);
+                        })
+                        .on("mouseout", function () {
+                            d3.select(this).attr("r", 2).attr("fill-opacity", 0.5);
+                        })
+                        .on("click", function (event, d) {
+                            const logId = d3.select(this).attr("data-id-log");
+                            goToAssistant(d['id_log'])
+                        });
+                }
+
+                if (stylePointe === 1) {
+                    addPoints(data_boxplotAssistants.filter(log => log.id_tool === tool.id_assistant), g);
+                    document.getElementById("all_points_assistants").checked = true;
+                    document.getElementById("no_points_assistants").checked = false;
+                    document.getElementById("outliers_points_assistants").checked = false;
+                } else if (stylePointe === 2) {
+                    const outlierLogs = data_boxplotAssistants.filter(log => log.id_tool === tool.id_assistant && (log.latency < min || log.latency > max));
+                    addPoints(outlierLogs, g);
+                    document.getElementById("all_points_assistants").checked = false;
+                    document.getElementById("no_points_assistants").checked = false;
+                    document.getElementById("outliers_points_assistants").checked = true;
+                } else {
+                    document.getElementById("all_points_assistants").checked = false;
+                    document.getElementById("no_points_assistants").checked = true;
+                    document.getElementById("outliers_points_assistants").checked = false;
+                }
+            }
+        });
+        return svg.node();
+    }
+
+    async function renderBoxPlotAssistants(stylePoint) {
+        const svgNode = await addBoxPlotAssistants(stylePoint);
+        document.getElementById("boxplotAssistants").innerHTML = "";
+        document.getElementById("boxplotAssistants").append(svgNode);
+    }
+
+    renderBoxPlotAssistants(2);
+</script>

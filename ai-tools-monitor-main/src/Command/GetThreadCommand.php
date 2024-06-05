@@ -11,10 +11,9 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use function Sodium\add;
 
 /**
- * Pour lancer la commande :
+ * Pour exécuter la commande :
  *
  * php bin/console app:get-thread
  */
@@ -24,8 +23,8 @@ class GetThreadCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setDescription('Permet de faire une sauvegarde des threads.')
-            ->setHelp('Cette commande permet de faire une sauvegarde des threads');
+            ->setDescription('Permet de sauvegarder les threads.')
+            ->setHelp('Cette commande permet de sauvegarder les threads');
     }
 
     /**
@@ -181,7 +180,7 @@ WHERE isActive = TRUE;
                                     }
                                 } catch (Exception $e) {
                                     $output->writeln("");
-                                    $output->writeln("<error>Erreur lors de l'enregistrement en base de données !</error>");
+                                    $output->writeln("<error>Erreur lors de l'enregistrement dans la base de données !</error>");
                                     $output->writeln("$e");
                                     $isError = true;
                                     $nbErrors++;
@@ -196,7 +195,7 @@ WHERE isActive = TRUE;
                                     $this->insertNewThread($thread, $status_run, 'NULL', $latency * 1000, 1, $instructions_assistant, 9, $id_assistant_BDD);
                                 } catch (Exception $e) {
                                     $output->writeln("");
-                                    $output->writeln("<error>Erreur lors de l'enregistrement en base de données !</error>");
+                                    $output->writeln("<error>Erreur lors de l'enregistrement dans la base de données !</error>");
                                     $output->writeln("$e");
                                 }
                             }
@@ -250,10 +249,10 @@ WHERE isActive = TRUE;
         $io->newLine();
 
         if ($isError) {
-            $output->writeln("<comment>$nbErrors erreurs sont survenus !</>");
+            $output->writeln("<comment>$nbErrors erreurs sont survenues !</>");
             return Command::FAILURE;
         } else {
-            $output->writeln('<info>Tous les assistants ont été testé avec succès !</>');
+            $output->writeln('<info>Tous les assistants ont été testés avec succès !</>');
             return Command::SUCCESS;
         }
     }
@@ -264,7 +263,7 @@ WHERE isActive = TRUE;
     private function curlRequest($to, $options): string
     {
         if ($to === null || $to === "") {
-            throw new Exception("<error>L'URL n'as pas été renseigné !</>\n");
+            throw new Exception("<error>L'URL n'a pas été renseignée !</>\n");
         }
         $curl = curl_init($to);
         foreach ($options as $option) {
