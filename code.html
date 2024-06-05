@@ -27,6 +27,11 @@
             </svg>
         </div>
     </div>
+    <div class="col">
+        <h1 class="text-center" style="margin-top: 5px;">
+            Prévisualisation du code du projet
+        </h1>
+    </div>
 </div>
 
 <div class="container-fluid"
@@ -76,7 +81,6 @@
                 let listItem = document.createElement('li');
                 listItem.textContent = file.name;
                 listItem.dataset.file = file.path;
-                console.log(file.name)
                 if (file.type === "file") {
                     listItem.style.cursor = "pointer";
                 } else {
