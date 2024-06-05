@@ -17,22 +17,25 @@
 </head>
 <body style="margin: 0; overflow: hidden; height: 100%;">
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <div class="container-fluid justify-content-evenly d-flex">
-        <a class="navbar-brand" href="./index.html">CV</a>
-        <a class="navbar-brand" href="./portfolio.html">Portfolio</a>
-        <a class="navbar-brand" href="./portfolio_stage.html">Portfolio Stage</a>
-        <a class="navbar-brand" href="./code.html">Code</a>
+<div class="row">
+    <div class="col-1">
+        <div data-bs-toggle="popup-tip" style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px;"
+             title="Revenir à au portfolio du stage">
+            <svg class="bi bi-arrow-left-square-fill" fill="currentColor" height="50" onclick="goBack()"
+                 style="cursor: pointer;" viewBox="0 0 16 16" width="50" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"></path>
+            </svg>
+        </div>
     </div>
-</nav>
+</div>
 
 <div class="container-fluid"
-     style="margin-top: 80px; height: calc(100vh - 80px); display: flex; flex-direction: column;">
+     style="height: 100vh; display: flex; flex-direction: column;">
     <div class="row" style="height: 100%;">
-        <div class="col-3 p-2" style="overflow-y: auto; height: calc(100vh - 80px); border-right: 1px solid #ccc;">
+        <div class="col-3 p-2" style="overflow-y: auto; height: 100vh; border-right: 1px solid #ccc;">
             <ul class="list-unstyled" id="file-tree"></ul>
         </div>
-        <div class="col-9 p-2 d-flex flex-column" style="overflow: hidden; height: calc(100vh - 80px);">
+        <div class="col-9 p-2 d-flex flex-column" style="overflow: hidden; height: 100vh;">
             <textarea class="code-editor flex-grow-1" id="code-editor"
                       style="width: 100%; border: 1px solid #ccc;"></textarea>
         </div>
@@ -76,6 +79,8 @@
                 console.log(file.name)
                 if (file.type === "file") {
                     listItem.style.cursor = "pointer";
+                } else {
+                    listItem.style.cursor = "not-allowed";
                 }
                 if (file.type === 'dir') {
                     let sublist = document.createElement('ul');
@@ -117,6 +122,10 @@
             })
             .catch(error => console.error('Error fetching file tree:', error));
     });
+
+    function goBack() {
+        window.location.href = "./portfolio_stage.html#competence_5";
+    }
 </script>
 </body>
 </html>

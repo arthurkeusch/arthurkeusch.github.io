@@ -8,45 +8,37 @@
     <link href="styles/index.css" rel="stylesheet" type="text/css">
     <title>Portfolio Stage</title>
     <link href="images/logo.jpg" rel="icon" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGz1smjFME6lFwk8E6EsmXk3B1j6iuz9L1d5erNs8xwR1" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12MFWJ1B4ooVPVfK9Kq5KfG5p07rZjlfA84fK6I/RiB3nn1B" crossorigin="anonymous"></script>
-
+    <script crossorigin="anonymous"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
     <div class="container-fluid justify-content-evenly d-flex">
-        <a class="navbar-brand" href="./index.html">
-            CV
-        </a>
-        <a class="navbar-brand" href="./portfolio.html">
-            Portfolio
-        </a>
-        <a class="navbar-brand" href="./portfolio_stage.html">
-            Portfolio Stage
-        </a>
-        <a class="navbar-brand" href="./code.html">
-            Code
-        </a>
+        <a class="navbar-brand" href="./index.html">CV</a>
+        <a class="navbar-brand" href="./portfolio.html">Portfolio</a>
+        <a class="navbar-brand" href="./portfolio_stage.html">Portfolio Stage</a>
     </div>
 </nav>
 
-<div class="modal fade" id="codeModal" tabindex="-1" aria-labelledby="codeModalLabel" aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="codeModalLabel" class="modal fade" id="codeModal" tabindex="-1">
     <div class="modal-dialog modal-xl" style="max-width: calc(100% - 100px);">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="codeModalLabel">Explorateur de Code</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
             </div>
             <div class="modal-body d-flex">
-                <div id="file-tree-container" class="p-2" style="width: 25%; overflow-y: auto; border-right: 1px solid #ccc;">
-                    <ul id="file-tree" class="list-unstyled"></ul>
+                <div class="p-2" id="file-tree-container"
+                     style="width: 25%; overflow-y: auto; border-right: 1px solid #ccc;">
+                    <ul class="list-unstyled" id="file-tree"></ul>
                 </div>
-                <div id="code-editor-container" class="p-2" style="width: 75%;">
-                    <textarea id="code-editor" class="code-editor"></textarea>
+                <div class="p-2" id="code-editor-container" style="width: 75%;">
+                    <textarea class="code-editor" id="code-editor"></textarea>
                 </div>
             </div>
         </div>
@@ -182,47 +174,117 @@
                     </div>
                     <div class="card-body">
                         <div class="row row-cols-1 row-cols-xl-2 g-3">
+
                             <div class="col">
-                                <div class="card h-100 d-flex flex-column">
-                                    <div class="card-header">
-                                        <h4 class="text-center">Identification des besoins</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <p>
-                                            Ce stage m'a permis de mettre en application plusieurs compétences acquises
-                                            lors de mes études, notamment l'appréhension des besoins de l'utilisateur.
-                                            Dès le début de mon stage, j'ai pris connaissance des besoins de
-                                            l'entreprise en m'entretenant avec mon responsable de stage. Cet entretien
-                                            initial m'a fourni une première idée globale de la mission à accomplir.
-                                        </p>
-                                        <p>
-                                            Lors de la première semaine de mon stage, j'ai eu une présentation détaillée
-                                            du projet à réaliser. L’entreprise utilise l’API de ChatGPT dans divers
-                                            modules de formations, notamment pour l'apprentissage des langues via des
-                                            interactions avec une IA. J'ai ensuite élaboré une ébauche de solution pour
-                                            répondre à ces besoins. Comme pour tout projet, les besoins ont évolué au
-                                            cours de mon stage pour diverses raisons :
-                                        </p>
-                                        <ul>
-                                            <li>
-                                                L'ajout de nouvelles fonctionnalités par OpenAI, telles que les
-                                                assistants virtuels, qui n'étaient pas initialement utilisés par
-                                                l'entreprise mais qui sont devenus une alternative intéressante.
-                                            </li>
-                                            <li>
-                                                Les idées et suggestions de mon responsable de stage, basées sur
-                                                l'avancement du projet et les propositions que j'ai faites. Par exemple,
-                                                après avoir présenté l'état initial du projet à mon tuteur, nous avons
-                                                décidé de refondre la base de données pour mieux gérer l’évolution
-                                                rapide de l’API.
-                                            </li>
-                                            <li>
-                                                Mon avancée plus rapide que prévu, permettant l'implémentation de
-                                                fonctionnalités supplémentaires. Cette progression a été facilitée par
-                                                des réunions régulières avec mon tuteur, notamment pour discuter des
-                                                améliorations de l'interface utilisateur.
-                                            </li>
-                                        </ul>
+                                <div class="h-100 d-flex flex-column">
+
+                                    <div class="row row-cols-1 g-3">
+
+                                        <div class="col">
+                                            <div class="card h-100 d-flex flex-column">
+                                                <div class="card-header">
+                                                    <h4 class="text-center">Identification des besoins</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p>
+                                                        Ce stage m'a permis de mettre en application plusieurs
+                                                        compétences acquises
+                                                        lors de mes études, notamment l'appréhension des besoins de
+                                                        l'utilisateur.
+                                                        Dès le début de mon stage, j'ai pris connaissance des besoins de
+                                                        l'entreprise en m'entretenant avec mon responsable de stage. Cet
+                                                        entretien
+                                                        initial m'a fourni une première idée globale de la mission à
+                                                        accomplir.
+                                                    </p>
+                                                    <p>
+                                                        Lors de la première semaine de mon stage, j'ai eu une
+                                                        présentation détaillée
+                                                        du projet à réaliser. L’entreprise utilise l’API de ChatGPT dans
+                                                        divers
+                                                        modules de formations, notamment pour l'apprentissage des
+                                                        langues via des
+                                                        interactions avec une IA. J'ai ensuite élaboré une ébauche de
+                                                        solution pour
+                                                        répondre à ces besoins. Comme pour tout projet, les besoins ont
+                                                        évolué au
+                                                        cours de mon stage pour diverses raisons :
+                                                    </p>
+                                                    <ul>
+                                                        <li>
+                                                            L'ajout de nouvelles fonctionnalités par OpenAI, telles que
+                                                            les
+                                                            assistants virtuels, qui n'étaient pas initialement utilisés
+                                                            par
+                                                            l'entreprise mais qui sont devenus une alternative
+                                                            intéressante.
+                                                        </li>
+                                                        <li>
+                                                            Les idées et suggestions de mon responsable de stage, basées
+                                                            sur
+                                                            l'avancement du projet et les propositions que j'ai faites.
+                                                            Par exemple,
+                                                            après avoir présenté l'état initial du projet à mon tuteur,
+                                                            nous avons
+                                                            décidé de refondre la base de données pour mieux gérer
+                                                            l’évolution
+                                                            rapide de l’API.
+                                                        </li>
+                                                        <li>
+                                                            Mon avancée plus rapide que prévu, permettant
+                                                            l'implémentation de
+                                                            fonctionnalités supplémentaires. Cette progression a été
+                                                            facilitée par
+                                                            des réunions régulières avec mon tuteur, notamment pour
+                                                            discuter des
+                                                            améliorations de l'interface utilisateur.
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="card h-100 d-flex flex-column">
+                                                <div class="card-header">
+                                                    <h4 class="text-center">Mise en œuvre du projet</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p>
+                                                        Pour mener à bien mon projet, en plus d'avoir identifié les
+                                                        besoins de
+                                                        l'entreprise, j'ai dû m'adapter aux infrastructures existantes
+                                                        de
+                                                        l'entreprise ainsi qu'à l'API d'OpenAI. Concernant le test des
+                                                        outils, j'ai
+                                                        d'abord récupéré les prompts depuis les serveurs de l'entreprise
+                                                        via leur
+                                                        API, puis je les ai envoyés à l'API d'OpenAI. Les différentes
+                                                        informations
+                                                        des réponses, telles que le temps de réponse, le contenu des
+                                                        réponses et
+                                                        leur complétude, étaient ensuite stockées.
+                                                    </p>
+                                                    <p>
+                                                        Pour les assistants virtuels, il n'était plus nécessaire de
+                                                        passer par les
+                                                        serveurs de l'entreprise. Les informations sur les assistants à
+                                                        tester
+                                                        étaient directement récupérées depuis la base de données de mon
+                                                        site, puis
+                                                        soumises à l'API d'OpenAI pour obtenir les réponses.
+                                                    </p>
+                                                    <p>
+                                                        Ce projet m'a donc amené à intégrer l'API d'OpenAI ainsi que
+                                                        celle
+                                                        d'OnlineFormaPro, assurant ainsi une intégration efficace entre
+                                                        les deux
+                                                        systèmes.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -230,49 +292,22 @@
                             <div class="col">
                                 <div class="card h-100 d-flex flex-column">
                                     <div class="card-header">
-                                        <h4 class="text-center">METTRE ICI TITRE</h4>
+                                        <h4 class="text-center">Démonstrations</h4>
                                     </div>
-                                    <div class="card-body text-center">
-                                        <p>
-                                            - Photo de la page des paramètres pour montrer l'adaptation aux réponses de l'API
-                                        </p>
-                                        <a type="button" class="btn btn-primary sticky-content" href="./code.html">
+                                    <div class="text-center sticky-content" style="margin: 0 auto;">
+                                        <a class="btn btn-primary" href="./code.html" type="button">
                                             Voir le code
                                         </a>
+                                        <video controls muted src="vidéos/Portfolio/demo_projet_ofp.mp4"
+                                               style="width: 100%; height: auto; display: block; margin: auto;">
+                                        </video>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col">
-                                <div class="card h-100 d-flex flex-column">
-                                    <div class="card-header">
-                                        <h4 class="text-center">Mise en œuvre du projet</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <p>
-                                            Pour mener à bien mon projet, en plus d'avoir identifié les besoins de
-                                            l'entreprise, j'ai dû m'adapter aux infrastructures existantes de
-                                            l'entreprise ainsi qu'à l'API d'OpenAI. Concernant le test des outils, j'ai
-                                            d'abord récupéré les prompts depuis les serveurs de l'entreprise via leur
-                                            API, puis je les ai envoyés à l'API d'OpenAI. Les différentes informations
-                                            des réponses, telles que le temps de réponse, le contenu des réponses et
-                                            leur complétude, étaient ensuite stockées.
-                                        </p>
-                                        <p>
-                                            Pour les assistants virtuels, il n'était plus nécessaire de passer par les
-                                            serveurs de l'entreprise. Les informations sur les assistants à tester
-                                            étaient directement récupérées depuis la base de données de mon site, puis
-                                            soumises à l'API d'OpenAI pour obtenir les réponses.
-                                        </p>
-                                        <p>
-                                            Ce projet m'a donc amené à intégrer l'API d'OpenAI ainsi que celle
-                                            d'OnlineFormaPro, assurant ainsi une intégration efficace entre les deux
-                                            systèmes.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
+
+
                     </div>
                 </div>
             </div>
@@ -581,92 +616,4 @@
             </div>
         </div>`;
     }
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Initialiser CodeMirror
-        var editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
-            mode: "javascript",
-            lineNumbers: true,
-            readOnly: true
-        });
-
-        editor.setSize('100%', '100%');
-        editor.setValue("//Sélectionnez un fichier dans l'arborescence pour afficher son contenu ici.");
-
-        // Fragments du token
-        const part1 = 'ghp_';
-        const part2 = '0cckkaGfVw9ThX4c';
-        const part3 = 'wTUYHZeWsyfq';
-        const part4 = 'Jm0oanxV';
-
-        // Reconstruction du token
-        const githubToken = part1 + part2 + part3 + part4;
-
-        // Fonction pour déterminer le mode en fonction du type de fichier
-        function determineMode(filePath) {
-            if (filePath.endsWith('.js')) return 'javascript';
-            if (filePath.endsWith('.php')) return 'php';
-            if (filePath.endsWith('.html') || filePath.endsWith('.twig')) return 'htmlmixed';
-            // Ajoutez d'autres conditions selon les types de fichiers
-            return '';
-        }
-
-        // Fonction pour créer l'arborescence des fichiers
-        function createFileTree(files, parentElement) {
-            if (!Array.isArray(files)) {
-                console.error('Files is not an array', files);
-                return;
-            }
-            files.forEach(file => {
-                let listItem = document.createElement('li');
-                listItem.textContent = file.name;
-                listItem.dataset.file = file.path;
-                console.log(file.name)
-                if (file.type === "file") {
-                    listItem.style.cursor = "pointer";
-                }
-                if (file.type === 'dir') {
-                    let sublist = document.createElement('ul');
-                    listItem.appendChild(sublist);
-
-                    fetch(`https://api.github.com/repos/arthurkeusch/arthurkeusch.github.io/contents/${file.path}`, {
-                        headers: {
-                            'Authorization': `token ${githubToken}`
-                        }
-                    })
-                        .then(response => response.json())
-                        .then(subfiles => createFileTree(subfiles, sublist))
-                        .catch(error => console.error('Error fetching directory contents:', error));
-                } else {
-                    listItem.addEventListener('click', function () {
-                        fetch(`https://raw.githubusercontent.com/arthurkeusch/arthurkeusch.github.io/main/${file.path}`, {
-                            // Pas d'en-tête d'autorisation ici
-                        })
-                            .then(response => response.text())
-                            .then(data => {
-                                editor.setValue(data);
-                                editor.setOption('mode', determineMode(file.path));
-                            })
-                            .catch(error => console.error('Error fetching file contents:', error));
-                    });
-                }
-
-                parentElement.appendChild(listItem);
-            });
-        }
-
-        // Récupérer la structure des fichiers depuis GitHub
-        fetch('https://api.github.com/repos/arthurkeusch/arthurkeusch.github.io/contents/ai-tools-monitor-main', {
-            headers: {
-                'Authorization': `token ${githubToken}`
-            }
-        })
-            .then(response => response.json())
-            .then(files => {
-                let fileTree = document.getElementById('file-tree');
-                createFileTree(files, fileTree);
-            })
-            .catch(error => console.error('Error fetching file tree:', error));
-    });
 </script>
