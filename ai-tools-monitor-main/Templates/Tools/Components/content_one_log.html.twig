@@ -1,114 +1,16 @@
-<div class="card shadow-sm" style="margin-right: 10px; margin-left: 10px;">
+<div class="card shadow-sm" style="margin-right: 10px; margin-left: 10px; background: transparent;">
 
     <div class="card-body">
-        <h1 style="text-align: center">{{ informations.date_log | raw }}</h1>
-
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-2" style="margin-bottom: 10px;">
-            <div class="col">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h4>ID log</h4>
-                        <p class="card-text">
-                            {{ informations.id_log }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h4>Langue</h4>
-                        <p class="card-text">
-                            {{ informations.name_language }}
-                            <small>({{ informations.short_name_language }})</small>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col" id="card_level">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h4>Niveau</h4>
-                        <p class="card-text">
-                            <svg id="level_pastille_{{ informations.id_log }}" xmlns="http://www.w3.org/2000/svg"
-                                 width="20"
-                                 height="20" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                <circle cx="8" cy="8" r="8"/>
-                            </svg>
-                            {{ informations.name_level }}
-                            <small>({{ informations.level }}%)</small>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h4>Latence</h4>
-                        <p class="card-text">
-                            {{ informations.latency_log }} ms
-                        </p>
-                    </div>
-                </div>
-            </div>
-            {% if completion_tokens is defined %}
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h4>Jetons de complétion</h4>
-                            <p class="card-text">
-                                {{ completion_tokens }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-            {% if prompt_tokens is defined %}
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h4>Jetons du prompt</h4>
-                            <p class="card-text">
-                                {{ prompt_tokens }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-            {% if total_tokens is defined %}
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h4>Jetons utilisés</h4>
-                            <p class="card-text">
-                                {{ total_tokens }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-            {% if informations.name_error_type is not null %}
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h4>Type d'erreur</h4>
-                            <p class="card-text">
-                                {{ informations.name_error_type }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
+        <h1 style="text-align: center; color: white;">{{ informations.date_log | raw }}</h1>
 
         <div class="row row-cols-1 row-cols-xl-2 g-2">
             <div class="col">
-                <div class="card shadow-sm">
+                <div class="card cards_left" style="font-weight: normal; font-size: medium;">
                     <div class="card-body">
                         <h4>Messages dans les paramètres</h4>
                         <main class="content">
                             <div class="container p-0">
-                                <div class="card" style="align-content: end">
+                                <div class="card" style="align-content: end; background-color: #0e1022;">
                                     <div class="row g-0">
                                         <div class="position-relative">
                                             <div class="chat-messages p-4">
@@ -159,12 +61,12 @@
                 </div>
             </div>
             <div class="col">
-                <div class="card shadow-sm">
+                <div class="card cards_left" style="font-weight: normal; font-size: medium;">
                     <div class="card-body">
                         <h4>Message dans la réponse</h4>
                         <main class="content">
                             <div class="container p-0">
-                                <div class="card" style="align-content: end">
+                                <div class="card cards" style="align-content: end;">
                                     <div class="row g-0">
                                         <div class="position-relative">
                                             <div class="chat-messages p-4">
@@ -218,24 +120,125 @@
 
         <br>
 
-        <div class="row row-cols-lg-1 row-cols-xl-2 g-2">
+        <div class="row row-cols-1 row-cols-xl-2 g-2">
             <div class="col">
-                <div class="card shadow-sm">
+                <div class="card cards_left">
                     <div class="card-body">
                         <h4>Paramètres</h4>
-                        <pre style="white-space: pre-wrap;"><code id="json-content">{{ informations.params_log }}</code></pre>
+                        <pre style="white-space: pre-wrap; font-size: medium; font-weight: normal;"><code
+                                    id="json-content">{{ informations.params_log }}</code></pre>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="card shadow-sm">
+                <div class="card cards_left">
                     <div class="card-body">
                         <h4>Réponse</h4>
-                        <pre style="white-space: pre-wrap;"><code
+                        <pre style="white-space: pre-wrap; font-size: medium; font-weight: normal;"><code
                                     id="json-content">{{ informations.response_log }}</code></pre>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <br>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-2" style="margin-bottom: 10px;">
+            <div class="col">
+                <div class="card cards_left">
+                    <div class="card-body">
+                        <h4>ID log</h4>
+                        <p class="card-text" style="font-weight: normal; font-size: medium;">
+                            {{ informations.id_log }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card cards_left">
+                    <div class="card-body">
+                        <h4>Langue</h4>
+                        <p class="card-text" style="font-weight: normal; font-size: medium;">
+                            {{ informations.name_language }}
+                            <small>({{ informations.short_name_language }})</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col" id="card_level">
+                <div class="card cards_left">
+                    <div class="card-body">
+                        <h4>Niveau</h4>
+                        <p class="card-text" style="font-weight: normal; font-size: medium;">
+                            <svg id="level_pastille_{{ informations.id_log }}" xmlns="http://www.w3.org/2000/svg"
+                                 width="20"
+                                 height="20" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                <circle cx="8" cy="8" r="8"/>
+                            </svg>
+                            {{ informations.name_level }}
+                            <small>({{ informations.level }}%)</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card cards_left">
+                    <div class="card-body">
+                        <h4>Latence</h4>
+                        <p class="card-text" style="font-weight: normal; font-size: medium;">
+                            {{ informations.latency_log }} ms
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% if completion_tokens is defined %}
+                <div class="col">
+                    <div class="card cards_left">
+                        <div class="card-body">
+                            <h4>Jetons de complétion</h4>
+                            <p class="card-text" style="font-weight: normal; font-size: medium;">
+                                {{ completion_tokens }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if prompt_tokens is defined %}
+                <div class="col">
+                    <div class="card cards_left">
+                        <div class="card-body">
+                            <h4>Jetons du prompt</h4>
+                            <p class="card-text" style="font-weight: normal; font-size: medium;">
+                                {{ prompt_tokens }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if total_tokens is defined %}
+                <div class="col">
+                    <div class="card cards_left">
+                        <div class="card-body">
+                            <h4>Jetons utilisés</h4>
+                            <p class="card-text" style="font-weight: normal; font-size: medium;">
+                                {{ total_tokens }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if informations.name_error_type is not null %}
+                <div class="col">
+                    <div class="card cards_left">
+                        <div class="card-body">
+                            <h4>Type d'erreur</h4>
+                            <p class="card-text" style="font-weight: normal; font-size: medium;">
+                                {{ informations.name_error_type }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </div>
 
     </div>

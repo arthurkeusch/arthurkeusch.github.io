@@ -16,7 +16,7 @@ class ToolsController extends DefaultController
 
 
     /**
-     * Récupère la liste des outils.
+     * Afficher la liste des outils.
      *
      * @return Response La réponse HTTP avec la liste des outils.
      */
@@ -68,7 +68,7 @@ FROM active_level;
 
 
     /**
-     * Récupère les informations sur un outil spécifique.
+     * Afficher les informations sur un outil spécifique.
      *
      * @param Request $request La requête HTTP.
      * @return Response La réponse HTTP avec les informations sur l'outil.
@@ -98,7 +98,8 @@ SELECT Levels.id_level,
        Levels.level
 FROM Levels
 JOIN levels_tools ON Levels.id_level = levels_tools.id_level
-WHERE levels_tools.id_tool = $id_tool;
+WHERE levels_tools.id_tool = $id_tool
+ORDER BY level;
 ");
 
         $errorLevelColumns = '';
@@ -122,7 +123,6 @@ SELECT
     Languages.id_language,
     Languages.short_name_language,
     Languages.name_language,
-    Languages.image_language,
     Languages.is_active,
     GROUP_CONCAT(DISTINCT Levels.id_level ORDER BY Levels.level ASC SEPARATOR ', ') AS active_levels,
     IFNULL(ErrorCounts.nbErrors, 0) AS nbErrors,
@@ -146,7 +146,6 @@ GROUP BY
     Languages.id_language,
     Languages.short_name_language,
     Languages.name_language,
-    Languages.image_language,
     Languages.is_active;
     ";
         $languages = $this->select($languagesQuery);
@@ -161,7 +160,7 @@ GROUP BY
 
 
     /**
-     * Récupère tous les journaux pour une langue spécifique.
+     * Récupérer tous les journaux pour une langue spécifique.
      *
      * @param Request $request La requête HTTP.
      * @return Response La réponse HTTP avec les journaux pour la langue spécifique.
@@ -206,7 +205,7 @@ FROM Logs;
 
 
     /**
-     * Récupère les informations sur un seul journal pour une langue spécifique.
+     * Récupérer les informations sur un seul journal pour une langue spécifique.
      *
      * @param Request $request La requête HTTP.
      * @return Response La réponse HTTP avec les informations sur le journal spécifique.
@@ -558,7 +557,7 @@ DELETE FROM Logs
         } catch (Exception $e) {
             return new JsonResponse([
                 'status' => 'error',
-                'message' => 'Echec de la suppression : ' . $e->getMessage()
+                'message' => 'Échec de la suppression : ' . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -666,7 +665,7 @@ DELETE FROM Tools
 
 
     /**
-     * Ajoute un nouvel outil avec les informations fournies.
+     * Ajouter un nouvel outil avec les informations fournies.
      *
      * @param Request $request La requête contenant les données de l'outil à ajouter.
      *
@@ -676,21 +675,12 @@ DELETE FROM Tools
     public function form_add_tool(Request $request): RedirectResponse
     {
         $name = $request->request->get('name');
-        $imageFile = $request->files->get('image');
         $api_name = $request->request->get('api_name');
 
-        if ($imageFile != null) {
-            $newFilename = $this->getNewFilename($imageFile);
-            $this->insert("
-INSERT INTO Tools(name_tool, image_tool, api_name_tool)
-VALUES ('$name', '$newFilename', '$api_name');
-");
-        } else {
-            $this->insert("
+        $this->insert("
 INSERT INTO Tools(name_tool, api_name_tool)
 VALUES ('$name', '$api_name');
 ");
-        }
 
         $result = $this->select("
 SELECT id_tool
@@ -721,7 +711,7 @@ VALUES ($id_tool, $id_level);
 
 
     /**
-     * Génère un nouveau nom de fichier pour l'image téléchargée.
+     * Générer un nouveau nom de fichier pour l'image téléchargée.
      *
      * @param mixed $imageFile Le fichier image téléchargé.
      *
@@ -746,7 +736,7 @@ VALUES ($id_tool, $id_level);
 
 
     /**
-     * Ajoute une nouvelle langue pour un outil donné.
+     * Ajouter une nouvelle langue pour un outil donné.
      *
      * @param Request $request La requête HTTP contenant les informations de la langue à ajouter.
      *
@@ -758,21 +748,10 @@ VALUES ($id_tool, $id_level);
         $id_tool = $request->request->get('id_tool');
         $full_name = $request->request->get('full_name');
         $short_name = $request->request->get('short_name');
-        $imageFile = $request->files->get('image');
-
-        if ($imageFile != null) {
-            $newFilename = $this->getNewFilename($imageFile);
-            $this->insert("
-            INSERT INTO Languages(short_name_language, name_language, image_language, is_active, id_tool)
-            VALUES ('$short_name', '$full_name', '$newFilename', FALSE, '$id_tool');
-        ");
-        } else {
-            $this->insert("
-            INSERT INTO Languages(short_name_language, name_language, is_active, id_tool)
-            VALUES ('$short_name', '$full_name', FALSE, '$id_tool');
-        ");
-        }
-
+        $this->insert("
+INSERT INTO Languages(short_name_language, name_language, is_active, id_tool)
+VALUES ('$short_name', '$full_name', FALSE, '$id_tool');
+");
         return new RedirectResponse($this->generateUrl('one_tool', ['id' => $id_tool]));
     }
 
@@ -790,21 +769,11 @@ VALUES ($id_tool, $id_level);
         $id_tool = $request->request->get('id_tool');
         $name = $request->request->get('name_update');
         $api_name = $request->request->get('api_name_update');
-        $imageFile = $request->files->get('image_update');
-        if ($imageFile != null) {
-            $newFilename = $this->getNewFilename($imageFile);
-            $this->updatePrepare("
-UPDATE Tools
-SET name_tool = :name, api_name_tool = :api_name, image_tool = :newFilename
-WHERE id_tool = :id_tool;
-", ['name' => $name, 'api_name' => $api_name, 'newFilename' => $newFilename, 'id_tool' => $id_tool]);
-        } else {
-            $this->updatePrepare("
+        $this->updatePrepare("
 UPDATE Tools
 SET name_tool = :name, api_name_tool = :api_name
 WHERE id_tool = :id_tool;
 ", ['name' => $name, 'api_name' => $api_name, 'id_tool' => $id_tool]);
-        }
         return new RedirectResponse($this->generateUrl('list_tools'));
     }
 
@@ -843,21 +812,11 @@ WHERE id_tool = :id_tool;
         $id_language = $request->request->get('id_language');
         $name = $request->request->get('name_update');
         $short_name = $request->request->get('short_name_update');
-        $imageFile = $request->files->get('image_update');
-        if ($imageFile != null) {
-            $newFilename = $this->getNewFilename($imageFile);
-            $this->updatePrepare("
-UPDATE Languages
-SET name_language = :name, short_name_language = :short_name, image_language = :newFilename
-WHERE id_language = :id_language;
-", ['name' => $name, 'short_name' => $short_name, 'newFilename' => $newFilename, 'id_language' => $id_language]);
-        } else {
-            $this->updatePrepare("
+        $this->updatePrepare("
 UPDATE Languages
 SET name_language = :name, short_name_language = :short_name
 WHERE id_language = :id_language;
 ", ['name' => $name, 'short_name' => $short_name, 'id_language' => $id_language]);
-        }
         return new RedirectResponse($this->generateUrl('one_tool', ['id' => $id_tool]));
     }
 
@@ -970,14 +929,14 @@ GROUP BY L.id_level;
         } catch (Exception $e) {
             return new JsonResponse([
                 'status' => '500',
-                'message' => 'Echec de la récupération : ' . $e->getMessage()
+                'message' => 'Échec de la récupération : ' . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
 
     /**
-     * Télécharge les données des logs.
+     * Télécharger les données des logs.
      *
      * @param Request $request L'objet Request contenant les données de la requête.
      *
@@ -992,7 +951,7 @@ GROUP BY L.id_level;
 
 
     /**
-     * Récupère le niveau du log.
+     * Récupérer le niveau du log.
      *
      * @param Request $request L'objet Request contenant les données de la requête.
      *
@@ -1018,6 +977,36 @@ WHERE id_log = $id;
             return new JsonResponse([
                 'status' => 'error',
                 'message' => "Echec de la récupération : " . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * Lance l'exécution de la commande de récupération des logs d'une langue.
+     *
+     * @param Request $request L'objet Request contenant les données de la requête.
+     *
+     * @return JsonResponse Une réponse JSON indiquant le statut du lancement.
+     */
+    #[Route('/tool/language/get/log', name: 'run_get_log_language', methods: ['POST'])]
+    public function run_get_log_language(Request $request): JsonResponse
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            $projectDir = $this->getParameter('kernel.project_dir');
+            $command = "php " . $projectDir . "/bin/console app:get-log-language " . escapeshellarg($data['id']);
+            exec($command . ' 2>&1', $output, $return_var);
+            if ($return_var !== 0) {
+                throw new \Exception("Erreur lors de l'exécution de la commande : " . implode("\n", $output));
+            }
+            return new JsonResponse([
+                'status' => '200'
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'status' => '500',
+                'message' => "Echec du lancement : " . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

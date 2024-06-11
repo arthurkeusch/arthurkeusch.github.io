@@ -4,20 +4,24 @@
      style="background: transparent; padding: 50px; top: 0; bottom: 0; left: 0; right: 0; max-width: calc(100% - 50px); margin: auto; border-radius: 20px;"
      role="dialog" id="modalLog">
     <div class="modal-dialog modal-fullscreen p-0 m-0 h-100" role="document">
-        <div class="modal-content rounded-4 shadow h-100" style="margin: auto;">
+        <div class="modal-content rounded-4 shadow h-100"
+             style="margin: auto; background: linear-gradient(113.22deg, #0C0F20 3.83%, #111A47 16.77%, #111A48 28.4%, #111A48 74.4%, #2536AF 102.38%);">
             <div class="modal-header p-5 pb-4 border-bottom-0" style="margin: auto; max-width: calc(100% - 100px);">
-                <h1 id="logTitle" class="fw-bold mb-0 fs-2">
+                <h1 id="logTitle" class="fw-bold mb-0 fs-2" style="color: white;">
                     Chargement des données...
                 </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-label="Close" onclick="hideLog()"
-                        style="position: absolute; right: 100px;">
+                <button type="button" class="btn" data-bs-dismiss="modal"
+                        aria-label="Close" onclick="hideLog()" style="position: absolute; right: 120px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-x-lg"
+                         viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                    </svg>
                 </button>
             </div>
             <div id="logContent" class="modal-body p-5 pt-0 overflow-auto"
                  style="height: calc(100% - 100px); margin: auto; max-width: calc(100% - 100px);">
                 <div class="d-flex justify-content-center">
-                    <div class="spinner-border" role="status">
+                    <div class="spinner-border text-light" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
@@ -30,7 +34,7 @@
     <div class="col-1">
         <div style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px;" data-bs-toggle="popup-tip"
              title="Revenir à '{{ informations.name_tool }}'">
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="white"
                  class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16"
                  onclick="goBack({{ informations.id_tool }})"
                  style="cursor: pointer;">
@@ -41,7 +45,8 @@
     <div class="col-9" style="margin-top: 22px;">
         {% include 'Components/breadcrumb.html.twig' with {
             'past': [
-                {'link': '/tool', 'name': 'Outils'},
+                {'link': '/', 'name': 'Accueil'},
+                {'link': '/tool', 'name': 'Liste des outils'},
                 {'link': '/tool/' ~ informations.id_tool, 'name': informations.name_tool}
             ],
             'current': informations.name_language
@@ -49,102 +54,91 @@
     </div>
 </div>
 
-<div class="content">
-    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
-        {% set imagePath = 'images/images_tools/' ~ informations.image_language %}
-        {% if informations.image_language != "" %}
-            <img src="{{ asset(imagePath) }}" class="rounded-top" alt="Image de la langue">
-        {% else %}
-            <img src="{{ asset('images/images_tools/default_image.svg') }}" alt="Image par défaut" class="rounded-top">
-        {% endif %}
-        <div class="card-body">
-            <h1>{{ informations.name_language }}</h1>
-        </div>
-    </div>
-
-    <div class="album py-5" style="margin-right: 10px; margin-left: 10px; margin-top: -35px; user-select: none;">
-        <div class="row row-cols-1 g-2">
-            <div id="filtersAccordionContainer" class="accordion" id="filtersAccordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingFilters">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">
-                            Filtres
-                        </button>
-                    </h2>
-                    <div id="collapseFilters" class="accordion-collapse collapse" aria-labelledby="headingFilters"
-                         data-bs-parent="#filtersAccordion">
-                        <div class="accordion-body">
-                            <div class="col">
-                                <div class="card shadow-sm">
-                                    <div class="card-body text-center">
-                                        <div class="input-group mb-3">
-                                            <label for="start" class="input-group-text">Du</label>
-                                            <input style="cursor: pointer;" id="start" type="datetime-local"
-                                                   class="form-control"
-                                                   onchange="filter()">
-                                            <label for="end" class="input-group-text">au</label>
-                                            <input style="cursor: pointer;" id="end" type="datetime-local"
-                                                   class="form-control"
-                                                   onchange="filter()">
-                                        </div>
-                                        <div class="row justify-content-between">
-                                            <div class="list-group col" style="margin-left: 12px;">
-                                                {% for level in levels %}
-                                                    <label class="list-group-item d-flex gap-2"
-                                                           style="cursor: pointer;">
-                                                        <input id="level_{{ level.id_level }}"
-                                                               class="form-check-input flex-shrink-0"
-                                                               type="checkbox" checked onchange="filter()">
-                                                        <svg id="level_pastille_filtre_{{ level.id_level }}"
-                                                             xmlns="http://www.w3.org/2000/svg" width="20"
-                                                             height="20" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                            <circle cx="8" cy="8" r="8"/>
-                                                        </svg>
-                                                        <span>{{ level.name_level }} <small>({{ level.level }})</small></span>
-                                                        {% if level.nbErrors > 0 %}
-                                                            <div style="position: absolute; right: 10px;"
-                                                                 data-bs-toggle="popup-tip"
-                                                                 title="Nombre d'erreurs qui ont eu lieu au cours des dernières 24 heures pour ce niveau.">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                                     height="16" fill="red"
-                                                                     class="bi bi-bug-fill" viewBox="0 0 16 16">
-                                                                    <path d="M4.978.855a.5.5 0 1 0-.956.29l.41 1.352A5 5 0 0 0 3 6h10a5 5 0 0 0-1.432-3.503l.41-1.352a.5.5 0 1 0-.956-.29l-.291.956A5 5 0 0 0 8 1a5 5 0 0 0-2.731.811l-.29-.956z"/>
-                                                                    <path d="M13 6v1H8.5v8.975A5 5 0 0 0 13 11h.5a.5.5 0 0 1 .5.5v.5a.5.5 0 1 0 1 0v-.5a1.5 1.5 0 0 0-1.5-1.5H13V9h1.5a.5.5 0 0 0 0-1H13V7h.5A1.5 1.5 0 0 0 15 5.5V5a.5.5 0 0 0-1 0v.5a.5.5 0 0 1-.5.5zm-5.5 9.975V7H3V6h-.5a.5.5 0 0 1-.5-.5V5a.5.5 0 0 0-1 0v.5A1.5 1.5 0 0 0 2.5 7H3v1H1.5a.5.5 0 0 0 0 1H3v1h-.5A1.5 1.5 0 0 0 1 11.5v.5a.5.5 0 1 0 1 0v-.5a.5.5 0 0 1 .5-.5H3a5 5 0 0 0 4.5 4.975"/>
-                                                                </svg>
-                                                                <span>{{ level.nbErrors }}</span>
-                                                            </div>
-                                                        {% endif %}
-                                                    </label>
-                                                {% endfor %}
-                                            </div>
-                                            <div class="list-group col">
-                                                <label class="list-group-item d-flex gap-2"
-                                                       style="cursor: pointer; user-select: none;"
-                                                       data-bs-toggle="popup-tip"
-                                                       title="Afficher uniquement les logs qui comportent une erreur.">
-                                                    <input class="form-check-input" type="checkbox" role="switch"
-                                                           id="error_only"
-                                                           onchange="filter()">
-                                                    <label class="form-check-label" for="error_only">Afficher uniquement
-                                                        les erreurs</label>
-                                                </label>
-                                                <label class="list-group-item d-flex gap-2" id="nbLogShow"
-                                                       style="cursor: pointer; user-select: none;">
-                                                    Nombre de log : {{ logs | length }}
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-outline-dark" type="submit" style="margin-top: 10px;"
-                                                onclick="stopFilter()"
-                                                data-bs-toggle="popup-tip" title="Réinitialiser les filtres.">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
-                                                 fill="currentColor"
-                                                 class="bi bi-ban" viewBox="0 0 16 16">
-                                                <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"/>
-                                            </svg>
-                                        </button>
+<div class="album py-5"
+     style="margin-right: 10px; margin-left: 10px; margin-top: -35px; user-select: none; padding: 0;">
+    <div class="row row-cols-1 g-2" style="margin: auto; width: fit-content;">
+        <div id="filtersAccordionContainer" class="accordion"
+             style="padding: 0; right: 10px; left: calc(50% - 876px / 2 - 6px); width: 876px;">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFilters">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters"
+                            style="color: white; background: black;">
+                        Filtres
+                    </button>
+                </h2>
+                <div id="collapseFilters" class="accordion-collapse collapse" aria-labelledby="headingFilters"
+                     style="color: white; background: black;"
+                     data-bs-parent="#filtersAccordionContainer">
+                    <div class="accordion-body">
+                        <div class="col">
+                            <div class="cards" style="background: transparent; font-weight: normal; font-size: medium;">
+                                <div class="card-body text-center">
+                                    <div class="input-group mb-3">
+                                        <label for="start" class="input-group-text">Du</label>
+                                        <input style="cursor: pointer;" id="start" type="datetime-local"
+                                               class="form-control"
+                                               onchange="filter()">
+                                        <label for="end" class="input-group-text">au</label>
+                                        <input style="cursor: pointer;" id="end" type="datetime-local"
+                                               class="form-control"
+                                               onchange="filter()">
                                     </div>
+                                    <div class="row justify-content-between">
+                                        <div class="list-group col" style="margin-left: 12px;">
+                                            {% for level in levels %}
+                                                <label class="list-group-item d-flex gap-2"
+                                                       style="cursor: pointer;">
+                                                    <input id="level_{{ level.id_level }}"
+                                                           class="form-check-input flex-shrink-0"
+                                                           type="checkbox" checked onchange="filter()">
+                                                    <svg id="level_pastille_filtre_{{ level.id_level }}"
+                                                         xmlns="http://www.w3.org/2000/svg" width="20"
+                                                         height="20" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                        <circle cx="8" cy="8" r="8"/>
+                                                    </svg>
+                                                    <span>{{ level.name_level }} <small>({{ level.level }})</small></span>
+                                                    {% if level.nbErrors > 0 %}
+                                                        <div style="position: absolute; right: 10px;"
+                                                             data-bs-toggle="popup-tip"
+                                                             title="Nombre d'erreurs qui ont eu lieu au cours des dernières 24 heures pour ce niveau.">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                 height="16" fill="red"
+                                                                 class="bi bi-bug-fill" viewBox="0 0 16 16">
+                                                                <path d="M4.978.855a.5.5 0 1 0-.956.29l.41 1.352A5 5 0 0 0 3 6h10a5 5 0 0 0-1.432-3.503l.41-1.352a.5.5 0 1 0-.956-.29l-.291.956A5 5 0 0 0 8 1a5 5 0 0 0-2.731.811l-.29-.956z"/>
+                                                                <path d="M13 6v1H8.5v8.975A5 5 0 0 0 13 11h.5a.5.5 0 0 1 .5.5v.5a.5.5 0 1 0 1 0v-.5a1.5 1.5 0 0 0-1.5-1.5H13V9h1.5a.5.5 0 0 0 0-1H13V7h.5A1.5 1.5 0 0 0 15 5.5V5a.5.5 0 0 0-1 0v.5a.5.5 0 0 1-.5.5zm-5.5 9.975V7H3V6h-.5a.5.5 0 0 1-.5-.5V5a.5.5 0 0 0-1 0v.5A1.5 1.5 0 0 0 2.5 7H3v1H1.5a.5.5 0 0 0 0 1H3v1h-.5A1.5 1.5 0 0 0 1 11.5v.5a.5.5 0 1 0 1 0v-.5a.5.5 0 0 1 .5-.5H3a5 5 0 0 0 4.5 4.975"/>
+                                                            </svg>
+                                                            <span>{{ level.nbErrors }}</span>
+                                                        </div>
+                                                    {% endif %}
+                                                </label>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="list-group col">
+                                            <label class="list-group-item d-flex gap-2"
+                                                   style="cursor: pointer; user-select: none;"
+                                                   data-bs-toggle="popup-tip"
+                                                   title="Afficher uniquement les logs qui comportent une erreur.">
+                                                <input class="form-check-input" type="checkbox" role="switch"
+                                                       id="error_only"
+                                                       onchange="filter()">
+                                                <label class="form-check-label" for="error_only">Afficher uniquement
+                                                    les erreurs</label>
+                                            </label>
+                                            <label class="list-group-item d-flex gap-2" id="nbLogShow"
+                                                   style="cursor: pointer; user-select: none;">
+                                                Nombre de logs : {{ logs | length }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <button class="btn" type="submit" style="margin-top: 10px; background: transparent;"
+                                            onclick="stopFilter()" data-bs-toggle="popup-tip"
+                                            title="Réinitialiser les filtres.">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white"
+                                             class="bi bi-ban" viewBox="0 0 16 16">
+                                            <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"/>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -153,134 +147,130 @@
             </div>
         </div>
     </div>
-
 </div>
-
 
 {% if logs is empty %}
     <h2 style="text-align: center; margin-top: 20px;">Aucun log n'est disponible pour cet outil.</h2>
 {% else %}
-    <div style="margin: -30px 40px 20px;">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-3" style="margin-top: 10px;">
+    <div style="margin: 0 auto; max-width: 1000px;">
 
-            <table class="table table-bordered table-striped">
-                <thead>
-                <tr class="table-dark" style="height: 61px;">
-                    <th scope="col" class="text-center">
+        <table class="table table-bordered table-striped table-dark">
+            <thead>
+            <tr class="table-dark" style="height: 61px;">
+                <th scope="col" class="text-center">
+                    <input class="form-check-input flex-shrink-0" type="checkbox"
+                           id="checkbox_select" onclick="check()"
+                           style="width: 25px; height: 25px; cursor: pointer;"
+                           data-bs-toggle="popup-tip" title="Sélectionner tous les logs.">
+                </th>
+                <th scope="col" class="text-center" id="date_header" style="user-select: none;">
+                    Date
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                         class="bi bi-arrow-down-up" viewBox="0 0 16 16"
+                         style="cursor: pointer;" onclick="filterDate()">
+                        <path fill-rule="evenodd"
+                              d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
+                    </svg>
+                </th>
+                <th scope="col" class="text-center" id="level_header" style="user-select: none;">
+                    Niveau
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                         class="bi bi-arrow-down-up" viewBox="0 0 16 16"
+                         style="cursor: pointer;" onclick="filterLevel()">
+                        <path fill-rule="evenodd"
+                              d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
+                    </svg>
+                </th>
+                <th scope="col" class="text-center" id="latency_header" style="user-select: none;">
+                    Latence
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                         class="bi bi-arrow-down-up" viewBox="0 0 16 16"
+                         style="cursor: pointer;" onclick="filterLatency()">
+                        <path fill-rule="evenodd"
+                              d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
+                    </svg>
+                </th>
+                <th scope="col" class="text-center">
+                    <button
+                            class="btn btn-danger" type="submit"
+                            style="display: none;" id="button_delete_selection"
+                            onclick="deleteAllSelect()"
+                            data-bs-toggle="popup-tip" title="Supprimer la sélection."
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                             class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                        </svg>
+                    </button>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for log in logs %}
+                <tr id="log_{{ log.id_log }}">
+                    <th class="text-center col-1">
                         <input class="form-check-input flex-shrink-0" type="checkbox"
-                               id="checkbox_select" onclick="check()"
+                               id="checkbox_log_{{ log.id_log }}" onclick="verifyCompare()"
                                style="width: 25px; height: 25px; cursor: pointer;"
-                               data-bs-toggle="popup-tip" title="Sélectionner tous les logs.">
+                               data-bs-toggle="popup-tip" title="Sélectionner le log.">
                     </th>
-                    <th scope="col" class="text-center" id="date_header">
-                        Date
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                             class="bi bi-arrow-down-up" viewBox="0 0 16 16"
-                             style="cursor: pointer;" onclick="filterDate()">
-                            <path fill-rule="evenodd"
-                                  d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
+                    <td id="date_{{ log.id_log }}" class="col-3">
+                        {{ log.date_log }}
+                        <svg id="bug_{{ log.id_log }}" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                             fill="red" class="bi bi-bug-fill" viewBox="0 0 16 16"
+                             data-bs-toggle="popup-tip" title="Ce log comporte une erreur.">
+                            <path d="M4.978.855a.5.5 0 1 0-.956.29l.41 1.352A5 5 0 0 0 3 6h10a5 5 0 0 0-1.432-3.503l.41-1.352a.5.5 0 1 0-.956-.29l-.291.956A5 5 0 0 0 8 1a5 5 0 0 0-2.731.811l-.29-.956z"/>
+                            <path d="M13 6v1H8.5v8.975A5 5 0 0 0 13 11h.5a.5.5 0 0 1 .5.5v.5a.5.5 0 1 0 1 0v-.5a1.5 1.5 0 0 0-1.5-1.5H13V9h1.5a.5.5 0 0 0 0-1H13V7h.5A1.5 1.5 0 0 0 15 5.5V5a.5.5 0 0 0-1 0v.5a.5.5 0 0 1-.5.5zm-5.5 9.975V7H3V6h-.5a.5.5 0 0 1-.5-.5V5a.5.5 0 0 0-1 0v.5A1.5 1.5 0 0 0 2.5 7H3v1H1.5a.5.5 0 0 0 0 1H3v1h-.5A1.5 1.5 0 0 0 1 11.5v.5a.5.5 0 1 0 1 0v-.5a.5.5 0 0 1 .5-.5H3a5 5 0 0 0 4.5 4.975"/>
                         </svg>
-                    </th>
-                    <th scope="col" class="text-center" id="level_header">
-                        Niveau
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                             class="bi bi-arrow-down-up" viewBox="0 0 16 16"
-                             style="cursor: pointer;" onclick="filterLevel()">
-                            <path fill-rule="evenodd"
-                                  d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
+                    </td>
+                    <td id="level_table_{{ log.id_log }}" class="col-3">
+                        <svg id="level_pastille_{{ log.id_log }}" xmlns="http://www.w3.org/2000/svg" width="20"
+                             height="20" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                            <circle cx="8" cy="8" r="8"/>
                         </svg>
-                    </th>
-                    <th scope="col" class="text-center" id="latency_header">
-                        Temps de réponse
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                             class="bi bi-arrow-down-up" viewBox="0 0 16 16"
-                             style="cursor: pointer;" onclick="filterLatency()">
-                            <path fill-rule="evenodd"
-                                  d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
-                        </svg>
-                    </th>
-                    <th scope="col" class="text-center">
-                        <button
-                                class="btn btn-danger" type="submit"
-                                style="display: none;" id="button_delete_selection"
-                                onclick="deleteAllSelect()"
-                                data-bs-toggle="popup-tip" title="Supprimer la sélection."
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                                 class="bi bi-trash3" viewBox="0 0 16 16">
-                                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-                            </svg>
-                        </button>
-                    </th>
+                        {{ log.name_level }} <small>({{ log.level }})</small>
+                    </td>
+                    <td id="latency_{{ log.id_log }}" class="col-2">
+                        {{ log.latency_log }} ms
+                    </td>
+                    <td class="text-center col-3">
+                        <div class="btn-group">
+                            <button type="button" class="btn" style="background: transparent;"
+                                    data-bs-toggle="popup-tip" title="Voir le log."
+                                    onclick="goTo({{ log.id_log }}, {{ log.level }})">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white"
+                                     class="bi bi-eye" viewBox="0 0 16 16">
+                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                                </svg>
+                            </button>
+                            <button type="button" class="btn btn-danger"
+                                    data-bs-toggle="popup-tip" title="Supprimer le log."
+                                    onclick="delete_log({{ log.id_log }})">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                     class="bi bi-trash3" viewBox="0 0 16 16">
+                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                </svg>
+                            </button>
+                            <button
+                                    id="compare_log_button_{{ log.id_log }}"
+                                    class="btn" type="submit" style="display: none; background: transparent;"
+                                    onclick="compareLog()" data-bs-toggle="popup-tip"
+                                    title="Comparer les logs."
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white"
+                                     class="bi bi-file-diff" viewBox="0 0 16 16">
+                                    <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4m-2.5 6.5A.5.5 0 0 1 6 10h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5"/>
+                                    <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
                 </tr>
-                </thead>
-                <tbody>
-                {% for log in logs %}
-                    <tr id="log_{{ log.id_log }}">
-                        <th class="col-1 text-center">
-                            <input class="form-check-input flex-shrink-0" type="checkbox"
-                                   id="checkbox_log_{{ log.id_log }}" onclick="verifyCompare()"
-                                   style="width: 25px; height: 25px; cursor: pointer;"
-                                   data-bs-toggle="popup-tip" title="Sélectionner le log.">
-                        </th>
-                        <td id="date_{{ log.id_log }}" class="col-3">
-                            {{ log.date_log }}
-                            <svg id="bug_{{ log.id_log }}" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                                 fill="red" class="bi bi-bug-fill" viewBox="0 0 16 16"
-                                 data-bs-toggle="popup-tip" title="Ce log comporte une erreur.">
-                                <path d="M4.978.855a.5.5 0 1 0-.956.29l.41 1.352A5 5 0 0 0 3 6h10a5 5 0 0 0-1.432-3.503l.41-1.352a.5.5 0 1 0-.956-.29l-.291.956A5 5 0 0 0 8 1a5 5 0 0 0-2.731.811l-.29-.956z"/>
-                                <path d="M13 6v1H8.5v8.975A5 5 0 0 0 13 11h.5a.5.5 0 0 1 .5.5v.5a.5.5 0 1 0 1 0v-.5a1.5 1.5 0 0 0-1.5-1.5H13V9h1.5a.5.5 0 0 0 0-1H13V7h.5A1.5 1.5 0 0 0 15 5.5V5a.5.5 0 0 0-1 0v.5a.5.5 0 0 1-.5.5zm-5.5 9.975V7H3V6h-.5a.5.5 0 0 1-.5-.5V5a.5.5 0 0 0-1 0v.5A1.5 1.5 0 0 0 2.5 7H3v1H1.5a.5.5 0 0 0 0 1H3v1h-.5A1.5 1.5 0 0 0 1 11.5v.5a.5.5 0 1 0 1 0v-.5a.5.5 0 0 1 .5-.5H3a5 5 0 0 0 4.5 4.975"/>
-                            </svg>
-                        </td>
-                        <td id="level_table_{{ log.id_log }}" class="col-3">
-                            <svg id="level_pastille_{{ log.id_log }}" xmlns="http://www.w3.org/2000/svg" width="20"
-                                 height="20" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                <circle cx="8" cy="8" r="8"/>
-                            </svg>
-                            {{ log.name_level }} <small>({{ log.level }})</small>
-                        </td>
-                        <td id="latency_{{ log.id_log }}" class="col-2">
-                            {{ log.latency_log }} ms
-                        </td>
-                        <td class="text-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-outline-dark"
-                                        data-bs-toggle="popup-tip" title="Voir le log."
-                                        onclick="goTo({{ log.id_log }}, {{ log.level }})">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                                         class="bi bi-eye" viewBox="0 0 16 16">
-                                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
-                                        <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-                                    </svg>
-                                </button>
-                                <button type="button" class="btn btn-outline-danger"
-                                        data-bs-toggle="popup-tip" title="Supprimer le log."
-                                        onclick="delete_log({{ log.id_log }})">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                                         class="bi bi-trash3" viewBox="0 0 16 16">
-                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-                                    </svg>
-                                </button>
-                                <button
-                                        id="compare_log_button_{{ log.id_log }}"
-                                        class="btn btn-outline-info" type="submit" style="display: none;"
-                                        onclick="compareLog()" data-bs-toggle="popup-tip"
-                                        title="Comparer les logs."
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                                         class="bi bi-file-diff" viewBox="0 0 16 16">
-                                        <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4m-2.5 6.5A.5.5 0 0 1 6 10h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5"/>
-                                        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            {% endfor %}
+            </tbody>
+        </table>
 
-        </div>
     </div>
 {% endif %}
 
@@ -291,6 +281,10 @@
     let orderLevel = "DESC";
     let orderLatency = "DESC";
 
+
+    /**
+     * Affiche les détails d'un log spécifique et permet l'interaction avec les informations du log.
+     */
     async function goTo(id, level) {
         showLog();
         await getRequest("/tool/language/log", {id: id})
@@ -331,6 +325,10 @@
             });
     }
 
+
+    /**
+     * Compare deux logs sélectionnés et affiche les différences.
+     */
     async function compareLog() {
         showLog();
         let listId = []
@@ -379,24 +377,40 @@
             });
     }
 
+
+    /**
+     * Affiche le modal de chargement des logs.
+     */
     function showLog() {
         document.getElementById('modalLog').classList.add("d-flex");
     }
 
+
+    /**
+     * Cache le modal de chargement des logs.
+     */
     function hideLog() {
         document.getElementById('modalLog').classList.remove("d-flex");
         document.getElementById('logContent').innerHTML = `
         <div class="d-flex justify-content-center">
-            <div class="spinner-border" role="status">
+            <div class="spinner-border text-light" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>`;
     }
 
+
+    /**
+     * Redirige vers la page de l'outil en utilisant son identifiant.
+     */
     function goBack(id) {
         window.location.href = '/tool/' + id;
     }
 
+
+    /**
+     * Supprime un log spécifique après confirmation.
+     */
     function delete_log(id_log) {
         openModal();
         document.getElementById("modalTitle").innerText = "Supprimer un log";
@@ -424,6 +438,10 @@
         });
     }
 
+
+    /**
+     * Filtre les logs en fonction des critères spécifiés (date, niveau, erreurs).
+     */
     async function filter() {
         const start = new Date(document.getElementById("start").value);
         const end = new Date(document.getElementById("end").value);
@@ -457,6 +475,10 @@
         verifyCompare();
     }
 
+
+    /**
+     * Trie les logs par date dans l'ordre croissant ou décroissant.
+     */
     function filterDate() {
         const tableBody = document.querySelector('tbody');
         const rows = Array.from(tableBody.querySelectorAll('tr:not(#card_add_level)'));
@@ -484,12 +506,20 @@
         rows.forEach(row => tableBody.appendChild(row));
     }
 
+
+    /**
+     * Extrait le contenu entre parenthèses dans une chaîne de caractères.
+     */
     function extractContentInParentheses(str) {
         const regex = /\(([^)]+)\)/;
         const matches = regex.exec(str);
         return matches && matches.length > 1 ? matches[1] : null;
     }
 
+
+    /**
+     * Trie les logs par niveau dans l'ordre croissant ou décroissant.
+     */
     function filterLevel() {
         const tableBody = document.querySelector('tbody');
         const rows = Array.from(tableBody.querySelectorAll('tr:not(#card_add_level)'));
@@ -520,6 +550,10 @@
         }
     }
 
+
+    /**
+     * Trie les logs par temps de latence dans l'ordre croissant ou décroissant.
+     */
     function filterLatency() {
         const tableBody = document.querySelector('tbody');
         const rows = Array.from(tableBody.querySelectorAll('tr:not(#card_add_level)'));
@@ -550,6 +584,10 @@
         }
     }
 
+
+    /**
+     * Met à jour l'icône de tri pour les dates.
+     */
     function updateArrowDate(order) {
         const arrowIcon = document.querySelector('#date_header svg');
         arrowIcon.innerHTML = '';
@@ -562,6 +600,10 @@
         }
     }
 
+
+    /**
+     * Met à jour l'icône de tri pour les niveaux.
+     */
     function updateArrowLevel(order) {
         const arrowIcon = document.querySelector('#level_header svg');
         arrowIcon.innerHTML = '';
@@ -574,6 +616,10 @@
         }
     }
 
+
+    /**
+     * Met à jour l'icône de tri pour la latence.
+     */
     function updateArrowLatency(order) {
         const arrowIcon = document.querySelector('#latency_header svg');
         arrowIcon.innerHTML = '';
@@ -586,6 +632,10 @@
         }
     }
 
+
+    /**
+     * Réinitialise les filtres et affiche tous les logs.
+     */
     function stopFilter() {
         for (const id_log in logs) {
             document.getElementById("log_" + logs[id_log]['id_log']).style.display = "";
@@ -600,6 +650,10 @@
         verifyCompare();
     }
 
+
+    /**
+     * Sélectionne ou désélectionne tous les logs visibles.
+     */
     function check() {
         if (document.getElementById("checkbox_select").checked) {
             selectAll();
@@ -609,18 +663,21 @@
         verifyCompare();
     }
 
+
+    /**
+     * Sélectionne tous les logs visibles.
+     */
     function selectAll() {
         for (const id in logs) {
-            let input = document.getElementById("checkbox_log_" + logs[id]['id_log']);
-            if (document.getElementById("log_" + logs[id]['id_log']).style.display !== "none") {
-                input.checked = true;
-            } else {
-                input.checked = false;
-            }
+            document.getElementById("checkbox_log_" + logs[id]['id_log']).checked = document.getElementById("log_" + logs[id]['id_log']).style.display !== "none";
         }
         verifyCompare();
     }
 
+
+    /**
+     * Désélectionne tous les logs visibles.
+     */
     function unselectAll() {
         for (const id in logs) {
             let input = document.getElementById("checkbox_log_" + logs[id]['id_log']);
@@ -631,6 +688,10 @@
         verifyCompare();
     }
 
+
+    /**
+     * Supprime tous les logs sélectionnés après confirmation.
+     */
     function deleteAllSelect() {
         openModal();
         document.getElementById("modalTitle").innerText = "Supprimer des logs";
@@ -663,6 +724,10 @@
         });
     }
 
+
+    /**
+     * Retourne la couleur associée à un niveau de log donné.
+     */
     function getColorLevel(level) {
         switch (true) {
             case (level <= 10 && level >= 0):
@@ -690,19 +755,10 @@
         }
     }
 
-    for (const id in logs) {
-        document.getElementById("level_pastille_" + logs[id].id_log).style.fill = getColorLevel(logs[id].level);
-        if (logs[id].isError === 1) {
-            document.getElementById("bug_" + logs[id].id_log).style.display = "";
-        } else {
-            document.getElementById("bug_" + logs[id].id_log).style.display = "none";
-        }
-    }
 
-    for (const level in levels) {
-        document.getElementById("level_pastille_filtre_" + levels[level].id_level).style.fill = getColorLevel(levels[level].level);
-    }
-
+    /**
+     * Vérifie les cases sélectionnées et met à jour les boutons d'action en conséquence.
+     */
     function verifyCompare() {
         let nbCaseChecked = 0;
         let nbCase = 0;
@@ -740,7 +796,7 @@
                     const noDataCell = document.createElement("td");
                     noDataRow.setAttribute("id", "nodata_component");
                     noDataCell.setAttribute("colspan", "12");
-                    noDataCell.innerHTML = `{% include 'Components/nodata.html.twig' with {'message': 'Veuillez modifier les filtres. Aucun log ne correspond à votre recherche.'} %}`;
+                    noDataCell.innerHTML = `{% include 'Components/nodata.html.twig' with {'message': 'Veuillez modifier les filtres. Aucun log ne correspond à votre recherche.', 'isError': 'true'} %}`;
                     noDataRow.appendChild(noDataCell);
                     tableBody.appendChild(noDataRow);
                 }
@@ -757,7 +813,7 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         const filtersAccordionContainer = document.getElementById('filtersAccordionContainer');
-        const navbarHeight = document.querySelector('.navbar').offsetHeight;
+        const navbarHeight = document.querySelector('#navbar').offsetHeight + 30;
         window.addEventListener('scroll', function () {
             if (window.scrollY >= filtersAccordionContainer.offsetTop - navbarHeight) {
                 filtersAccordionContainer.classList.add('fixed-accordion');
@@ -767,6 +823,31 @@
                 filtersAccordionContainer.style.top = 'auto';
             }
         });
+    });
+
+    for (const id in logs) {
+        document.getElementById("level_pastille_" + logs[id].id_log).style.fill = getColorLevel(logs[id].level);
+        if (logs[id].isError === 1) {
+            document.getElementById("bug_" + logs[id].id_log).style.display = "";
+        } else {
+            document.getElementById("bug_" + logs[id].id_log).style.display = "none";
+        }
+    }
+
+    for (const level in levels) {
+        document.getElementById("level_pastille_filtre_" + levels[level].id_level).style.fill = getColorLevel(levels[level].level);
+    }
+
+
+    document.getElementById('modalLog').addEventListener('click', function(event) {
+        if (event.target === this) {
+            hideLog();
+        }
+    });
+
+
+    document.getElementById('modalLog').addEventListener('click', function(event) {
+        event.stopPropagation();
     });
 </script>
 

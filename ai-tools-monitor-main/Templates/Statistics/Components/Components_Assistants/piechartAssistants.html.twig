@@ -1,8 +1,14 @@
 <div id="piechart_assistants"></div>
 
 <script>
+    let width = 928;
+    let height = 600;
     let data_piechart_assistants = {{ data|json_encode|raw }};
 
+
+    /**
+     * Ajoute un graphique en secteur pour les assistants en fonction des données fournies.
+     */
     function addPieChartAssistants() {
         const height = Math.min(width, 500);
         const radius = Math.min(width, height) / 2;
@@ -35,40 +41,36 @@
             .append("title")
             .text(d => `${d.data.value.toLocaleString()}`);
 
-        svg.append("g")
+        const textGroup = svg.append("g")
             .attr("font-family", "sans-serif")
             .attr("font-size", 12)
             .attr("text-anchor", "middle")
-            .selectAll("text")
+            .selectAll("g")
             .data(pie(data_piechart_assistants))
-            .join("text")
-            .attr("transform", d => `translate(${arc.centroid(d)})`)
+            .join("g")
+            .attr("transform", d => `translate(${arc.centroid(d)})`);
+
+        textGroup.append("rect")
+            .attr("x", d => -getTextWidth(wrapText(d.data.name)) / 2 - 8)
+            .attr("y", -16)
+            .attr("width", d => getTextWidth(wrapText(d.data.name)) + 16)
+            .attr("height", 16)
+            .attr("fill", "white");
+
+        textGroup.append("text")
             .call(text => text.append("tspan")
                 .attr("y", "-0.4em")
                 .attr("font-weight", "bold")
-                .text(d => d.data.name))
-            .each(wrapText);
+                .text(d => wrapText(d.data.name)));
 
-        function wrapText(d) {
-            const self = d3.select(this);
-            const words = d.data.name.split(/\s+/).reverse();
-            const lineHeight = 1.1;
-            const x = 0;
-            const dy = 1.1;
-            let line = [];
-            let lineNumber = 0;
-            let tspan = self.text(null).append("tspan").attr("x", x).attr("dy", `${dy}em`);
-            let word;
-            while ((word = words.pop())) {
-                line.push(word);
-                tspan.text(line.join(" "));
-                if (tspan.node().getComputedTextLength() > 80) {
-                    line.pop();
-                    tspan.text(line.join(" "));
-                    line = [word];
-                    tspan = self.append("tspan").attr("x", x).attr("dy", `${++lineNumber * lineHeight + dy}em`).text(word);
-                }
-            }
+        function wrapText(name) {
+            return name.split(":")[1].trim();
+        }
+
+        function getTextWidth(text) {
+            const context = document.createElement("canvas").getContext("2d");
+            context.font = "12px sans-serif";
+            return context.measureText(text).width;
         }
 
         return svg.node();

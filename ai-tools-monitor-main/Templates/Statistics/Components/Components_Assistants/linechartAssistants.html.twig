@@ -4,6 +4,10 @@
     let y_name_line_chart_assistant = {{ y_name|json_encode|raw }};
     let data_line_chart_assistant = {{ data|json_encode|raw }};
 
+
+    /**
+     * Ajoute un graphique en ligne pour afficher la latence moyenne des assistants au fil du temps.
+     */
     function chart() {
         data_line_chart_assistant = data_line_chart_assistant
             .map(d => ({ date: new Date(d.date), average_latency: parseFloat(d.average_latency) }))
@@ -50,7 +54,7 @@
 
         svg.append("path")
             .attr("fill", "none")
-            .attr("stroke", "steelblue")
+            .attr("stroke", "white")
             .attr("stroke-width", 1.5)
             .attr("d", line(data_line_chart_assistant));
 

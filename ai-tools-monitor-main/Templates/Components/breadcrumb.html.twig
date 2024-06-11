@@ -2,8 +2,8 @@
      aria-label="breadcrumb">
     <ol class="breadcrumb">
         {% for line in past %}
-            <li class="breadcrumb-item"><a href={{ line.link }}>{{ line.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ line.link }}" style="color: #3e9bff; font-size: large; font-weight: bold;">{{ line.name }}</a></li>
         {% endfor %}
-        <li class="breadcrumb-item active" aria-current="page">{{ current }}</li>
+        <li class="breadcrumb-item active" aria-current="page" style="color: white; font-size: large;">{{ current }}</li>
     </ol>
 </nav>

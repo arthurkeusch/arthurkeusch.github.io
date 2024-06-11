@@ -1,70 +1,15 @@
 <div class="content">
-    <div class="card shadow-sm" style="margin-right: 10px; margin-left: 10px;">
+    <div class="card shadow-sm" style="margin-right: 10px; margin-left: 10px; background: transparent;">
         <div class="card-body">
-            <h1 style="text-align: center">{{ informations.date_thread | raw }}</h1>
-
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-2" style="margin-bottom: 10px;">
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h4>ID thread</h4>
-                            <p class="card-text">
-                                {{ informations.id_thread }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h4>Statut</h4>
-                            <p class="card-text">
-                                {{ informations.object_run.status }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h4>Model</h4>
-                            <p class="card-text">
-                                {{ informations.object_run.model }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h4>Latence</h4>
-                            <p class="card-text">
-                                {{ informations.latency_thread }} ms
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                {% if informations.isError %}
-                    <div class="col">
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <h4>Type d'erreur</h4>
-                                <p class="card-text">
-                                    {{ informations.name_error_type }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
+            <h1 style="text-align: center; color: white;">{{ informations.date_thread | raw }}</h1>
 
             <div class="col">
-                <div class="card shadow-sm">
+                <div class="card cards_left">
                     <div class="card-body">
                         <h4>Messages dans le thread</h4>
                         <main class="content">
                             <div class="container p-0">
-                                <div class="card" style="align-content: end">
+                                <div class="card" style="align-content: end; background-color: #0e1022;">
                                     <div class="row g-0">
                                         <div class="position-relative">
                                             <div class="chat-messages p-4">
@@ -133,7 +78,7 @@
             <div class="row row-cols-1 row-cols-xl-2 g-2">
 
                 <div class="accordion col" id="accordion_run" style="margin-top: 10px;">
-                    <div class="accordion-item">
+                    <div class="accordion-item cards_left" style="font-size: medium; font-weight: normal;">
                         <h2 class="accordion-header">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#accordion_collapse_run" aria-expanded="false">
@@ -150,7 +95,7 @@
                 </div>
 
                 <div class="accordion col" id="accordion_messages" style="margin-top: 10px;">
-                    <div class="accordion-item">
+                    <div class="accordion-item cards_left" style="font-size: medium; font-weight: normal;">
                         <h2 class="accordion-header">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#accordion_collapse_messages" aria-expanded="false">
@@ -167,7 +112,7 @@
                 </div>
 
                 <div class="accordion col" id="accordion_thread" style="margin-top: 10px;">
-                    <div class="accordion-item">
+                    <div class="accordion-item cards_left" style="font-size: medium; font-weight: normal;">
                         <h2 class="accordion-header">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#accordion_collapse_thread" aria-expanded="false">
@@ -182,6 +127,63 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <br>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-2" style="margin-bottom: 10px;">
+                <div class="col">
+                    <div class="card cards_left">
+                        <div class="card-body">
+                            <h4>ID thread</h4>
+                            <p class="card-text" style="font-weight: normal; font-size: medium;">
+                                {{ informations.id_thread }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card cards_left">
+                        <div class="card-body">
+                            <h4>Statut</h4>
+                            <p class="card-text" style="font-weight: normal; font-size: medium;">
+                                {{ informations.object_run.status }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card cards_left">
+                        <div class="card-body">
+                            <h4>Modèle</h4>
+                            <p class="card-text" style="font-weight: normal; font-size: medium;">
+                                {{ informations.object_run.model }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card cards_left">
+                        <div class="card-body">
+                            <h4>Latence</h4>
+                            <p class="card-text" style="font-weight: normal; font-size: medium;">
+                                {{ informations.latency_thread }} ms
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% if informations.isError %}
+                    <div class="col">
+                        <div class="card cards_left">
+                            <div class="card-body">
+                                <h4>Type d'erreur</h4>
+                                <p class="card-text" style="font-weight: normal; font-size: medium;">
+                                    {{ informations.name_error_type }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
 
         </div>

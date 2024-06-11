@@ -27,12 +27,12 @@ class DefaultController extends AbstractController
 
 
     /**
-     * Récupère la liste des outils.
+     * Récupérer la liste des outils.
      *
      * @return Response La réponse HTTP avec la liste des outils.
      */
     #[Route('/', name: 'home', methods: ['GET'])]
-    public function list_tools(): Response
+    public function home(): Response
     {
         return $this->render('home.html.twig', [
             'title' => 'Accueil'
@@ -53,7 +53,7 @@ class DefaultController extends AbstractController
             $sth = $this->getPDOStatement($request);
             $sth->execute();
         } catch (PDOException $e) {
-            echo "Erreur : " . $e->getMessage();
+            echo "Erreur: " . $e->getMessage();
             throw new PDOException($e);
         }
     }
@@ -117,7 +117,7 @@ class DefaultController extends AbstractController
 
 
     /**
-     * Télécharge les données d'une table spécifique au format CSV ou JSON.
+     * Télécharger les données d'une table spécifique au format CSV ou JSON.
      *
      * @param Request $request La requête contenant les informations sur le type de fichier et la liste des ID.
      * @param string $table Le nom de la table dont les données doivent être téléchargées.
@@ -160,7 +160,7 @@ class DefaultController extends AbstractController
 
 
     /**
-     * Supprime les fichiers dans un répertoire si la taille totale du répertoire dépasse une limite spécifiée.
+     * Supprimer les fichiers dans un répertoire si la taille totale du répertoire dépasse une limite spécifiée.
      *
      * @param string $directoryPath Le chemin du répertoire à vérifier.
      * @param int $size La taille maximale en mégaoctets (MB) que le répertoire peut atteindre avant que les fichiers soient supprimés.
@@ -186,7 +186,7 @@ class DefaultController extends AbstractController
 
 
     /**
-     * Calcule la taille totale d'un répertoire en mégaoctets (MB).
+     * Calculer la taille totale d'un répertoire en mégaoctets (MB).
      *
      * @param string $directoryPath Le chemin du répertoire dont la taille doit être calculée.
      *
@@ -203,7 +203,7 @@ class DefaultController extends AbstractController
 
 
     /**
-     * Supprime un répertoire et tout son contenu.
+     * Supprimer un répertoire et tout son contenu.
      *
      * @param string $directoryPath Le chemin du répertoire à supprimer.
      */
@@ -247,7 +247,7 @@ class DefaultController extends AbstractController
 
 
     /**
-     * Convertit un tableau de données en format CSV.
+     * Convertir un tableau de données en format CSV.
      *
      * @param array $data Les données à convertir en CSV.
      *
@@ -275,7 +275,7 @@ class DefaultController extends AbstractController
 
 
     /**
-     * Convertit un tableau de données en format JSON.
+     * Convertir un tableau de données en format JSON.
      *
      * @param array $data Les données à convertir en JSON.
      *
@@ -285,7 +285,7 @@ class DefaultController extends AbstractController
     {
         foreach ($data as &$row) {
             foreach ($row as $key => $value) {
-                if ($this->isJson($value)) {
+                if ($value !== null && $this->isJson($value)) {
                     $row[$key] = json_decode($value, true);
                 }
             }
@@ -293,12 +293,12 @@ class DefaultController extends AbstractController
                 return !is_numeric($key);
             }, ARRAY_FILTER_USE_KEY);
         }
-        return json_encode($data, JSON_PRETTY_PRINT);
+        return json_encode($data);
     }
 
 
     /**
-     * Vérifie si une chaîne est au format JSON valide.
+     * Vérifier si une chaîne est au format JSON valide.
      *
      * @param string $string La chaîne à vérifier.
      *
@@ -312,7 +312,7 @@ class DefaultController extends AbstractController
 
 
     /**
-     * Extrait les en-têtes d'un fichier CSV à partir d'une chaîne JSON.
+     * Extraire les en-têtes d'un fichier CSV à partir d'une chaîne JSON.
      *
      * @param string $json La chaîne JSON contenant les données.
      *
@@ -333,7 +333,7 @@ class DefaultController extends AbstractController
 
 
     /**
-     * Écrit le contenu spécifié dans un fichier.
+     * Écrire le contenu spécifié dans un fichier.
      *
      * @param string $filename Le nom du fichier dans lequel écrire.
      * @param string $content Le contenu à écrire dans le fichier.
@@ -383,7 +383,7 @@ class DefaultController extends AbstractController
 
 
     /**
-     * Insère des données dans la base de données en exécutant une requête SQL préparée avec des paramètres liés.
+     * Insérer des données dans la base de données en exécutant une requête SQL préparée avec des paramètres liés.
      *
      * @param string $query La requête SQL d'insertion préparée.
      * @param array $params Les valeurs des paramètres à lier dans la requête.
@@ -403,7 +403,7 @@ class DefaultController extends AbstractController
 
 
     /**
-     * Met à jour des données dans la base de données en exécutant une requête SQL préparée avec des paramètres liés.
+     * Mettre à jour des données dans la base de données en exécutant une requête SQL préparée avec des paramètres liés.
      *
      * @param string $query La requête SQL de mise à jour préparée.
      * @param array $params Les valeurs des paramètres à lier dans la requête.
@@ -423,7 +423,7 @@ class DefaultController extends AbstractController
 
 
     /**
-     * Crée un fichier CSV à partir d'un tableau de chaînes CSV.
+     * Créer un fichier CSV à partir d'un tableau de chaînes CSV.
      *
      * @param array $csvStrings Les chaînes CSV à utiliser pour créer le fichier CSV.
      *
@@ -458,7 +458,7 @@ class DefaultController extends AbstractController
 
 
     /**
-     * Crée une seule chaîne JSON à partir d'un tableau de chaînes JSON.
+     * Créer une seule chaîne JSON à partir d'un tableau de chaînes JSON.
      *
      * @param array $jsonStrings Les chaînes JSON à fusionner.
      *

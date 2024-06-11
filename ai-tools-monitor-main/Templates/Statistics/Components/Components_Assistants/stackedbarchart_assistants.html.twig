@@ -48,7 +48,7 @@
             });
             newDataStackedBarChart_assistants.push({
                 'name_assistants': assistants.name_assistant,
-                'source': 'Messages introuvable',
+                'source': 'Messages introuvables',
                 'nb': nbErrorRequest,
             });
             newAssistantsStackedBarChart_assistants.push(assistants.name_assistant);
@@ -57,6 +57,10 @@
     assistants_stackedbarchar_assistants = newAssistantsStackedBarChart_assistants;
     data_stackedbarchar_assistants = newDataStackedBarChart_assistants;
 
+
+    /**
+     * Ajoute un graphique à barres empilées pour les assistants en fonction des types d'erreurs.
+     */
     function addStackedBarChartAssistant() {
         let data = data_stackedbarchar_assistants;
         const width = 928;
@@ -132,6 +136,7 @@
             .attr("style", "max-width: 100%; height: auto;")
             .append("g")
             .attr("transform", "translate(50,0)")
+            .attr("class", "legend")
             .call(legend);
 
         return Object.assign(svg.node(), {scales: {color}});
@@ -139,3 +144,9 @@
 
     document.getElementById("stackedBarChart_assistants").append(addStackedBarChartAssistant());
 </script>
+
+<style>
+    .legend text {
+        fill: white;
+    }
+</style>

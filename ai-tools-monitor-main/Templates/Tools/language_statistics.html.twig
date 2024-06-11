@@ -5,20 +5,24 @@
      style="background: transparent; padding: 50px; top: 0; bottom: 0; left: 0; right: 0; max-width: calc(100% - 50px); margin: auto; border-radius: 20px;"
      role="dialog" id="modalLog">
     <div class="modal-dialog modal-fullscreen p-0 m-0 h-100" role="document">
-        <div class="modal-content rounded-4 shadow h-100" style="margin: auto;">
+        <div class="modal-content rounded-4 shadow h-100"
+             style="margin: auto; background: linear-gradient(113.22deg, #0C0F20 3.83%, #111A47 16.77%, #111A48 28.4%, #111A48 74.4%, #2536AF 102.38%);">
             <div class="modal-header p-5 pb-4 border-bottom-0" style="margin: auto; max-width: calc(100% - 100px);">
-                <h1 id="logTitle" class="fw-bold mb-0 fs-2">
+                <h1 id="logTitle" class="fw-bold mb-0 fs-2" style="color: white;">
                     Chargement des données...
                 </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-label="Close" onclick="hideLog()"
-                        style="position: absolute; right: 100px;">
+                <button type="button" class="btn" data-bs-dismiss="modal"
+                        aria-label="Close" onclick="hideLog()" style="position: absolute; right: 120px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-x-lg"
+                         viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                    </svg>
                 </button>
             </div>
             <div id="logContent" class="modal-body p-5 pt-0 overflow-auto"
                  style="height: calc(100% - 100px); margin: auto; max-width: calc(100% - 100px);">
                 <div class="d-flex justify-content-center">
-                    <div class="spinner-border" role="status">
+                    <div class="spinner-border text-light" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
@@ -30,7 +34,7 @@
 <div class="row">
     <div class="col-1">
         <div style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="white"
                  class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16"
                  onclick="goBack({{ id_tool }})"
                  style="cursor: pointer;">
@@ -41,7 +45,8 @@
     <div class="col-9" style="margin-top: 22px;">
         {% include 'Components/breadcrumb.html.twig' with {
             'past': [
-                {'link': '/tool', 'name': 'Outils'},
+                {'link': '/', 'name': 'Accueil'},
+                {'link': '/tool', 'name': 'Liste des outils'},
                 {'link': '/tool/' ~ id_tool, 'name': name_tool}
             ],
             'current': 'Statistiques de ' ~ name_language
@@ -49,70 +54,41 @@
     </div>
 </div>
 
-<h1 class="text-center">{{ title }}</h1>
-
-<div class="content" style="margin-top: 10px; margin-bottom: 10px;">
-    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
+<div class="content" style="margin-bottom: 10px; background-color: transparent;">
+    <div class="card" style="margin-left: 10px; margin-right: 10px; background-color: transparent;">
         <div class="card-body">
             <div class="row row-cols-1 row-cols-xl-2 p-3 g-3">
 
                 <div class="col">
-                    <div class="card h-100 shadow-sm">
+                    <div class="card h-100 cards" style="font-weight: normal; font-size: medium;">
                         <h3 class="text-center">
                             Evolution du temps de réponse en fonction de l'heure
                         </h3>
-                        <div class="input-group input-group-sm mb-3">
-                            <label class="input-group-text" for="log_scatter_plot" style="margin-left: 50px;">
-                                Nombre de log à afficher<br>
-                                (maximum {{ nbLogsMax }})
-                            </label>
-                            <input onkeypress="handleKeyPress(event)" type="number"
-                                   class="form-control" id="log_scatter_plot"
-                                   value="500" min="0" max="{{ nbLogsMax|json_encode|raw }}"
-                                   style="margin-right: 50px;">
-                        </div>
-                        <ul class="list-group list-group-horizontal mx-auto">
-                            {% for model in model_scatterplot %}
-                                <li class="list-group-item" style="cursor: pointer;">
-                                    <input class="form-check-input me-1" type="checkbox"
-                                           value="" id="model_scatterplot_{{ model.model }}" checked
-                                           onclick="filterScatterPlotData()" style="cursor: pointer;">
-                                    <label class="form-check-label" for="model_scatterplot_{{ model.model }}"
-                                           style="cursor: pointer; user-select: none;">
-                                        {{ model.model }}
-                                    </label>
-                                </li>
-                            {% endfor %}
-                        </ul>
                         {% if data_scatterplot is not empty %}
-                            {% include 'Statistics/Components/scatterplot.html.twig' with {
-                                'data': data_scatterplot,
-                                'model': model_scatterplot,
-                                'y_name': "Temps de réponse (ms)",
-                                'x_name': "Heure de la journée (hh:mm)",
-                                'to': '/tool/language/log/'
+                            {% include 'Statistics/Components/Components_Tools/scatterplot.html.twig' with {
+                                'data': data_scatterplot
                             } %}
                         {% else %}
                             {% include 'Components/nodata.html.twig' with {
                                 'message': "Des données sont manquantes veuillez ajouter plus de log
-                                        afin que ce graphique puisse s'afficher correctement."
+                                        afin que ce graphique puisse s'afficher correctement.", 'isError': 'true'
                             } %}
                         {% endif %}
                     </div>
                 </div>
 
                 <div class="col">
-                    <div class="card h-100 shadow-sm">
+                    <div class="card h-100 cards" style="font-weight: normal; font-size: medium;">
                         <h3 class="text-center">Evolution du temps de réponse</h3>
                         {% if data_linechart is not empty %}
-                            {% include 'Statistics/Components/linechart.html.twig' with {
+                            {% include 'Statistics/Components/Components_Tools/linechart.html.twig' with {
                                 'data': data_linechart,
                                 'y_name': "Temps de réponse (ms)"
                             } %}
                         {% else %}
                             {% include 'Components/nodata.html.twig' with {
                                 'message': "Des données sont manquantes veuillez ajouter plus de log
-                                        afin que ce graphique puisse s'afficher correctement."
+                                        afin que ce graphique puisse s'afficher correctement.", 'isError': 'true'
                             } %}
                         {% endif %}
                     </div>
@@ -124,27 +100,69 @@
 </div>
 
 <script>
-    let dataScatterPlot = {{ data_scatterplot|json_encode|raw }};
-    let modelScatterPlot = {{ model_scatterplot|json_encode|raw }};
-    let nbLogMax = {{ nbLogsMax|json_encode|raw }};
     let id_language = {{ id_language|json_encode|raw }};
 
+
+    /**
+     * Redirige vers la page d'un log spécifique et affiche ses informations dans un modal.
+     */
     async function goTo(id) {
         showLog();
+        let level = 0;
+        await postRequest("/tool/log/level", {id: id})
+            .then(response => {
+                level = JSON.parse(response)['level'];
+            });
         await getRequest("/tool/language/log", {id: id})
             .then(response => {
                 document.getElementById('logTitle').innerHTML = 'Information du log';
                 document.getElementById('logContent').innerHTML = response;
+                document.getElementById("level_pastille_" + id).style.fill = getColorLevel(level);
+                document.querySelectorAll('.message-card pre').forEach(function (element) {
+                    if (element.textContent.length > 300) {
+                        const originalText = element.textContent;
+                        const truncatedText = originalText.substring(0, 300) + '...';
+
+                        element.textContent = truncatedText;
+                        element.classList.add('truncated');
+
+                        const showMoreLink = document.createElement('a');
+                        showMoreLink.href = '#';
+                        showMoreLink.textContent = 'Afficher plus';
+                        showMoreLink.classList.add('show-more');
+                        showMoreLink.addEventListener('click', function (event) {
+                            event.preventDefault();
+                            if (element.classList.contains('truncated')) {
+                                element.textContent = originalText;
+                                element.classList.remove('truncated');
+                                showMoreLink.textContent = 'Afficher moins';
+                            } else {
+                                element.textContent = truncatedText;
+                                element.classList.add('truncated');
+                                showMoreLink.textContent = 'Afficher plus';
+                            }
+                        });
+                        element.parentNode.appendChild(showMoreLink);
+                    }
+                });
             })
             .catch(error => {
                 show_danger_message("La récupération des données a échoué : " + error);
             });
     }
 
+
+    /**
+     * Affiche le modal de chargement des logs.
+     */
     function showLog() {
         document.getElementById('modalLog').classList.add("d-flex");
     }
 
+
+    /**
+     * Cache le modal de chargement des logs.
+     */
     function hideLog() {
         document.getElementById('modalLog').classList.remove("d-flex");
         document.getElementById('logContent').innerHTML = `
@@ -155,66 +173,42 @@
         </div>`;
     }
 
+
+    /**
+     * Redirige vers la page de l'outil en utilisant son identifiant.
+     */
     function goBack() {
         window.location.href = '/tool/' + {{ id_tool }};
     }
 
-    function handleKeyPress(event) {
-        if (event.key === 'Enter') {
-            filterScatterPlotData();
-        }
-    }
 
-    async function filterScatterPlotData() {
-        let answer = null;
-        let newModel = null;
-        if (document.getElementById("log_scatter_plot").value > 10) {
-            await getRequest("/tool/language/statistics/scatterplot", {
-                limit: document.getElementById("log_scatter_plot").value,
-                id_language: id_language
-            })
-                .then(response => {
-                    answer = JSON.parse(response);
-                    dataScatterPlot = answer.data;
-                    newModel = answer.model;
-
-                    if (newModel.length !== modelScatterPlot.length) {
-                        modelScatterPlot.forEach(oldModel => {
-                            const modelElement = document.getElementById("model_scatterplot_" + oldModel.model);
-                            const isModelPresent = newModel.some(newModel => newModel.model === oldModel.model);
-                            if (isModelPresent) {
-                                modelElement.parentNode.style.display = "";
-                            } else {
-                                modelElement.parentNode.style.display = "none";
-                                modelElement.parentNode.removeChild(modelElement.parentNode.childNodes[0]);
-                            }
-                        });
-                        modelScatterPlot = newModel;
-                    }
-
-                })
-                .catch(error => {
-                    show_danger_message("La récupération des données à échoué : " + error);
-                });
+    /**
+     * Retourne la couleur associée à un niveau de log donné.
+     */
+    function getColorLevel(level) {
+        switch (true) {
+            case (level <= 10 && level >= 0):
+                return "rgba(  0, 255,   0, 1)";
+            case (level <= 20 && level >= 0):
+                return "rgba(100, 255,   0, 1)";
+            case (level <= 30 && level >= 0):
+                return "rgba(150, 255,   0, 1)";
+            case (level <= 40 && level >= 0):
+                return "rgba(200, 255,   0, 1)";
+            case (level <= 50 && level >= 0):
+                return "rgba(255, 255,   0, 1)";
+            case (level <= 60 && level >= 0):
+                return "rgba(255, 200,   0, 1)";
+            case (level <= 70 && level >= 0):
+                return "rgba(255, 150,   0, 1)";
+            case (level <= 80 && level >= 0):
+                return "rgba(255, 100,   0, 1)";
+            case (level <= 90 && level >= 0):
+                return "rgba(255,  50,   0, 1)";
+            case (level <= 100 && level >= 0):
+                return "rgba(255,   0,   0, 1)";
+            default:
+                return "rgba(200, 200, 200, 1)";
         }
-        let newData = modelScatterPlot;
-        let nbNotCheck = 0;
-        for (let model in modelScatterPlot) {
-            if (!document.getElementById("model_scatterplot_" + modelScatterPlot[model].model).checked) {
-                nbNotCheck++;
-            }
-        }
-        if (nbNotCheck !== modelScatterPlot.length || answer !== null) {
-            for (let model in modelScatterPlot) {
-                for (let data in dataScatterPlot) {
-                    if (document.getElementById("model_scatterplot_" + modelScatterPlot[model].model).checked
-                        && modelScatterPlot[model].model === dataScatterPlot[data].model) {
-                        newData.push(dataScatterPlot[data]);
-                    }
-                }
-            }
-
-        }
-        setScatterPlot(newData);
     }
 </script>

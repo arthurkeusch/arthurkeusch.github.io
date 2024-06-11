@@ -3,6 +3,12 @@
 <script>
     let data_sunburstTool = {{ data|json_encode|raw }};
 
+
+    /**
+     * Transforme les données en une structure hiérarchique adaptée pour le graphique en rayon de soleil zoomable.
+     * @param {Array} data - Les données des erreurs à transformer.
+     * @returns {Object} - La structure hiérarchique transformée des données.
+     */
     function transformData(data) {
         const root = {
             name: "Erreurs",
@@ -125,6 +131,11 @@
 
     data_sunburstTool = transformData(data_sunburstTool);
 
+
+    /**
+     * Ajoute un graphique en rayon de soleil zoomable pour visualiser les erreurs par catégorie, outil, langue et niveau.
+     * @returns {SVGElement} - Le SVG créé pour le graphique en rayon de soleil zoomable.
+     */
     function addSunBurstZoomable() {
         let data = data_sunburstTool;
 
@@ -157,7 +168,7 @@
 
         const svg = d3.create("svg")
             .attr("viewBox", [-width / 2, -height / 2, width, height])
-            .style("font", "10px sans-serif");
+            .attr("class", "sunburstError");
 
         const path = svg.append("g")
             .selectAll("path")
@@ -196,6 +207,12 @@
             .attr("pointer-events", "all")
             .on("click", clicked);
 
+
+        /**
+         * Gère le clic sur une section du graphique en rayon de soleil pour effectuer un zoom avant ou arrière.
+         * @param {Event} event - L'événement de clic.
+         * @param {Object} p - Le noeud de la hiérarchie sur lequel l'utilisateur a cliqué.
+         */
         function clicked(event, p) {
             parent.datum(p.parent || root);
 
@@ -213,7 +230,7 @@
                     const i = d3.interpolate(d.current, d.target);
                     return t => d.current = i(t);
                 })
-                .filter(function(d) {
+                .filter(function (d) {
                     return +this.getAttribute("fill-opacity") || arcVisible(d.target);
                 })
                 .attr("fill-opacity", d => arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)
@@ -221,20 +238,26 @@
                 .attrTween("d", d => () => arc(d.current))
                 .attr("fill", d => getColor(d));
 
-            label.filter(function(d) {
+            label.filter(function (d) {
                 return +this.getAttribute("fill-opacity") || labelVisible(d.target);
             }).transition(t)
                 .attr("fill-opacity", d => +labelVisible(d.target))
                 .attrTween("transform", d => () => labelTransform(d.current))
-                .tween("text", function(d) {
+                .tween("text", function (d) {
                     const self = this;
-                    return function() {
+                    return function () {
                         self.textContent = d.data.name;
                         wrapText.call(self, d);
                     };
                 });
         }
 
+
+        /**
+         * Détermine la couleur à utiliser pour une section donnée du graphique en fonction de sa profondeur.
+         * @param {Object} d - Le noeud de la hiérarchie pour lequel déterminer la couleur.
+         * @returns {string} - La couleur correspondant au noeud.
+         */
         function getColor(d) {
             if (d.depth === 1) {
                 return toolColor(d.data.name);
@@ -251,20 +274,43 @@
             }
         }
 
+
+        /**
+         * Détermine si un arc est visible dans le graphique en fonction de ses coordonnées.
+         * @param {Object} d - Le noeud de la hiérarchie pour lequel vérifier la visibilité.
+         * @returns {boolean} - Indique si l'arc est visible.
+         */
         function arcVisible(d) {
             return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
         }
 
+
+        /**
+         * Détermine si une étiquette est visible dans le graphique en fonction de ses coordonnées.
+         * @param {Object} d - Le noeud de la hiérarchie pour lequel vérifier la visibilité de l'étiquette.
+         * @returns {boolean} - Indique si l'étiquette est visible.
+         */
         function labelVisible(d) {
             return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
         }
 
+
+        /**
+         * Calcule la transformation à appliquer à une étiquette pour qu'elle soit correctement positionnée.
+         * @param {Object} d - Le noeud de la hiérarchie pour lequel calculer la transformation de l'étiquette.
+         * @returns {string} - La transformation à appliquer à l'étiquette.
+         */
         function labelTransform(d) {
             const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;
             const y = (d.y0 + d.y1) / 2 * radius;
             return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
         }
 
+
+        /**
+         * Gère l'affichage du texte en plusieurs lignes pour les étiquettes des sections du graphique.
+         * @param {Object} d - Le noeud de la hiérarchie pour lequel gérer l'affichage du texte.
+         */
         function wrapText(d) {
             const self = d3.select(this);
             const words = d.data.name.split(/\s+/).reverse();
@@ -293,3 +339,10 @@
 
     document.getElementById("sunburstTool").append(addSunBurstZoomable());
 </script>
+
+<style>
+    .sunburstError text {
+        fill: white;
+        font-size: 12px;
+    }
+</style>

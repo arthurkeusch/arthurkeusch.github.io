@@ -8,6 +8,7 @@ use PDOException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -15,39 +16,41 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Pour exécuter la commande :
  *
- * php bin/console app:get-log
+ * php bin/console app:get-log-language
  */
-#[AsCommand(name: 'app:get-log')]
-class GetLogCommand extends Command
+#[AsCommand(name: 'app:get-log-language')]
+class GetLogLanguageCommand extends Command
 {
     protected function configure(): void
     {
         $this
-            ->setDescription('Permet de récupérer les logs.')
-            ->setHelp('Cette commande permet de récupérer les logs.');
+            ->setDescription('Permet de récupérer les logs d\'une langue.')
+            ->setHelp('Cette commande permet de récupérer les logs d\'une langue.')
+            ->addArgument('id_language', InputArgument::REQUIRED, 'L\'identifiant de la langue à tester.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $id_language = $input->getArgument('id_language');
         $isError = false;
         $nbErrors = 0;
         $io = new SymfonyStyle($input, $output);
         $API_KEY = $_ENV['API_KEY'];
         $API_KEY_OFP = $_ENV['API_KEY_OFP'];
 
-        $output->writeln('Récupération des outils à tester...');
+        $output->writeln('Récupération de la langue à tester...');
         try {
             $actives_languages = $this->request("
                 SELECT Languages.*, T.api_name_tool, GROUP_CONCAT(active_level.id_level) AS active_levels
                 FROM Languages
                 JOIN Tools T on T.id_tool = Languages.id_tool
                 LEFT JOIN active_level ON Languages.id_language = active_level.id_language
-                WHERE Languages.is_active = TRUE
+                WHERE Languages.id_language = $id_language
                 GROUP BY Languages.id_language;
             ", true);
         } catch (PDOException $e) {
             $output->writeln("");
-            $output->writeln("<error>Erreur lors de la récupération des outils à tester !</error>");
+            $output->writeln("<error>Erreur lors de la récupération de la langue à tester !</error>");
             $output->writeln("$e");
             return Command::FAILURE;
         }

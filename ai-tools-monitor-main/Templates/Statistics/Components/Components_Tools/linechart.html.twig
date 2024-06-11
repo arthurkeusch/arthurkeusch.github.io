@@ -4,9 +4,13 @@
     let y_name_line_chart = {{ y_name|json_encode|raw }};
     let data_line_chart = {{ data|json_encode|raw }};
 
+
+    /**
+     * Ajoute un graphique en ligne pour afficher la latence moyenne des outils au fil du temps.
+     */
     function chart() {
         data_line_chart = data_line_chart
-            .map(d => ({ date: new Date(d.date), average_latency: parseFloat(d.average_latency) }))
+            .map(d => ({date: new Date(d.date), average_latency: parseFloat(d.average_latency)}))
             .sort((a, b) => a.date - b.date);
 
         const width = 928;
@@ -50,7 +54,7 @@
 
         svg.append("path")
             .attr("fill", "none")
-            .attr("stroke", "steelblue")
+            .attr("stroke", "#FFFFFFFF")
             .attr("stroke-width", 1.5)
             .attr("d", line(data_line_chart));
 

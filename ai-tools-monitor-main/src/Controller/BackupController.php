@@ -15,8 +15,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class BackupController extends DefaultController
 {
 
+
     /**
-     * Affiche la liste des sauvegardes.
+     * Afficher la liste des sauvegardes.
      *
      * @param Request $request La requête HTTP.
      *
@@ -31,14 +32,14 @@ FROM BackUp
 ORDER BY date_backup DESC;
 ");
         return $this->render('Backup/list_backup.html.twig', [
-            'title' => 'Liste des backup',
+            'title' => 'Liste des sauvegardes',
             'list_backups' => $list_backups
         ]);
     }
 
 
     /**
-     * Affiche les informations sur une sauvegarde spécifique.
+     * Afficher les informations sur une sauvegarde spécifique.
      *
      * @param Request $request La requête HTTP contenant l'identifiant de la sauvegarde.
      *
@@ -66,7 +67,7 @@ WHERE id_backup = $id_backup;
         }
 
         return $this->render('Backup/one_backup.html.twig', [
-            'title' => "Informations d'un backup",
+            'title' => "Informations d'une sauvegarde",
             'informations' => $informations[0],
             'list_backups' => $list_backups
         ]);
@@ -74,7 +75,7 @@ WHERE id_backup = $id_backup;
 
 
     /**
-     * Télécharge les sauvegardes spécifiées au format CSV ou JSON.
+     * Télécharger les sauvegardes spécifiées au format CSV ou JSON.
      *
      * @param Request $request La requête HTTP contenant les données des sauvegardes à télécharger.
      *
@@ -127,7 +128,7 @@ WHERE id_backup = $id;
 
 
     /**
-     * Affiche les informations sur une sauvegarde d'assistant spécifique.
+     * Afficher les informations sur une sauvegarde d'assistant spécifique.
      *
      * @param Request $request La requête HTTP contenant l'identifiant de la sauvegarde d'assistant.
      *
@@ -147,7 +148,7 @@ WHERE id_backup = $id;
         $pretty_json = json_encode($object_backup_assistant, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
         return $this->render('Backup/one_backup_assistant.html.twig', [
-            'title' => "Informations d'un backup assistant",
+            'title' => "Informations d'une sauvegarde d'assistant",
             'informations' => $informations[0],
             'pretty_json' => $pretty_json,
         ]);
@@ -155,7 +156,7 @@ WHERE id_backup = $id;
 
 
     /**
-     * Supprime une sauvegarde ainsi que toutes les sauvegardes d'assistants associées.
+     * Supprimer une sauvegarde ainsi que toutes les sauvegardes d'assistants associées.
      *
      * @param Request $request La requête HTTP contenant l'identifiant de la sauvegarde à supprimer.
      *
@@ -180,12 +181,12 @@ WHERE id_backup = $id_backup;
         } catch (Exception $e) {
             return new JsonResponse([
                 'status' => '500',
-                'message' => "Echec de la suppression du backup : " . $e->getMessage()
+                'message' => "Echec de la suppression de la sauvegarde : " . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new JsonResponse([
             'status' => '200',
-            'message' => "Backup supprimé !"
+            'message' => "Sauvegarde supprimée !"
         ], Response::HTTP_OK);
     }
 }

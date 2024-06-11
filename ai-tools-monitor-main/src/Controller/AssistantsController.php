@@ -14,7 +14,7 @@ class AssistantsController extends DefaultController
 
 
     /**
-     * Affiche la liste des assistants.
+     * Afficher la liste des assistants.
      *
      * @return Response La réponse HTTP contenant la liste des assistants.
      */
@@ -42,7 +42,7 @@ FROM Assistants A
 
 
     /**
-     * Affiche les informations sur un assistant spécifique.
+     * Afficher les informations sur un assistant spécifique.
      *
      * @param Request $request La requête HTTP contenant l'identifiant de l'assistant.
      *
@@ -66,7 +66,7 @@ ORDER BY date_thread DESC;
 ");
         $informations[0]['object_assistant'] = json_decode($informations[0]['object_assistant'], true);
         return $this->render('Assistants/one_assistant.html.twig', [
-            'title' => 'Informations sur un assistants',
+            'title' => 'Informations sur un assistant',
             'informations' => $informations[0],
             'threads' => $threads
         ]);
@@ -74,7 +74,7 @@ ORDER BY date_thread DESC;
 
 
     /**
-     * Supprime un thread.
+     * Supprimer un thread.
      *
      * @param Request $request La requête HTTP contenant l'identifiant du thread à supprimer.
      *
@@ -105,7 +105,7 @@ WHERE id_thread = $id_thread;
 
 
     /**
-     * Affiche les informations sur un thread spécifique.
+     * Afficher les informations sur un thread spécifique.
      *
      * @param Request $request La requête HTTP contenant l'identifiant du thread.
      *
@@ -147,7 +147,7 @@ WHERE id_thread = $id_thread;
 
 
     /**
-     * Compare deux threads spécifiques et affiche leurs informations.
+     * Comparer deux threads spécifiques et afficher leurs informations.
      *
      * @param Request $request La requête HTTP contenant les identifiants des threads à comparer.
      *
@@ -169,7 +169,7 @@ WHERE id_thread = $id_thread;
 
 
     /**
-     * Télécharge les données des threads.
+     * Télécharger les données des threads.
      *
      * @param Request $request La requête HTTP contenant les données à télécharger.
      *
@@ -184,7 +184,7 @@ WHERE id_thread = $id_thread;
 
 
     /**
-     * Ajoute un nouvel assistant à partir des données fournies.
+     * Ajouter un nouvel assistant à partir des données fournies.
      *
      * @param Request $request La requête HTTP contenant les données de l'assistant à ajouter.
      *
@@ -234,7 +234,7 @@ LIMIT 1;
 
 
     /**
-     * Modifie le statut d'un assistant.
+     * Modifier le statut d'un assistant.
      *
      * @param Request $request La requête HTTP contenant les données pour modifier le statut de l'assistant.
      *
@@ -271,7 +271,7 @@ WHERE id_assistant = $id_assistant;
 
 
     /**
-     * Met à jour les informations d'un assistant.
+     * Mettre à jour les informations d'un assistant.
      *
      * @param Request $request La requête HTTP contenant les nouvelles données de l'assistant à mettre à jour.
      *
@@ -322,7 +322,7 @@ WHERE id_assistant = :id;
 
 
     /**
-     * Supprime un assistant ainsi que tous les threads associés.
+     * Supprimer un assistant ainsi que tous les threads associés.
      *
      * @param Request $request La requête HTTP contenant l'identifiant de l'assistant à supprimer.
      *
@@ -358,7 +358,7 @@ WHERE id_assistant = $id_assistant;
 
 
     /**
-     * Récupère la liste des assistants depuis l'API OpenAI.
+     * Récupérer la liste des assistants depuis l'API OpenAI.
      *
      * @param Request $request La requête HTTP.
      *

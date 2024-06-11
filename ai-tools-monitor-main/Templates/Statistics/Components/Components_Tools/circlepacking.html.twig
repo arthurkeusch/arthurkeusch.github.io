@@ -8,6 +8,14 @@
     let levels_circlepacking = {{ levels|json_encode|raw }};
     let logs_circlepacking = {{ logs|json_encode|raw }};
 
+
+    /**
+     * Transforme les données des outils, langues, niveaux et logs en une structure hiérarchique adaptée pour le circle packing.
+     * @param {Array} tools - Les données des outils.
+     * @param {Array} languages - Les données des langues.
+     * @param {Array} levels - Les données des niveaux.
+     * @param {Array} logs - Les données des logs.
+     */
     async function transformData(tools, languages, levels, logs) {
         let data = {
             "name": "Outils",
@@ -38,7 +46,7 @@
         });
         logs.forEach(log => {
             data.children.forEach(tool => {
-                if (tool.children.find(language => language.id_language === log.id_language) !== undefined) {
+                if (tool.children.find(language => language.id_language === log.id_language) !== undefined && tool.children.find(language => language.id_language === log.id_language).children.find(level => level.id_level === log.id_level) !== undefined) {
                     tool.children.find(language => language.id_language === log.id_language).children.find(level => level.id_level === log.id_level).children.push({
                         "name": log.date_log,
                         "id": log.id_log,
@@ -61,7 +69,6 @@
                             level.children = groupByMonth(level);
                         } else if (nbDayDiff > 365) {
                             level.children = groupByYear(level);
-
                         }
                     }
                 });
@@ -70,6 +77,12 @@
         data_circlepacking = data;
     }
 
+
+    /**
+     * Groupe les logs par jour en regroupant ceux qui sont de la même journée.
+     * @param {Object} level - Le niveau contenant les logs à regrouper.
+     * @returns {Array} - Les logs groupés par jour.
+     */
     function groupByDay(level) {
         let groupedLog = [];
         let currentDay = parseDateString(level.children[0]['name']);
@@ -81,7 +94,7 @@
             } else {
                 const date = sameDayLogs.shift();
                 sameDayLogs.forEach(log => {
-                    log.name = formattedDateHours(parseDateString(log.name));
+                    log.name = formattedDateHours(parseDateString(log.date));
                 });
                 groupedLog.push({
                     'name': formattedDateDay(date),
@@ -106,6 +119,12 @@
         return groupedLog;
     }
 
+
+    /**
+     * Groupe les logs par semaine en regroupant ceux qui sont de la même semaine.
+     * @param {Object} level - Le niveau contenant les logs à regrouper.
+     * @returns {Array} - Les logs groupés par semaine.
+     */
     function groupByWeek(level) {
         let groupedLog = [];
         let currentDay = parseDateString(level.children[0]['name']);
@@ -162,6 +181,12 @@
         return newGroupedLog;
     }
 
+
+    /**
+     * Groupe les logs par mois en regroupant ceux qui sont du même mois.
+     * @param {Object} level - Le niveau contenant les logs à regrouper.
+     * @returns {Array} - Les logs groupés par mois.
+     */
     function groupByMonth(level) {
         let groupedLog = [];
         let currentDay = parseDateString(level.children[0]['name']);
@@ -216,6 +241,12 @@
         return newGroupedLog;
     }
 
+
+    /**
+     * Groupe les logs par année en regroupant ceux qui sont de la même année.
+     * @param {Object} level - Le niveau contenant les logs à regrouper.
+     * @returns {Array} - Les logs groupés par année.
+     */
     function groupByYear(level) {
         let groupedLog = [];
         let currentDay = parseDateString(level.children[0]['name']);
@@ -270,18 +301,38 @@
         return newGroupedLog;
     }
 
+
+    /**
+     * Vérifie si deux dates se trouvent le même jour.
+     * @param {Date} date1 - La première date.
+     * @param {Date} date2 - La deuxième date.
+     * @returns {boolean} - Vrai si les dates sont le même jour, faux sinon.
+     */
     function isSameDay(date1, date2) {
         return date1.getFullYear() === date2.getFullYear()
             && date1.getMonth() === date2.getMonth()
             && date1.getDate() === date2.getDate();
     }
 
+
+    /**
+     * Vérifie si deux dates se trouvent la même semaine.
+     * @param {Date} date1 - La première date.
+     * @param {Date} date2 - La deuxième date.
+     * @returns {boolean} - Vrai si les dates sont la même semaine, faux sinon.
+     */
     function isSameWeek(date1, date2) {
         const week1 = getWeekISO(date1);
         const week2 = getWeekISO(date2);
         return week1.week === week2.week && week1.year === week2.year;
     }
 
+
+    /**
+     * Calcule le numéro de semaine ISO et l'année correspondante pour une date donnée.
+     * @param {Date} date - La date à convertir.
+     * @returns {Object} - Un objet contenant l'année et le numéro de semaine ISO.
+     */
     function getWeekISO(date) {
         const target = new Date(date.valueOf());
         const dayNr = (date.getUTCDay() + 6) % 7;
@@ -295,15 +346,35 @@
         return {week: weekNumber, year: target.getUTCFullYear()};
     }
 
+
+    /**
+     * Vérifie si deux dates se trouvent le même mois.
+     * @param {Date} date1 - La première date.
+     * @param {Date} date2 - La deuxième date.
+     * @returns {boolean} - Vrai si les dates sont le même mois, faux sinon.
+     */
     function isSameMonth(date1, date2) {
         return date1.getFullYear() === date2.getFullYear()
             && date1.getMonth() === date2.getMonth();
     }
 
+
+    /**
+     * Vérifie si deux dates se trouvent la même année.
+     * @param {Date} date1 - La première date.
+     * @param {Date} date2 - La deuxième date.
+     * @returns {boolean} - Vrai si les dates sont la même année, faux sinon.
+     */
     function isSameYear(date1, date2) {
         return date1.getFullYear() === date2.getFullYear();
     }
 
+
+    /**
+     * Calcule la durée en jours entre les dates des logs.
+     * @param {Array} logs - Les logs contenant les dates à comparer.
+     * @returns {number} - Le nombre de jours entre les dates des logs.
+     */
     function getEtenduLog(logs) {
         let minDate = logs[0];
         let maxDate = logs[0];
@@ -319,27 +390,58 @@
         return Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
     }
 
+
+    /**
+     * Calcule la durée en jours entre deux dates.
+     * @param {Date} minDate - La date de début.
+     * @param {Date} maxDate - La date de fin.
+     * @returns {number} - Le nombre de jours entre les deux dates.
+     */
     function getNbDayBetween(minDate, maxDate) {
         const timeDifference = Math.abs(minDate - maxDate);
         return Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
     }
 
+
+    /**
+     * Analyse une chaîne de caractères représentant une date et retourne un objet Date.
+     * @param {string} dateString - La chaîne de caractères à analyser.
+     * @returns {Date} - L'objet Date résultant de l'analyse.
+     */
     function parseDateString(dateString) {
         let formattedString = dateString.replace(' ', 'T');
         return new Date(formattedString);
     }
 
+
+    /**
+     * Formate une date pour afficher uniquement l'année.
+     * @param {Date} date - La date à formater.
+     * @returns {string} - La date formatée avec l'année.
+     */
     function formattedDateYear(date) {
         const year = date.getFullYear();
         return `${year}`;
     }
 
+
+    /**
+     * Formate une date pour afficher l'année et le mois.
+     * @param {Date} date - La date à formater.
+     * @returns {string} - La date formatée avec l'année et le mois.
+     */
     function formattedDateMonth(date) {
         const year = date.getFullYear();
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
         return `${year}-${month}`;
     }
 
+
+    /**
+     * Formate une date pour afficher l'année, le mois et le jour.
+     * @param {Date} date - La date à formater.
+     * @returns {string} - La date formatée avec l'année, le mois et le jour.
+     */
     function formattedDateDay(date) {
         const year = date.getFullYear();
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -347,6 +449,12 @@
         return `${year}-${month}-${day}`;
     }
 
+
+    /**
+     * Formate une date pour afficher l'heure, les minutes et les secondes.
+     * @param {Date} date - La date à formater.
+     * @returns {string} - La date formatée avec l'heure, les minutes et les secondes.
+     */
     function formattedDateHours(date) {
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
@@ -354,6 +462,12 @@
         return `${hours}:${minutes}:${seconds}`;
     }
 
+
+    /**
+     * Formate une date pour afficher l'année, le mois, le jour, l'heure, les minutes et les secondes.
+     * @param {Date} date - La date à formater.
+     * @returns {string} - La date formatée avec l'année, le mois, le jour, l'heure, les minutes et les secondes.
+     */
     function formattedDate(date) {
         const year = date.getFullYear();
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -364,6 +478,11 @@
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
 
+
+    /**
+     * Ajoute un diagramme de circle packing pour visualiser la hiérarchie des outils, langues, niveaux et logs.
+     * @returns {SVGElement} - Le SVG créé pour le diagramme de circle packing.
+     */
     function addCirclePacking() {
         const width = 928;
         const height = 600;
@@ -384,7 +503,7 @@
         const svg = d3.create("svg")
             .attr("viewBox", `0 0 ${width} ${height}`)
             .attr("width", "100%")
-            .attr("style", "max-width: 100%; height: auto; display: block; margin: 0 auto; background: white; cursor: pointer;");
+            .attr("style", "max-width: 100%; height: auto; display: block; margin: 0 auto; background: #0e1022; cursor: pointer;");
 
         const g = svg.append("g")
             .attr("transform", `translate(${width / 2},${height / 2})`);
@@ -412,24 +531,24 @@
 
         label.append("rect")
             .attr("class", "label-background")
-            .attr("x", d => -(d.data.name.length * 4))
-            .attr("y", -15)
-            .attr("width", d => (d.data.name.length * 8))
-            .attr("height", 20)
+            .attr("x", d => -((Math.max(...d.data.name.split('\n').map(line => line.length * 8)) / 2)))
+            .attr("y", d => d.data.name.includes('\n') ? -10 - ((d.data.name.split('\n').length - 1) * 10) : -10)
+            .attr("width", d => Math.max(...d.data.name.split('\n').map(line => line.length * 8)))
+            .attr("height", d => d.data.name.includes('\n') ? 20 + ((d.data.name.split('\n').length - 1) * 20) : 20)
             .style("fill", "white")
             .style("opacity", 1);
 
         label.selectAll("text")
             .data(d => {
                 if (d.data.name.includes('\n')) {
-                    return d.data.name.split('\n').map((line, i) => ({line, i}));
+                    return d.data.name.split('\n').map((line, i, arr) => ({line, i, total: arr.length}));
                 } else {
-                    return [{line: d.data.name, i: 0}];
+                    return [{line: d.data.name, i: 0, total: 1}];
                 }
             })
             .join("text")
             .attr("x", 0)
-            .attr("dy", (d, i) => i === 0 ? 0 : "1.2em")
+            .attr("dy", d => d.total === 1 ? "0.35em" : `${(d.i - (d.total / 2 - 0.5)) * 1.2}em`)
             .style("font", "14px sans-serif")
             .style("font-weight", "bold")
             .attr("text-anchor", "middle")
@@ -442,6 +561,11 @@
 
         zoomTo([root.x, root.y, root.r * 2]);
 
+
+        /**
+         * Effectue un zoom sur le diagramme de circle packing en ajustant les coordonnées des nœuds et des étiquettes.
+         * @param {Array} v - Les coordonnées de vue pour effectuer le zoom [x, y, r].
+         */
         function zoomTo(v) {
             const k = Math.min(width, height) / v[2];
             view = v;
@@ -450,6 +574,12 @@
             node.attr("r", d => d.r * k);
         }
 
+
+        /**
+         * Gère le zoom sur un nœud spécifique du diagramme de circle packing.
+         * @param {Event} event - L'événement de clic déclenchant le zoom.
+         * @param {Object} d - Le nœud de la hiérarchie sur lequel l'utilisateur a cliqué pour zoomer.
+         */
         function zoom(event, d) {
             focus = d;
 

@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ParametersController extends DefaultController
 {
     /**
-     * Affiche les paramètres du site.
+     * Afficher les paramètres du site.
      *
      * @return Response La réponse HTTP contenant les paramètres.
      */
@@ -97,7 +97,7 @@ WHERE id_params = $id_params;
         } catch (Exception $e) {
             return new JsonResponse([
                 'status' => 'error',
-                'message' => 'Echec de la mise à jour : ' . $e->getMessage()
+                'message' => 'Échec de la mise à jour : ' . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -117,6 +117,11 @@ WHERE id_params = $id_params;
             $data = json_decode($request->getContent(), true);
             $id_CRON = $data['id'];
             $value = $data['value'];
+            $oldCRON = $this->select("
+SELECT expression_CRON
+FROM CRON
+WHERE id_CRON = $id_CRON;
+");
             $this->update("
 UPDATE CRON
 SET expression_CRON = '$value'
@@ -124,6 +129,12 @@ WHERE id_CRON = $id_CRON;
 ");
             $answer = $this->updateCronFile();
             if ($answer['status'] !== "200") {
+                $oldCRON = $oldCRON[0]['expression_CRON'];
+                $this->update("
+UPDATE CRON
+SET expression_CRON = '$oldCRON'
+WHERE id_CRON = $id_CRON;
+");
                 throw new Exception($answer['message']);
             }
             return new JsonResponse([
@@ -134,7 +145,7 @@ WHERE id_CRON = $id_CRON;
         } catch (Exception $e) {
             return new JsonResponse([
                 'status' => 'error',
-                'message' => 'Echec de la mise à jour : ' . $e->getMessage()
+                'message' => 'Échec de la mise à jour : ' . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -192,7 +203,13 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
                         $newFile = $newFile . $cron[1] . ' ' . $_ENV['CRON_COMMANDE_GET_BACKUP_ASSISTANTS'] . "\n";
                     }
                 }
-                file_put_contents($_ENV['CRON_FILE'] . '/crontab', $newFile);
+                $result = file_put_contents($_ENV['CRON_FILE'] . '/crontab', $newFile);
+                if (!$result) {
+                    return array(
+                        "status" => "500",
+                        "message" => "Erreur lors de l'écriture du fichier"
+                    );
+                }
                 $status = exec('systemctl status cron');
                 return array(
                     "status" => "200",
@@ -230,9 +247,22 @@ VALUES ('$value', '$commande');
 SELECT MAX(id_cron) AS id_cron
 FROM CRON;
 ");
+            try {
+                $this->updateCronFile();
+            } catch (Exception $e) {
+                $id = $id[0]['id_cron'];
+                $this->delete("
+DELETE FROM CRON
+WHERE id_CRON = $id
+");
+                return new JsonResponse([
+                    'status' => 'error',
+                    'message' => "Echec de l'ajout : " . $e->getMessage()
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
             return new JsonResponse([
                 'status' => 'success',
-                'message' => 'Ajout réussie !',
+                'message' => 'Ajout réussi !',
                 'id' => $id[0]['id_cron']
             ], Response::HTTP_OK);
         } catch (Exception $e) {
@@ -256,10 +286,29 @@ FROM CRON;
         try {
             $data = json_decode($request->getContent(), true);
             $id = $data['id'];
-            $this->insert("
+            $oldCRON = $this->select("
+SELECT expression_CRON, commande_CRON
+FROM CRON
+WHERE id_CRON = $id;
+");
+            $this->delete("
 DELETE FROM CRON
        WHERE id_CRON = $id;
 ");
+            try {
+                $this->updateCronFile();
+            } catch (Exception $e) {
+                $expression = $oldCRON[0]['expression_CRON'];
+                $commande = $oldCRON[0]['commande_CRON'];
+                $this->insert("
+INSERT INTO CRON(expression_CRON, commande_CRON)
+VALUES ('$expression', '$commande');
+");
+                return new JsonResponse([
+                    'status' => 'error',
+                    'message' => "Echec de la suppression : " . $e->getMessage()
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
             return new JsonResponse([
                 'status' => 'success',
                 'message' => 'Suppression réussie !'
@@ -268,34 +317,6 @@ DELETE FROM CRON
             return new JsonResponse([
                 'status' => 'error',
                 'message' => "Echec de la suppression : " . $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-
-    /**
-     * Arrête le service CRON et met à jour le fichier CRON.
-     *
-     * @param Request $request La requête pour arrêter le service CRON.
-     * @return JsonResponse La réponse JSON indiquant le statut de l'arrêt et un message associé.
-     */
-    #[Route('/parameters/stop/cron', name: 'parameters_stop_cron', methods: ['POST'])]
-    public function parameters_stop_cron(Request $request): JsonResponse
-    {
-        try {
-            $answer = $this->updateCronFile();
-            if ($answer['status'] !== "200") {
-                throw new Exception($answer['message']);
-            }
-            exec('systemctl stop cron');
-            return new JsonResponse([
-                'status' => 'success',
-                'message' => 'Arrêt réussie !'
-            ], Response::HTTP_OK);
-        } catch (Exception $e) {
-            return new JsonResponse([
-                'status' => 'error',
-                'message' => "Echec de l'arrêt : " . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -335,7 +356,7 @@ WHERE id_level = $id;
         } catch (Exception $e) {
             return new JsonResponse([
                 'status' => 'error',
-                'message' => "Echec de la suppression : " . $e->getMessage()
+                'message' => "Échec de la suppression : " . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -367,7 +388,7 @@ WHERE id_level = $id;
         } catch (Exception $e) {
             return new JsonResponse([
                 'status' => 'error',
-                'message' => 'Echec de la mise à jour : ' . $e->getMessage()
+                'message' => 'Échec de la mise à jour : ' . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -403,22 +424,25 @@ WHERE id_level = $id;
             }
             return new JsonResponse([
                 'status' => 'error',
-                'message' => "Echec de la mise à jour : L'expression CRON n'est pas valide ! " . $data['value']
+                'message' => "Échec de la mise à jour : L'expression CRON n'est pas valide ! " . $data['value']
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         } catch (Exception $e) {
             return new JsonResponse([
                 'status' => 'error',
-                'message' => 'Echec de la mise à jour : ' . $e->getMessage()
+                'message' => 'Échec de la mise à jour : ' . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
 
     /**
-     * Valide une expression CRON.
+     * Optimise une table de la base de données spécifiée.
      *
-     * @param Request $request La requête contenant l'expression CRON à valider.
-     * @return JsonResponse La réponse JSON indiquant le statut de validation et un message associé.
+     * @param Request $request La requête HTTP contenant le nom de la table à optimiser.
+     *
+     * @return JsonResponse La réponse JSON indiquant le statut de l'optimisation.
+     *
+     * @Route("/parameters/optimize/one", name="optimize_table", methods={"POST"})
      */
     #[Route('/parameters/optimize/one', name: 'optimize_table', methods: ['POST'])]
     public function optimize_table(Request $request): JsonResponse
@@ -431,12 +455,140 @@ OPTIMIZE TABLE $name;
 ");
             return new JsonResponse([
                 'status' => '200',
-                'message' => 'Optimisation réussi'
+                'message' => 'Optimisation réussie'
             ], Response::HTTP_OK);
         } catch (Exception $e) {
             return new JsonResponse([
                 'status' => '500',
-                'message' => 'Echec de l\'optimisation : ' . $e->getMessage()
+                'message' => 'Échec de l\'optimisation : ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * Supprime les données d'une table spécifiée dans la base de données.
+     *
+     * @param Request $request La requête HTTP contenant le nom de la table à supprimer.
+     *
+     * @return JsonResponse La réponse JSON indiquant le statut de la suppression.
+     *
+     * @Route("/parameters/delete/one", name="delete_data", methods={"POST"})
+     */
+    #[Route('/parameters/delete/one', name: 'delete_data', methods: ['POST'])]
+    public function delete_data(Request $request): JsonResponse
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            $name = $data['name'];
+            if ($name === "Tools" || $name === "tools") {
+                $this->delete("
+DELETE FROM Logs;
+");
+                $this->delete("
+DELETE FROM Levels;
+");
+                $this->delete("
+DELETE FROM active_level;
+");
+                $this->delete("
+DELETE FROM levels_tools;
+");
+                $this->delete("
+DELETE FROM Languages;
+");
+                $this->delete("
+DELETE FROM Tools;
+");
+            } else if ($name === "Languages" || $name === "languages") {
+                $this->delete("
+DELETE FROM Logs;
+");
+                $this->delete("
+DELETE FROM active_level;
+");
+                $this->delete("
+DELETE FROM Languages;
+");
+            } else if ($name === "Levels" || $name === "levels") {
+                $this->delete("
+DELETE FROM Logs;
+");
+                $this->delete("
+DELETE FROM active_level;
+");
+                $this->delete("
+DELETE FROM levels_tools;
+");
+                $this->delete("
+DELETE FROM Levels;
+");
+            } else if ($name === "Logs" || $name === "logs") {
+                $this->delete("
+DELETE FROM Logs;
+");
+            } else if ($name === "levels_tools") {
+                $this->delete("
+DELETE FROM levels_tools;
+");
+            } else if ($name === "active_levels") {
+                $this->delete("
+DELETE FROM active_level;
+");
+            } else if ($name === "Errors_Types" || $name === "errors_types") {
+                $this->delete("
+DELETE FROM Threads WHERE isError;
+");
+                $this->delete("
+DELETE FROM Logs WHERE isError;
+");
+                $this->delete("
+DELETE FROM Errors_Types;
+");
+            } else if ($name === "Threads" || $name === "threads") {
+                $this->delete("
+DELETE FROM Threads;
+");
+            } else if ($name === "Assistants" || $name === "assistants") {
+                $this->delete("
+DELETE FROM Threads;
+");
+                $this->delete("
+DELETE FROM Assistants;
+");
+            } else if ($name === "BackUp_Assistants" || $name === "backup_assistants") {
+                $this->delete("
+DELETE FROM BackUp_Assistants;
+");
+                $this->delete("
+DELETE FROM BackUp;
+");
+            } else if ($name === "BackUp" || $name === "backup") {
+                $this->delete("
+DELETE FROM BackUp_Assistants;
+");
+                $this->delete("
+DELETE FROM BackUp;
+");
+            } else if ($name === "CRON" || $name === "cron") {
+                $this->delete("
+DELETE FROM CRON;
+");
+            } else if ($name === "Parameters" || $name === "parameters") {
+                $this->delete("
+DELETE FROM Parameters;
+");
+            } else {
+                throw new Exception("La table que vous essayez de supprimer n'existe pas !");
+            }
+            return new JsonResponse([
+                'status' => '200',
+                'message' => 'Suppression réussie'
+            ], Response::HTTP_OK);
+        } catch (Exception $e) {
+            return new JsonResponse([
+                'status' => '500',
+                'message' => 'Échec de la suppression : ' . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

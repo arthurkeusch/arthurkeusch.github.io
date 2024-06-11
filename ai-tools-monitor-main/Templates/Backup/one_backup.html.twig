@@ -4,14 +4,17 @@
      style="background: transparent; padding: 50px; top: 0; bottom: 0; left: 0; right: 0; max-width: calc(100% - 50px); margin: auto; border-radius: 20px;"
      role="dialog" id="modalBackup">
     <div class="modal-dialog modal-fullscreen p-0 m-0 h-100" role="document">
-        <div class="modal-content rounded-4 shadow h-100" style="margin: auto;">
+        <div class="modal-content rounded-4 shadow h-100" style="background: linear-gradient(113.22deg, #0C0F20 3.83%, #111A47 16.77%, #111A48 28.4%, #111A48 74.4%, #2536AF 102.38%); margin: auto; font-size: medium; font-weight: normal;">
             <div class="modal-header p-5 pb-4 border-bottom-0" style="margin: auto; max-width: calc(100% - 100px);">
-                <h1 id="backupTitle" class="fw-bold mb-0 fs-2">
+                <h1 id="backupTitle" class="fw-bold mb-0 fs-2" style="color: white;">
                     Chargement des données...
                 </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-label="Close" onclick="hideBackup()"
-                        style="position: absolute; right: 100px;">
+                <button type="button" class="btn" data-bs-dismiss="modal"
+                        aria-label="Close" onclick="hideBackup()" style="position: relative; right: -80px">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-x-lg"
+                         viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                    </svg>
                 </button>
             </div>
             <div id="backupContent" class="modal-body p-5 pt-0 overflow-auto"
@@ -29,8 +32,8 @@
 <div class="row">
     <div class="col-1">
         <div style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px;" data-bs-toggle="popup-tip"
-             title="Revenir à la liste des backups'">
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+             title="Revenir à la liste des backups">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="white"
                  class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16"
                  onclick="goBack()"
                  style="cursor: pointer;">
@@ -41,24 +44,18 @@
     <div class="col-9" style="margin-top: 22px;">
         {% include 'Components/breadcrumb.html.twig' with {
             'past': [
-                {'link': '/backup', 'name': 'Backup'}
+                {'link': '/', 'name': 'Accueil'},
+                {'link': '/backup', 'name': 'Liste des backups'}
             ],
             'current': informations.date_backup
         } %}
     </div>
 </div>
 
-<div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px; margin-top: 10px;">
-    <div class="card-body">
-        <h1 class="text-center">Backup du {{ informations.date_backup }}</h1>
-    </div>
-</div>
-
-
 <div style="margin-top: 20px;">
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-3" style="margin-top: 10px;">
 
-        <table class="table table-bordered table-striped" style="width: 450px; margin: auto;">
+        <table class="table table-bordered table-striped table-dark" style="width: 450px; margin: auto;">
             <thead>
             <tr class="table-dark" style="height: 61px;">
                 <th scope="col" class="text-center" style="width: 400px;">
@@ -77,10 +74,10 @@
                     </td>
                     <td class="text-center" style="width: 50px;">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-outline-dark"
+                            <button type="button" class="btn"
                                     data-bs-toggle="popup-tip" title="Voir le log."
                                     onclick="goTo({{ backup.id_backup_assistant }})">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white"
                                      class="bi bi-eye" viewBox="0 0 16 16">
                                     <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
                                     <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
@@ -97,15 +94,23 @@
 </div>
 
 <script>
+    /**
+     * Retourne à la liste des backups.
+     */
     function goBack() {
         window.location.href = '/backup';
     }
 
+
+    /**
+     * Affiche les informations d'un backup spécifique.
+     * @param {number} id - ID du backup
+     */
     async function goTo(id) {
         showBackup();
         await getRequest("/backup/assistant", {id: id})
             .then(response => {
-                document.getElementById('backupTitle').innerHTML = "Information sur l'assistant";
+                document.getElementById('backupTitle').innerHTML = "Informations sur l'assistant";
                 document.getElementById('backupContent').innerHTML = response;
             })
             .catch(error => {
@@ -113,10 +118,18 @@
             });
     }
 
+
+    /**
+     * Affiche le modal de détail du backup.
+     */
     function showBackup() {
         document.getElementById('modalBackup').classList.add("d-flex");
     }
 
+
+    /**
+     * Cache le modal de détail du backup.
+     */
     function hideBackup() {
         document.getElementById('modalBackup').classList.remove("d-flex");
         document.getElementById('backupContent').innerHTML = `
@@ -125,5 +138,32 @@
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>`;
+    }
+
+
+    document.getElementById('modalBackup').addEventListener('click', function(event) {
+        if (event.target === this) {
+            hideBackup();
+        }
+    });
+
+
+    document.getElementById('modalBackup').addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+
+
+    function copie() {
+        try {
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = document.getElementById('json-content').innerText;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+            show_success_message("Le contenu a été copié dans le presse papier !");
+        } catch (error) {
+            show_danger_message("Une erreur est survenue lors de la copie : " + error);
+        }
     }
 </script>

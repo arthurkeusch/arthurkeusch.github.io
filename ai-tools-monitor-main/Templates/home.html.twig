@@ -2,64 +2,54 @@
 
 <div class="album py-5">
     <div class="container">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-xl-4 g-3">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 justify-content-center g-3">
 
             <div class="col" style="cursor: pointer;" onclick="goTo('/tool')">
-                <div class="card h-100 shadow-sm">
+                <div class="card h-100 cards">
                     <img src="{{ asset('images/images_accueil/tools.webp') }}"
                          alt="Image outils" class="rounded-top">
-                    <div class="card-header">
-                        <h3 class="card-title text-center">
-                            Outils
-                        </h3>
+                    <div class="card-header" id="cards">
+                        <h3>Outils</h3>
                     </div>
                 </div>
             </div>
 
-             <div class="col" style="cursor: pointer;" onclick="goTo('/assistants')">
-                <div class="card h-100 shadow-sm">
+            <div class="col" style="cursor: pointer;" onclick="goTo('/assistants')">
+                <div class="card h-100 cards">
                     <img src="{{ asset('images/images_accueil/assistants.webp') }}"
                          alt="Image assistant" class="rounded-top">
-                    <div class="card-header">
-                        <h3 class="card-title text-center">
-                            Assistants
-                        </h3>
+                    <div class="card-header" id="cards">
+                        <h3>Assistants</h3>
                     </div>
                 </div>
             </div>
 
-             <div class="col" style="cursor: pointer;" onclick="goTo('/backup')">
-                <div class="card h-100 shadow-sm">
+            <div class="col" style="cursor: pointer;" onclick="goTo('/backup')">
+                <div class="card h-100 cards">
                     <img src="{{ asset('images/images_accueil/backup.webp') }}"
                          alt="Image backup" class="rounded-top">
-                    <div class="card-header">
-                        <h3 class="card-title text-center">
-                            Backup
-                        </h3>
+                    <div class="card-header" id="cards">
+                        <h3>Backup</h3>
                     </div>
                 </div>
             </div>
 
-             <div class="col" style="cursor: pointer;" onclick="goTo('/parameters')">
-                <div class="card h-100 shadow-sm">
+            <div class="col" style="cursor: pointer;" onclick="goTo('/parameters')">
+                <div class="card h-100 cards">
                     <img src="{{ asset('images/images_accueil/parameters.webp') }}"
                          alt="Image paramètres" class="rounded-top">
-                    <div class="card-header">
-                        <h3 class="card-title text-center">
-                            Paramètres
-                        </h3>
+                    <div class="card-header" id="cards">
+                        <h3>Paramètres</h3>
                     </div>
                 </div>
             </div>
 
-             <div class="col" style="cursor: pointer;" onclick="goTo('/statistics')">
-                <div class="card h-100 shadow-sm">
+            <div class="col" style="cursor: pointer;" onclick="goTo('/statistics')">
+                <div class="card h-100 cards">
                     <img src="{{ asset('images/images_accueil/statistics.webp') }}"
                          alt="Image default" class="rounded-top">
-                    <div class="card-header">
-                        <h3 class="card-title text-center">
-                            Statistiques
-                        </h3>
+                    <div class="card-header" id="cards">
+                        <h3>Statistiques</h3>
                     </div>
                 </div>
             </div>
@@ -69,6 +59,10 @@
 </div>
 
 <script>
+    /**
+     * Redirige vers l'URL spécifiée.
+     * @param {string} to - L'URL vers laquelle rediriger.
+     */
     function goTo(to) {
         window.location.href = to;
     }

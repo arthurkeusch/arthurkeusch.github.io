@@ -4,6 +4,11 @@
     data_groupedbarchart = {{ data|json_encode|raw }};
     document.getElementById("groupedbarchart").append(addGroupeBarChart());
 
+
+    /**
+     * Ajoute un graphique à barres groupées pour visualiser les latences moyennes par outil et niveau.
+     * @returns {SVGElement} - Le SVG créé pour le graphique à barres groupées.
+     */
     function addGroupeBarChart() {
         const width = 928;
         const height = 600;

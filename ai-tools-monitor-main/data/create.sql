@@ -1,7 +1,6 @@
 CREATE TABLE Tools
 (
     id_tool       INT AUTO_INCREMENT,
-    image_tool    TEXT,
     name_tool     TEXT,
     api_name_tool TEXT,
     PRIMARY KEY (id_tool)

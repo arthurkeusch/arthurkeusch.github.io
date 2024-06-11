@@ -4,21 +4,25 @@
      style="background: transparent; padding: 50px; top: 0; bottom: 0; left: 0; right: 0; max-width: calc(100% - 50px); margin: auto; border-radius: 20px;"
      role="dialog" id="modalThread">
     <div class="modal-dialog modal-fullscreen p-0 m-0 h-100" role="document">
-        <div class="modal-content rounded-4 shadow h-100" style="margin: auto;">
+        <div class="modal-content rounded-4 shadow h-100"
+             style="margin: auto; background: linear-gradient(113.22deg, #0C0F20 3.83%, #111A47 16.77%, #111A48 28.4%, #111A48 74.4%, #2536AF 102.38%);">
             <div class="modal-header p-5 pb-4 border-bottom-0" style="margin: auto; max-width: calc(100% - 100px);">
-                <h1 id="threadTitle" class="fw-bold mb-0 fs-2">
+                <h1 id="threadTitle" class="fw-bold mb-0 fs-2" style="color: white;">
                     Chargement des données...
                 </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-label="Fermer" onclick="hideThread()"
-                        style="position: absolute; right: 100px;">
+                <button type="button" class="btn" data-bs-dismiss="modal"
+                        aria-label="Close" onclick="hideThread()" style="position: absolute; right: 120px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-x-lg"
+                         viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                    </svg>
                 </button>
             </div>
             <div id="threadContent" class="modal-body p-5 pt-0 overflow-auto"
-                 style="height: calc(100% - 100px); margin: auto; width: calc(100% - 10px);">
+                 style="height: calc(100% - 100px); margin: auto; max-width: calc(100% - 100px);">
                 <div class="d-flex justify-content-center">
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Chargement...</span>
+                    <div class="spinner-border text-light" role="status">
+                        <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
             </div>
@@ -30,7 +34,7 @@
     <div class="col-1">
         <div style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px;" data-bs-toggle="popup-tip"
              title="Revenir à la liste des assistants">
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="white"
                  class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16"
                  onclick="goBack()"
                  style="cursor: pointer;">
@@ -41,25 +45,25 @@
     <div class="col-9" style="margin-top: 22px;">
         {% include 'Components/breadcrumb.html.twig' with {
             'past': [
-                {'link': '/assistants', 'name': 'Assistants'}
+                {'link': '/', 'name': 'Accueil'},
+                {'link': '/assistants', 'name': 'Liste des assistants'}
             ],
             'current': informations.name_assistant
         } %}
     </div>
 </div>
 
-<div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px; margin-top: 10px;">
+<div style="margin: 10px auto;width: fit-content; font-weight: normal; font-size: medium; background: transparent;">
     <div class="card-body">
-        <h1>{{ informations.name_assistant }}</h1>
 
         <div class="container">
             <div class="col" style="margin-bottom: 10px; width: 300px; margin-right: auto; margin-left: auto;">
-                <div class="card shadow-sm">
+                <div class="card cards">
                     <h5 class="text-center card-header">
                         Nom dans l'API OpenAI
                     </h5>
                     <div class="card-body">
-                        <p class="text-center" style="margin: auto;">
+                        <p class="text-center" style="margin: auto; color: white;">
                             {{ informations.object_assistant.name }}
                         </p>
                     </div>
@@ -67,16 +71,17 @@
             </div>
 
             <div class="accordion col" id="accordion_instructions" style="margin-top: 10px;">
-                <div class="accordion-item">
+                <div class="accordion-item" style="font-size: medium; font-weight: normal; background: #0e1022;">
                     <h2 class="accordion-header">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#accordion_collapse_instructions" aria-expanded="false">
-                            Dernières instructions
+                                data-bs-target="#accordion_collapse_instructions" aria-expanded="false"
+                                style="color: white; background: #0e1022;">
+                            Dernière instruction
                         </button>
                     </h2>
                     <div id="accordion_collapse_instructions" class="accordion-collapse collapse">
                         <div class="accordion-body" style="margin-right: 35px;">
-                            <pre style="white-space: pre-wrap;">{{ informations.object_assistant.instructions }}</pre>
+                            <pre style="white-space: pre-wrap; color: white;">{{ informations.object_assistant.instructions }}</pre>
                         </div>
                     </div>
                 </div>
@@ -87,16 +92,17 @@
 </div>
 
 {% if threads is not empty %}
-    <div class="accordion" id="filterAccordion" style="margin-left: 20px; margin-right: 20px; margin-top: 20px;">
+    <div class="accordion" id="filterAccordion" style="padding: 0;  width: 876px; margin-left: calc(50% - 876px / 2 - 6px); user-select: none;">
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingFilters">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">
+                        data-bs-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters"
+                        style="color: white; background: #0e1022;">
                     Filtres
                 </button>
             </h2>
             <div id="collapseFilters" class="accordion-collapse collapse" aria-labelledby="headingFilters"
-                 data-bs-parent="#filterAccordion">
+                 data-bs-parent="#filterAccordion" style="color: white; background: #0e1022;">
                 <div class="accordion-body">
                     <div class="container" id="filters">
                         <div class="row">
@@ -119,11 +125,11 @@
                         </div>
                         <div class="text-center" style="margin-top: 10px;">
                             <p>Nombre de threads : <span id="nbThreadShow">{{ threads|length }}</span></p>
-                            <button class="btn btn-outline-dark" type="submit"
+                            <button class="btn" type="submit"
                                     onclick="resetFilters()"
                                     data-bs-toggle="popup-tip" title="Réinitialiser les filtres.">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
-                                     fill="currentColor"
+                                     fill="white"
                                      class="bi bi-ban" viewBox="0 0 16 16">
                                     <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"/>
                                 </svg>
@@ -135,8 +141,8 @@
         </div>
     </div>
 
-    <div class="container" style="margin-top: 20px;">
-        <table class="table table-bordered table-striped">
+    <div class="container" style="margin-top: 20px; max-width: 800px;">
+        <table class="table table-bordered table-striped table-dark">
             <thead>
             <tr class="table-dark" style="height: 61px;">
                 <th scope="col" class="text-center">
@@ -155,7 +161,7 @@
                     </svg>
                 </th>
                 <th scope="col" class="text-center" id="latency_header">
-                    Temps de réponse
+                    Latence
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                          class="bi bi-arrow-down-up" viewBox="0 0 16 16"
                          style="cursor: pointer;" onclick="filterLatency()">
@@ -199,35 +205,35 @@
                             </svg>
                         {% endif %}
                     </td>
-                    <td id="latency_{{ thread.id_thread }}" class="col-3">
+                    <td id="latency_{{ thread.id_thread }}" class="col-2">
                         {{ thread.latency_thread }} ms
                     </td>
                     <td class="text-center col-3">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-outline-dark"
+                            <button type="button" class="btn"
                                     data-bs-toggle="popup-tip" title="Voir le thread."
                                     onclick="goTo({{ thread.id_thread }})">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white"
                                      class="bi bi-eye" viewBox="0 0 16 16">
                                     <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
                                     <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
                                 </svg>
                             </button>
-                            <button type="button" class="btn btn-outline-danger"
+                            <button type="button" class="btn"
                                     data-bs-toggle="popup-tip" title="Supprimer le thread."
                                     onclick="delete_thread({{ thread.id_thread }})">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="red"
                                      class="bi bi-trash3" viewBox="0 0 16 16">
                                     <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
                                 </svg>
                             </button>
                             <button
                                     id="compare_thread_button_{{ thread.id_thread }}"
-                                    class="btn btn-outline-info" type="submit" style="display: none;"
+                                    class="btn" type="submit" style="display: none;"
                                     onclick="compareThread()" data-bs-toggle="popup-tip"
                                     title="Comparer les threads."
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white"
                                      class="bi bi-file-diff" viewBox="0 0 16 16">
                                     <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4m-2.5 6.5A.5.5 0 0 1 6 10h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5"/>
                                     <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1"/>
@@ -243,7 +249,7 @@
 {% else %}
     <div style="margin-top: 20px;">
         {% include 'Components/nodata.html.twig' with {
-            'message': "Aucun thread n'est disponible pour cet assistant."
+            'message': "Aucun thread n'est disponible pour cet assistant.", 'isError': 'true'
         } %}
     </div>
 {% endif %}
@@ -254,10 +260,18 @@
     let orderDate = "DESC";
     let orderLatency = "DESC";
 
+
+    /**
+     * Retourne à la liste des assistants.
+     */
     function goBack() {
         window.location.href = '/assistants';
     }
 
+
+    /**
+     * Coche ou décoche toutes les cases de sélection de threads.
+     */
     function check() {
         if (document.getElementById("checkbox_select").checked) {
             selectAll();
@@ -267,18 +281,21 @@
         verifyCompare();
     }
 
+
+    /**
+     * Sélectionne toutes les cases de sélection de threads.
+     */
     function selectAll() {
         for (const id in threads) {
-            let input = document.getElementById("checkbox_thread_" + threads[id]['id_thread']);
-            if (document.getElementById("thread_" + threads[id]['id_thread']).style.display !== "none") {
-                input.checked = true;
-            } else {
-                input.checked = false;
-            }
+            document.getElementById("checkbox_thread_" + threads[id]['id_thread']).checked = document.getElementById("thread_" + threads[id]['id_thread']).style.display !== "none";
         }
         verifyCompare();
     }
 
+
+    /**
+     * Désélectionne toutes les cases de sélection de threads.
+     */
     function unselectAll() {
         for (const id in threads) {
             let input = document.getElementById("checkbox_thread_" + threads[id]['id_thread']);
@@ -289,6 +306,10 @@
         verifyCompare();
     }
 
+
+    /**
+     * Filtre les threads par date.
+     */
     function filterDate() {
         resetOtherArrows("date_header");
         const tableBody = document.querySelector('tbody');
@@ -313,6 +334,10 @@
         rows.forEach(row => tableBody.appendChild(row));
     }
 
+
+    /**
+     * Filtre les threads par temps de réponse.
+     */
     function filterLatency() {
         resetOtherArrows("latency_header");
         const tableBody = document.querySelector('tbody');
@@ -337,6 +362,11 @@
         rows.forEach(row => tableBody.appendChild(row));
     }
 
+
+    /**
+     * Réinitialise les flèches de tri des colonnes autres que celle active.
+     * @param {string} activeHeaderId - ID de la colonne active
+     */
     function resetOtherArrows(activeHeaderId) {
         const headers = ["date_header", "latency_header"];
         headers.forEach(headerId => {
@@ -348,6 +378,12 @@
         });
     }
 
+
+    /**
+     * Met à jour la flèche de tri d'une colonne.
+     * @param {string} headerId - ID de la colonne
+     * @param {string} order - Ordre de tri ("ASC" ou "DESC")
+     */
     function updateArrow(headerId, order) {
         const header = document.getElementById(headerId);
         const svg = header.querySelector('svg');
@@ -361,6 +397,10 @@
         }
     }
 
+
+    /**
+     * Supprime tous les threads sélectionnés après confirmation.
+     */
     async function deleteAllSelect() {
         openModal();
         document.getElementById("modalTitle").innerText = "Supprimer des threads";
@@ -383,6 +423,10 @@
         });
     }
 
+
+    /**
+     * Vérifie le nombre de cases cochées et affiche les boutons d'action en conséquence.
+     */
     function verifyCompare() {
         let nbCaseChecked = 0;
         let nbCase = 0;
@@ -420,7 +464,7 @@
                     const noDataCell = document.createElement("td");
                     noDataRow.setAttribute("id", "nodata_component");
                     noDataCell.setAttribute("colspan", "12");
-                    noDataCell.innerHTML = `{% include 'Components/nodata.html.twig' with {'message': 'Veuillez modifier les filtres. Aucun thread ne correspond à votre recherche.'} %}`;
+                    noDataCell.innerHTML = `{% include 'Components/nodata.html.twig' with {'message': 'Veuillez modifier les filtres. Aucun thread ne correspond à votre recherche.', 'isError': 'true'} %}`;
                     noDataRow.appendChild(noDataCell);
                     tableBody.appendChild(noDataRow);
                 }
@@ -435,6 +479,11 @@
         }
     }
 
+
+    /**
+     * Affiche les détails d'un thread.
+     * @param {number} id_thread - ID du thread à afficher
+     */
     async function goTo(id_thread) {
         showThread();
         await getRequest("/assistants/thread", {id: id_thread})
@@ -474,6 +523,11 @@
             });
     }
 
+
+    /**
+     * Supprime un thread après confirmation.
+     * @param {number} id_thread - ID du thread à supprimer
+     */
     async function delete_thread(id_thread) {
         openModal();
         document.getElementById("modalTitle").innerText = "Supprimer un thread";
@@ -491,6 +545,11 @@
         });
     }
 
+
+    /**
+     * Supprime un thread.
+     * @param {number} id_thread - ID du thread à supprimer
+     */
     async function delete_one_thread(id_thread) {
         postRequest("/assistants/thread/delete", {id: id_thread})
             .then(response => {
@@ -505,6 +564,10 @@
             });
     }
 
+
+    /**
+     * Compare deux threads sélectionnés.
+     */
     async function compareThread() {
         showThread();
         let listId = [];
@@ -551,22 +614,10 @@
             });
     }
 
-    {% if threads is not empty %}
-    document.addEventListener('DOMContentLoaded', function () {
-        window.addEventListener('scroll', function () {
-            const navBarHeight = document.querySelector('.navbar').offsetHeight;
-            const filterAccordion = document.getElementById('filterAccordion');
-            if (window.scrollY > navBarHeight) {
-                filterAccordion.classList.add('fixed-top');
-                filterAccordion.style.top = navBarHeight + 'px';
-            } else {
-                filterAccordion.classList.remove('fixed-top');
-                filterAccordion.style.top = 'auto';
-            }
-        });
-    });
-    {% endif %}
 
+    /**
+     * Applique les filtres sur les threads affichés.
+     */
     function applyFilters() {
         const startDate = document.getElementById('start_date').value;
         const endDate = document.getElementById('end_date').value;
@@ -597,6 +648,10 @@
         verifyCompare();
     }
 
+
+    /**
+     * Réinitialise les filtres appliqués sur les threads.
+     */
     function resetFilters() {
         document.getElementById('start_date').value = "";
         document.getElementById('end_date').value = "";
@@ -604,10 +659,18 @@
         applyFilters();
     }
 
+
+    /**
+     * Affiche la modal de détail du thread.
+     */
     function showThread() {
         document.getElementById('modalThread').classList.add("d-flex");
     }
 
+
+    /**
+     * Cache la modal de détail du thread.
+     */
     function hideThread() {
         document.getElementById('modalThread').classList.remove("d-flex");
         document.getElementById('threadContent').innerHTML = `
@@ -617,17 +680,33 @@
             </div>
         </div>`;
     }
+
+
+    {% if threads is not empty %}
+    document.addEventListener('DOMContentLoaded', function () {
+        window.addEventListener('scroll', function () {
+            const navBarHeight = document.querySelector('#navbar').offsetHeight + 30;
+            const filterAccordion = document.getElementById('filterAccordion');
+            if (window.scrollY > navBarHeight) {
+                filterAccordion.classList.add('fixed-top');
+                filterAccordion.style.top = navBarHeight + 'px';
+            } else {
+                filterAccordion.classList.remove('fixed-top');
+                filterAccordion.style.top = 'auto';
+            }
+        });
+    });
+    {% endif %}
+
+
+    document.getElementById('modalThread').addEventListener('click', function(event) {
+        if (event.target === this) {
+            hideThread();
+        }
+    });
+
+
+    document.getElementById('modalThread').addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
 </script>
-
-<style>
-    .message-content.truncated {
-        max-height: 15em;
-        overflow: hidden;
-    }
-
-    .show-more {
-        display: block;
-        margin-top: 1em;
-        cursor: pointer;
-    }
-</style>

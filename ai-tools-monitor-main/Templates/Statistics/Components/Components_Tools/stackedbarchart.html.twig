@@ -55,11 +55,15 @@
 
     data_stackedbarchar = newDataStackedBarChart;
 
+
+    /**
+     * Ajoute un graphique à barres empilées pour visualiser les erreurs par outil et source.
+     */
     function addStackedBarChart() {
         let data = data_stackedbarchar;
         const width = 928;
         const height = 600;
-        const marginTop = 30; // Augmente la marge pour le titre
+        const marginTop = 30;
         const marginRight = 10;
         const marginBottom = 20;
         const marginLeft = 40;
@@ -130,6 +134,7 @@
             .attr("style", "max-width: 100%; height: auto;")
             .append("g")
             .attr("transform", "translate(50,0)")
+            .attr("class", "legend")
             .call(legend);
 
         return Object.assign(svg.node(), {scales: {color}});
@@ -137,3 +142,9 @@
 
     document.getElementById("stackedBarChart").append(addStackedBarChart());
 </script>
+
+<style>
+    .legend text {
+        fill: white;
+    }
+</style>

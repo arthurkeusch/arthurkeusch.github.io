@@ -18,41 +18,28 @@
 
 <body>
 
-<nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
-    <div class="container-fluid">
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04"
-                aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarsExample04">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                <li class="nav-item">
-                    <a class="nav-link active" href="/">Accueil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="/tool">Outils</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="/assistants">Assistants</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="/backup">Backup</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="/parameters">Paramètres</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="/statistics">Statistiques</a>
-                </li>
-            </ul>
-        </div>
-
-
-        <div class="btn-group" id="download_dropdown" style="display: none;"
-             data-bs-toggle="popup-tip" title="Télécharger les données des logs au format CSV ou JSON.">
-            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+<nav id="navbar">
+    <div class="navbar_link">
+        <a class="nav-link" href="/">Accueil</a>
+    </div>
+    <div class="navbar_link">
+        <a class="nav-link" href="/tool">Outils</a>
+    </div>
+    <div class="navbar_link">
+        <a class="nav-link" href="/assistants">Assistants</a>
+    </div>
+    <div class="navbar_link">
+        <a class="nav-link" href="/backup">Backup</a>
+    </div>
+    <div class="navbar_link">
+        <a class="nav-link" href="/parameters">Paramètres</a>
+    </div>
+    <div class="navbar_link">
+        <a class="nav-link" href="/statistics">Statistiques</a>
+    </div>
+    <div style="position: fixed; right: 20px;">
+        <div class="btn-group" id="download_dropdown" style="display: none;">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
                     data-bs-display="static" aria-expanded="false">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" class="bi bi-download"
                      viewBox="0 0 16 16">
@@ -61,19 +48,16 @@
                 </svg>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li class="d-flex justify-content-around">
+                <li class="d-flex">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="black"
-                         class="bi bi-filetype-csv" viewBox="0 0 16 16" style="cursor: pointer;"
-                         id="download_csv" onclick="download('csv')"
-                    >
+                         class="bi bi-filetype-csv file d-flex justify-content-around" viewBox="0 0 16 16"
+                         id="download_csv" onclick="download('csv')">
                         <path fill-rule="evenodd"
                               d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM3.517 14.841a1.13 1.13 0 0 0 .401.823q.195.162.478.252.284.091.665.091.507 0 .859-.158.354-.158.539-.44.187-.284.187-.656 0-.336-.134-.56a1 1 0 0 0-.375-.357 2 2 0 0 0-.566-.21l-.621-.144a1 1 0 0 1-.404-.176.37.37 0 0 1-.144-.299q0-.234.185-.384.188-.152.512-.152.214 0 .37.068a.6.6 0 0 1 .246.181.56.56 0 0 1 .12.258h.75a1.1 1.1 0 0 0-.2-.566 1.2 1.2 0 0 0-.5-.41 1.8 1.8 0 0 0-.78-.152q-.439 0-.776.15-.337.149-.527.421-.19.273-.19.639 0 .302.122.524.124.223.352.367.228.143.539.213l.618.144q.31.073.463.193a.39.39 0 0 1 .152.326.5.5 0 0 1-.085.29.56.56 0 0 1-.255.193q-.167.07-.413.07-.175 0-.32-.04a.8.8 0 0 1-.248-.115.58.58 0 0 1-.255-.384zM.806 13.693q0-.373.102-.633a.87.87 0 0 1 .302-.399.8.8 0 0 1 .475-.137q.225 0 .398.097a.7.7 0 0 1 .272.26.85.85 0 0 1 .12.381h.765v-.072a1.33 1.33 0 0 0-.466-.964 1.4 1.4 0 0 0-.489-.272 1.8 1.8 0 0 0-.606-.097q-.534 0-.911.223-.375.222-.572.632-.195.41-.196.979v.498q0 .568.193.976.197.407.572.626.375.217.914.217.439 0 .785-.164t.55-.454a1.27 1.27 0 0 0 .226-.674v-.076h-.764a.8.8 0 0 1-.118.363.7.7 0 0 1-.272.25.9.9 0 0 1-.401.087.85.85 0 0 1-.478-.132.83.83 0 0 1-.299-.392 1.7 1.7 0 0 1-.102-.627zm8.239 2.238h-.953l-1.338-3.999h.917l.896 3.138h.038l.888-3.138h.879z"/>
                     </svg>
-
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="black"
-                         class="bi bi-filetype-json" viewBox="0 0 16 16" style="cursor: pointer;"
-                         id="download_json" onclick="download('json')"
-                    >
+                         class="bi bi-filetype-json file d-flex justify-content-around" viewBox="0 0 16 16"
+                         id="download_json" onclick="download('json')">
                         <path fill-rule="evenodd"
                               d="M14 4.5V11h-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM4.151 15.29a1.2 1.2 0 0 1-.111-.449h.764a.58.58 0 0 0 .255.384q.105.073.25.114.142.041.319.041.245 0 .413-.07a.56.56 0 0 0 .255-.193.5.5 0 0 0 .084-.29.39.39 0 0 0-.152-.326q-.152-.12-.463-.193l-.618-.143a1.7 1.7 0 0 1-.539-.214 1 1 0 0 1-.352-.367 1.1 1.1 0 0 1-.123-.524q0-.366.19-.639.192-.272.528-.422.337-.15.777-.149.456 0 .779.152.326.153.5.41.18.255.2.566h-.75a.56.56 0 0 0-.12-.258.6.6 0 0 0-.246-.181.9.9 0 0 0-.37-.068q-.324 0-.512.152a.47.47 0 0 0-.185.384q0 .18.144.3a1 1 0 0 0 .404.175l.621.143q.326.075.566.211a1 1 0 0 1 .375.358q.135.222.135.56 0 .37-.188.656a1.2 1.2 0 0 1-.539.439q-.351.158-.858.158-.381 0-.665-.09a1.4 1.4 0 0 1-.478-.252 1.1 1.1 0 0 1-.29-.375m-3.104-.033a1.3 1.3 0 0 1-.082-.466h.764a.6.6 0 0 0 .074.27.5.5 0 0 0 .454.246q.285 0 .422-.164.137-.165.137-.466v-2.745h.791v2.725q0 .66-.357 1.005-.355.345-.985.345a1.6 1.6 0 0 1-.568-.094 1.15 1.15 0 0 1-.407-.266 1.1 1.1 0 0 1-.243-.39m9.091-1.585v.522q0 .384-.117.641a.86.86 0 0 1-.322.387.9.9 0 0 1-.47.126.9.9 0 0 1-.47-.126.87.87 0 0 1-.32-.387 1.55 1.55 0 0 1-.117-.641v-.522q0-.386.117-.641a.87.87 0 0 1 .32-.387.87.87 0 0 1 .47-.129q.265 0 .47.129a.86.86 0 0 1 .322.387q.117.255.117.641m.803.519v-.513q0-.565-.205-.973a1.46 1.46 0 0 0-.59-.63q-.38-.22-.916-.22-.534 0-.92.22a1.44 1.44 0 0 0-.589.628q-.205.407-.205.975v.513q0 .562.205.973.205.407.589.626.386.217.92.217.536 0 .917-.217.384-.22.589-.626.204-.41.205-.973m1.29-.935v2.675h-.746v-3.999h.662l1.752 2.66h.032v-2.66h.75v4h-.656l-1.761-2.676z"/>
                     </svg>
@@ -83,11 +67,11 @@
     </div>
 </nav>
 
-<br><br>
+<div style="margin-bottom: 100px;"></div>
 
 <div id="messageCard" role="alert"
-     style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
-    <span id="messageText">Message</span>
+     style="width: fit-content; display: none; justify-content: space-between; align-items: center; margin: auto; position: sticky; top: 100px; z-index: 9999;">
+    <span id="messageText" style="margin-right: 10px;">Message</span>
     <span>
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-x-circle"
              viewBox="0 0 16 16" style="cursor: pointer" onclick="close_message()">
@@ -123,11 +107,144 @@
     </div>
 </div>
 
+<svg id="scrollButton" xmlns="http://www.w3.org/2000/svg" width="50" height="50" onclick="scrollToTop()"
+     fill="currentColor" class="bi bi-arrow-up-square-fill" viewBox="0 0 16 16">
+    <path d="M2 16a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2zm6.5-4.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 1 0"/>
+</svg>
 
 </body>
 </html>
 
+<style>
+    #scrollButton {
+        position: fixed;
+        bottom: 45px;
+        right: 110px;
+        display: none;
+        z-index: 9999;
+        cursor: pointer;
+        color: white;
+    }
+
+    body {
+        background: linear-gradient(113.22deg, #0C0F20 3.83%, #111A47 16.77%, #111A48 28.4%, #111A48 74.4%, #2536AF 102.38%);
+        overflow-x: hidden;
+    }
+
+    #navbar {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 23px 100px 23px 10px;
+        gap: 50px;
+        position: fixed;
+        width: 876px;
+        height: 64px;
+        left: calc(50% - 876px / 2 - 6px);
+        top: 36px;
+        background: linear-gradient(90deg, rgba(12, 14, 29, 0.5) 0%, rgba(14, 16, 34, 0.5) 100%);
+        backdrop-filter: blur(12px);
+        border-radius: 10px;
+        z-index: 999;
+    }
+
+    .navbar_link {
+        color: white;
+        width: auto;
+        height: 30px;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 30px;
+    }
+
+    .file {
+        cursor: pointer;
+        margin: auto;
+    }
+
+    .file:hover {
+        background-color: rgba(189, 189, 189, 0.3);
+        border-radius: 5px;
+        box-shadow: 5px 0 0 5px rgba(189, 189, 189, 0.3), -5px 0 0 5px rgba(189, 189, 189, 0.3);
+    }
+
+    .cards {
+        background-color: #0e1022;
+        color: white;
+        font-size: large;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 10px;
+    }
+
+    .cards::before {
+        content: '';
+        position: absolute;
+        top: -3px;
+        left: -3px;
+        right: -3px;
+        bottom: -3px;
+        background: linear-gradient(45deg, #9b4bda, #4b8eda);
+        z-index: -1;
+        border-radius: inherit;
+        background-clip: border-box;
+        padding: 3px;
+    }
+
+    .buttons {
+        background: linear-gradient(45deg, #9b4bda, #4b8eda);
+        color: white;
+    }
+
+    .buttons:hover {
+        filter: brightness(85%);
+    }
+
+    .accordions {
+        background-color: #0e1022;
+        color: white;
+    }
+
+    .cards_left {
+        background-color: #0e1022;
+        color: white;
+        font-size: large;
+        font-weight: bold;
+        text-align: left;
+        border: 2px solid white;
+    }
+
+    .floating_buttons {
+        position: fixed;
+        width: 60px;
+        height: 60px;
+        bottom: 40px;
+        right: 40px;
+        border: 2px solid white;
+        background: linear-gradient(45deg, #9b4bda, #4b8eda);
+        border-radius: 50px;
+        cursor: pointer;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .floating_buttons:hover {
+        filter: brightness(85%);
+    }
+</style>
+
 <script>
+    /**
+     * Envoie une requête POST avec les paramètres spécifiés.
+     * @param {string} path - Chemin de l'URL.
+     * @param {Object} params - Paramètres de la requête.
+     * @returns {Promise} - Promesse résolue ou rejetée en fonction du statut de la requête.
+     */
     function postRequest(path, params) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -147,6 +264,13 @@
         });
     }
 
+
+    /**
+     * Envoie une requête GET avec les paramètres spécifiés.
+     * @param {string} path - Chemin de l'URL.
+     * @param {Object} params - Paramètres de la requête.
+     * @returns {Promise} - Promesse résolue ou rejetée en fonction du statut de la requête.
+     */
     function getRequest(path, params) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -167,36 +291,68 @@
         });
     }
 
+
+    /**
+     * Affiche un message de succès.
+     * @param {string} message - Message à afficher.
+     */
     function show_success_message(message) {
         document.getElementById("messageText").textContent = message;
         document.getElementById("messageCard").style.display = "flex";
         document.getElementById("messageCard").className = "alert alert-success";
     }
 
+
+    /**
+     * Affiche un message d'avertissement.
+     * @param {string} message - Message à afficher.
+     */
     function show_warning_message(message) {
         document.getElementById("messageText").textContent = message;
         document.getElementById("messageCard").style.display = "flex";
         document.getElementById("messageCard").className = "alert alert-warning";
     }
 
+
+    /**
+     * Affiche un message d'erreur.
+     * @param {string} message - Message à afficher.
+     */
     function show_danger_message(message) {
         document.getElementById("messageText").textContent = message;
         document.getElementById("messageCard").style.display = "flex";
         document.getElementById("messageCard").className = "alert alert-danger";
     }
 
+
+    /**
+     * Ferme le message d'alerte.
+     */
     function close_message() {
         document.getElementById("messageCard").style.display = "none";
     }
 
+
+    /**
+     * Ouvre une fenêtre modale.
+     */
     function openModal() {
         document.getElementById('modalDiv').classList.add("d-block");
     }
 
+
+    /**
+     * Ferme la fenêtre modale.
+     */
     function closeModal() {
         document.getElementById('modalDiv').classList.remove("d-block");
     }
 
+
+    /**
+     * Télécharge les données des logs, threads ou backups sélectionnés au format spécifié.
+     * @param {string} type - Type de fichier ("csv" ou "json").
+     */
     function download(type) {
         let listId = [];
         if (typeof logs !== 'undefined' && logs !== null) {
@@ -210,7 +366,7 @@
                 postRequest("/download/log", {type: (type === "csv") ? "csv" : "json", listId: listId})
                     .then(response => {
                         createFile(response, "logs-" + getCurrentDateTime() + "." + type);
-                        show_success_message("Téléchargement réussi ! Regardez dans vos téléchargements");
+                        show_success_message("Téléchargement réussi ! Regardez dans vos téléchargements.");
                     })
                     .catch(error => {
                         show_danger_message("Le téléchargement a échoué : " + error);
@@ -231,7 +387,7 @@
                 postRequest("/download/thread", {type: (type === "csv") ? "csv" : "json", listId: listId})
                     .then(response => {
                         createFile(response, "threads-" + getCurrentDateTime() + "." + type);
-                        show_success_message("Téléchargement réussi ! Regardez dans vos téléchargements");
+                        show_success_message("Téléchargement réussi ! Regardez dans vos téléchargements.");
                     })
                     .catch(error => {
                         show_danger_message("Le téléchargement a échoué : " + error);
@@ -251,7 +407,7 @@
                 postRequest("/download/backup", {type: (type === "csv") ? "csv" : "json", listId: listId})
                     .then(response => {
                         createFile(response, "backups_" + getCurrentDateTime() + "." + type);
-                        show_success_message("Téléchargement réussi ! Regardez dans vos téléchargements");
+                        show_success_message("Téléchargement réussi ! Regardez dans vos téléchargements.");
                     })
                     .catch(error => {
                         show_danger_message("Le téléchargement a échoué : " + error);
@@ -262,6 +418,12 @@
         }
     }
 
+
+    /**
+     * Crée un fichier à partir du contenu spécifié et l'initie pour le téléchargement.
+     * @param {string} content - Contenu du fichier.
+     * @param {string} filename - Nom du fichier.
+     */
     function createFile(content, filename) {
         const blob = new Blob([content], {type: 'application/octet-stream'});
         const url = URL.createObjectURL(blob);
@@ -272,6 +434,11 @@
         URL.revokeObjectURL(url);
     }
 
+
+    /**
+     * Obtient la date et l'heure actuelles au format AAAA_MM_JJ-HH_MM_SS.
+     * @returns {string} - Date et heure actuelles.
+     */
     function getCurrentDateTime() {
         const now = new Date();
         const year = now.getFullYear();
@@ -283,9 +450,42 @@
         return `${year}_${month}_${day}-${hours}_${minutes}_${seconds}`;
     }
 
+
+    /**
+     * Suspend l'exécution pendant un certain temps.
+     * @param {number} ms - Durée en millisecondes.
+     * @returns {Promise} - Promesse résolue après la durée spécifiée.
+     */
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+
+    /**
+     * Défile jusqu'en haut de la page de manière fluide.
+     */
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+
+    /**
+     * Récupère les logs d'une langue.
+     * @param id_language - id de la langue.
+     * @returns {Promise<void>} - Promesse résolue après l'exécution de la commande.
+     */
+    async function runGetLogs(id_language) {
+        document.getElementById("run_" + id_language).innerHTML = '<div class="spinner-grow text-light" role="status"> <span class="visually-hidden">Loading...</span> </div>';
+        await postRequest("/tool/language/get/log", {id: id_language})
+            .catch(error => {
+                show_danger_message("Echec de la récupération des logs : " + error);
+            });
+        document.getElementById("run_" + id_language).innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16"> <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/> <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445"/> </svg>';
+    }
+
 
     document.addEventListener('DOMContentLoaded', function () {
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popup-tip"]'));
@@ -294,14 +494,18 @@
         tooltipTriggerList.forEach(function (tooltipTriggerEl) {
             let tooltipInstance;
 
-            tooltipTriggerEl.addEventListener('mouseover', function () {
+            tooltipTriggerEl.addEventListener('mouseenter', function () {
+                if (tooltipInstance) {
+                    tooltipInstance.dispose();
+                    tooltipInstance = null;
+                }
                 timer = setTimeout(function () {
                     tooltipInstance = new bootstrap.Tooltip(tooltipTriggerEl);
                     tooltipInstance.show();
                 }, 500);
             });
 
-            tooltipTriggerEl.addEventListener('mouseout', function () {
+            tooltipTriggerEl.addEventListener('mouseleave', function () {
                 clearTimeout(timer);
                 if (tooltipInstance) {
                     tooltipInstance.hide();
@@ -315,4 +519,14 @@
             });
         });
     });
+
+
+    window.onscroll = function () {
+        const scrollButton = document.getElementById('scrollButton');
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            scrollButton.style.display = 'block';
+        } else {
+            scrollButton.style.display = 'none';
+        }
+    };
 </script>

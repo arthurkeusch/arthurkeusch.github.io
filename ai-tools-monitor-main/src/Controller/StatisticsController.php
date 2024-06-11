@@ -13,7 +13,7 @@ class StatisticsController extends DefaultController
 
 
     /**
-     * Affiche une liste de statistiques.
+     * Afficher une liste de statistiques.
      *
      * @return Response La réponse HTTP avec les données des statistiques.
      */
@@ -27,7 +27,7 @@ class StatisticsController extends DefaultController
 
 
     /**
-     * Affiche une liste de statistiques pour les assistants.
+     * Afficher une liste de statistiques pour les assistants.
      *
      * @return Response La réponse HTTP avec les données des statistiques.
      */
@@ -35,8 +35,9 @@ class StatisticsController extends DefaultController
     public function list_statistics_assistants(): Response
     {
         $data_boxplotGroupByHours_assistants = $this->select("
-SELECT date_thread, latency_thread, isError
-FROM Threads;
+SELECT date_thread, latency_thread, isError, id_thread
+FROM Threads
+LIMIT 1000;
 ");
         $data_linechart_assistant = $this->select("
 SELECT
@@ -60,28 +61,31 @@ SELECT
 FROM Threads AS outer_threads
 WHERE isError = 0
 GROUP BY DATE(date_thread)
-ORDER BY date_thread;
+ORDER BY date_thread
+LIMIT 1000;
 ");
         $data_piechart_assistant = $this->select("
-
 SELECT ET.id_error_type, name_error_type AS name, COUNT(*) AS value
 FROM Threads
 JOIN Errors_Types ET on ET.id_error_type = Threads.id_error_type
+WHERE date_thread >= NOW() - INTERVAL 1 MONTH
 GROUP BY ET.id_error_type;
 ");
         $data_boxplot_assistants = $this->select("
 SELECT id_thread, latency_thread, id_assistant
 FROM Threads
-WHERE isError = 0;
+WHERE isError = 0
+LIMIT 1000;
 ");
         $assistants_boxplot_assistants = $this->select("
 SELECT id_assistant, name_assistant
-FROM Assistants;
+FROM Assistants
+LIMIT 1000;
 ");
         $data_stackedbarchart_assistants = $this->select("
 SELECT id_assistant, id_error_type
 FROM Threads
-WHERE isError = 1;
+WHERE isError = 1 AND date_thread >= NOW() - INTERVAL 1 MONTH;
 ");
         $assistants_stackedbarchart_assistants = $this->select("
 SELECT id_assistant, name_assistant
@@ -101,39 +105,22 @@ FROM Assistants;
 
 
     /**
-     * Affiche une liste de statistiques pour les outils.
+     * Afficher une liste de statistiques pour les outils.
      *
      * @return Response La réponse HTTP avec les données des statistiques.
      */
     #[Route('/statistics/tools', name: 'list_statistics_tools', methods: ['GET'])]
     public function list_statistics_tools(): Response
     {
-        $nbLogs = $this->select("
-SELECT COUNT(*)
-FROM Logs;
-");
         $data_scatterplot = $this->select("
-SELECT DATE_FORMAT(date_log, '%H:%i') AS x_column,
-       latency_log AS y_column,
+SELECT date_log,
+       latency_log,
        isError,
        id_log,
        IF(JSON_VALID(params_log), JSON_UNQUOTE(JSON_EXTRACT(params_log, '$.model')), NULL) AS model
 FROM Logs
 ORDER BY date_log DESC
-LIMIT 500;
-");
-        $model_scatterplot = $this->select("
-SELECT JSON_UNQUOTE(JSON_EXTRACT(params_log, '$.model')) AS model
-FROM (
-    SELECT params_log
-    FROM Logs
-    WHERE JSON_VALID(params_log)
-    ORDER BY date_log DESC
-    LIMIT 500
-) AS subquery
-WHERE JSON_EXTRACT(params_log, '$.model') IS NOT NULL
-GROUP BY model
-ORDER BY model DESC;
+LIMIT 1000;
 ");
         $data_linechart = $this->select("
 SELECT
@@ -157,7 +144,8 @@ SELECT
 FROM Logs AS outer_logs
 WHERE isError = 0
 GROUP BY DATE(date_log)
-ORDER BY date_log;
+ORDER BY date_log
+LIMIT 1000;
 ");
         $tools_linechart = $this->select("
 SELECT name_tool, id_tool
@@ -172,7 +160,7 @@ FROM Logs
          JOIN Languages L on Logs.id_language = L.id_language
          JOIN Tools T on T.id_tool = L.id_tool
 ORDER BY date_log DESC
-LIMIT 10000;
+LIMIT 1000;
 ");
         $tools_boxplot = $this->select("
 SELECT name_tool, id_tool
@@ -183,23 +171,18 @@ SELECT
     t.name_tool,
     level,
     AVG(lg.latency_log) AS latency
-FROM
-    Logs lg
-        INNER JOIN
-    Languages lang ON lg.id_language = lang.id_language
-        INNER JOIN
-    Levels l ON lg.id_level = l.id_level
-        INNER JOIN
-    Tools t ON lang.id_tool = t.id_tool
-GROUP BY
-    t.id_tool, l.level
+FROM Logs lg
+        INNER JOIN Languages lang ON lg.id_language = lang.id_language
+        INNER JOIN Levels l ON lg.id_level = l.id_level
+        INNER JOIN Tools t ON lang.id_tool = t.id_tool
+GROUP BY t.id_tool, l.level
 ORDER BY l.level DESC;
 ");
         $data_sunburst = $this->select("
 SELECT id_log, ET.id_error_type, name_error_type
 FROM Logs
 JOIN Errors_Types ET on ET.id_error_type = Logs.id_error_type
-WHERE isError = 1;       
+WHERE isError = 1 AND date_log >= NOW() - INTERVAL 1 MONTH;      
 ");
         $data_sunburstTool = $this->select("
 SELECT ET.id_error_type,
@@ -215,7 +198,7 @@ JOIN Errors_Types ET on ET.id_error_type = Logs.id_error_type
 JOIN Languages L on L.id_language = Logs.id_language
 JOIN Levels L2 on L2.id_level = Logs.id_level
 JOIN Tools T on T.id_tool = L.id_tool
-WHERE isError = 1;
+WHERE isError = 1 AND date_log >= NOW() - INTERVAL 1 MONTH;
 ");
         $data_stackedbarchart = $this->select("
 SELECT date_log,
@@ -227,7 +210,7 @@ FROM Logs
          JOIN Errors_Types ET on Logs.id_error_type = ET.id_error_type
          JOIN Languages L on L.id_language = Logs.id_language
          JOIN Tools T on T.id_tool = L.id_tool
-WHERE isError;
+WHERE isError AND date_log >= NOW() - INTERVAL 1 MONTH;
 ");
         $tools_stackedbarchart = $this->select("
 SELECT id_tool,
@@ -252,10 +235,8 @@ SELECT id_log, date_log, id_language, id_level
 FROM Logs;
 ");
         return $this->render('Statistics/statistics_tools.html.twig', [
-            'title' => 'Statistiques',
-            'nbLogsMax' => $nbLogs[0]['COUNT(*)'],
+            'title' => 'Statistiques des outils',
             'data_scatterplot' => $data_scatterplot,
-            'model_scatterplot' => $model_scatterplot,
             'data_linechart' => $data_linechart,
             'tools_linechart' => $tools_linechart,
             'data_boxplot' => $data_boxplot,
@@ -274,7 +255,7 @@ FROM Logs;
 
 
     /**
-     * Récupère les données pour le diagramme de dispersion avec une limite spécifiée.
+     * Récupérer les données pour le diagramme de dispersion avec une limite spécifiée.
      *
      * @param Request $request La requête HTTP.
      * @return JsonResponse La réponse JSON avec les données du diagramme de dispersion.
@@ -315,14 +296,14 @@ ORDER BY model DESC;
         } catch (Exception $e) {
             return new JsonResponse([
                 'status' => '500',
-                'message' => 'Echec de la récupération : ' . $e->getMessage()
+                'message' => 'Échec de la récupération : ' . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
 
     /**
-     * Récupère les données pour le diagramme en boîte avec une plage de dates et une option pour afficher ou non les erreurs.
+     * Récupérer les données pour le diagramme en boîte avec une plage de dates et une option pour afficher ou non les erreurs.
      *
      * @param Request $request La requête HTTP.
      * @return JsonResponse La réponse JSON avec les données du diagramme en boîte.
@@ -369,7 +350,7 @@ WHERE 1 = 1
 
 
     /**
-     * Récupère les données pour le graphique linéaire en fonction de l'outil sélectionné.
+     * Récupérer les données pour le graphique linéaire en fonction de l'outil sélectionné.
      *
      * @param Request $request La requête HTTP.
      * @return JsonResponse La réponse JSON avec les données du graphique linéaire.
@@ -416,7 +397,7 @@ GROUP BY DATE(date_log);
 
 
     /**
-     * Récupère les statistiques pour un langage spécifique.
+     * Récupérer les statistiques pour un langage spécifique.
      *
      * @param Request $request La requête HTTP.
      * @return Response La réponse HTTP avec les statistiques du langage.
@@ -441,29 +422,16 @@ WHERE id_language = $id_language AND isError = 0
 GROUP BY DATE(date_log)
 ORDER BY date_log;
 ");
-        $nbLogs = $this->select("
-SELECT COUNT(*)
-FROM Logs
-WHERE id_language = $id_language;
-");
         $data_scatterplot = $this->select("
-SELECT DATE_FORMAT(date_log, '%H:%i') AS x_column,
-       latency_log AS y_column,
+SELECT date_log,
+       latency_log,
        isError,
-       id_log,
-       name_level AS model
+       id_log
 FROM Logs
 JOIN Levels L on Logs.id_level = L.id_level
 WHERE id_language = $id_language
 ORDER BY date_log DESC
 LIMIT 500;
-");
-        $model_scatterplot = $this->select("
-SELECT name_level AS model
-FROM Levels
-JOIN Logs L on Levels.id_level = L.id_level
-WHERE L.id_language = $id_language
-GROUP BY L.id_level;
 ");
         return $this->render('Tools/language_statistics.html.twig', [
             'title' => 'Statistiques de ' . $name_language[0]['name_language'],
@@ -472,8 +440,6 @@ GROUP BY L.id_level;
             'id_tool' => $name_language[0]['id_tool'],
             'name_tool' => $name_language[0]['name_tool'],
             'data_linechart' => $data_linechart,
-            'nbLogsMax' => $nbLogs[0]['COUNT(*)'],
-            'model_scatterplot' => $model_scatterplot,
             'data_scatterplot' => $data_scatterplot
         ]);
     }

@@ -32,6 +32,10 @@
 <div id="boxplot" style="height: 100%; width: 100%;"></div>
 
 <script>
+    /**
+     * Affiche le diagramme en boîte avec les points spécifiés (tous les points, valeurs aberrantes ou aucun point).
+     * @param {number} number - Style des points à afficher (1: tous, 2: valeurs aberrantes, 3: aucun).
+     */
     async function showBoxPlotPoints(number) {
         const svgNode = await addBoxPlot(number);
         const boxplotDiv = document.getElementById("boxplot");
@@ -47,6 +51,12 @@
     });
     data_boxplot = newData;
 
+
+    /**
+     * Ajoute un diagramme en boîte pour visualiser les latences par outil.
+     * @param {number} stylePointe - Style des points à afficher (1: tous, 2: valeurs aberrantes).
+     * @returns {SVGElement} - Le SVG créé pour le diagramme en boîte.
+     */
     async function addBoxPlot(stylePointe) {
         const width = 928;
         const height = 600;
@@ -127,8 +137,8 @@
 
                 function addPoints(points, g, allData) {
                     const circles = g.append("g")
-                        .attr("fill", "currentColor")
-                        .attr("fill-opacity", 0.5)
+                        .attr("fill", "#00bc00")
+                        .attr("fill-opacity", 0.8)
                         .attr("stroke", "none")
                         .attr("transform", `translate(${x(tool.name_tool) + x.bandwidth() / 2},0)`)
                         .selectAll("circle")
@@ -144,7 +154,7 @@
                             d3.select(this).attr("r", 4).attr("fill-opacity", 1);
                         })
                         .on("mouseout", function () {
-                            d3.select(this).attr("r", 2).attr("fill-opacity", 0.5);
+                            d3.select(this).attr("r", 2).attr("fill-opacity", 0.8);
                         })
                         .on("click", function (event, d) {
                             const logId = d3.select(this).attr("data-id-log");
@@ -173,6 +183,11 @@
         return svg.node();
     }
 
+
+    /**
+     * Rend le diagramme en boîte avec le style de points spécifié.
+     * @param {number} stylePoint - Style des points à afficher (1: tous, 2: valeurs aberrantes, 3: aucun).
+     */
     async function renderBoxPlot(stylePoint) {
         const svgNode = await addBoxPlot(stylePoint);
         document.getElementById("boxplot").innerHTML = "";

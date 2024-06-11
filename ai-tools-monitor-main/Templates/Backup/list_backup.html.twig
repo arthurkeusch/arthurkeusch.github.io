@@ -1,27 +1,44 @@
 {% include 'Components/headers.html.twig' %}
 
-<div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px; margin-top: 10px;">
-    <div class="card-body">
-        <h1>{{ title }}</h1>
+<div class="row">
+    <div class="col-1">
+        <div style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px;"
+             title="Revenir à la liste des outils"
+             data-bs-toggle="popup-tip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="white"
+                 class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16"
+                 onclick="goBack()"
+                 style="cursor: pointer;">
+                <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"></path>
+            </svg>
+        </div>
+    </div>
+    <div class="col-9" style="margin-top: 22px;">
+        {% include 'Components/breadcrumb.html.twig' with {
+            'past': [
+                {'link': '/', 'name': 'Accueil'}
+            ],
+            'current': title
+        } %}
     </div>
 </div>
 
-
-<div class="album py-5" style="margin-right: 10px; margin-left: 10px; margin-top: -35px; user-select: none;">
+<div class="album py-5" style="padding: 0;  width: 876px; margin-left: calc(50% - 876px / 2 - 6px); user-select: none; margin-top: -35px;">
     <div class="row row-cols-1 g-2">
-        <div id="filtersAccordionContainer" class="accordion" id="filtersAccordion">
+        <div id="filtersAccordionContainer" class="accordion">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingFilters">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">
+                            data-bs-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters"
+                            style="color: white; background: #0e1022;">
                         Filtres
                     </button>
                 </h2>
                 <div id="collapseFilters" class="accordion-collapse collapse" aria-labelledby="headingFilters"
-                     data-bs-parent="#filtersAccordion">
+                     data-bs-parent="#filtersAccordionContainer" style="color: white; background: #0e1022;">
                     <div class="accordion-body">
                         <div class="col">
-                            <div class="card shadow-sm">
+                            <div class="card cards" style="font-weight: normal; font-size: medium;">
                                 <div class="card-body text-center">
                                     <div class="input-group mb-3">
                                         <label for="start" class="input-group-text">Du</label>
@@ -35,13 +52,13 @@
                                     </div>
                                     <label class="list-group-item d-flex gap-2" id="nbLogShow"
                                            style="cursor: pointer; user-select: none;">
-                                        Nombre de backup : {{ list_backups | length }}
+                                        Nombre de backups : {{ list_backups | length }}
                                     </label>
-                                    <button class="btn btn-outline-dark" type="submit" style="margin-top: 10px;"
+                                    <button class="btn" type="submit" style="margin-top: 10px; background: #0e1022;"
                                             onclick="stopFilter()"
                                             data-bs-toggle="popup-tip" title="Réinitialiser les filtres.">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
-                                             fill="currentColor"
+                                             fill="white"
                                              class="bi bi-ban" viewBox="0 0 16 16">
                                             <path d="M15 8a6.97 6.97 0 0 0-1.71-4.584l-9.874 9.875A7 7 0 0 0 15 8M2.71 12.584l9.874-9.875a7 7 0 0 0-9.874 9.874ZM16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0"/>
                                         </svg>
@@ -56,11 +73,10 @@
     </div>
 </div>
 
-
 <div style="margin: -30px 40px 20px;">
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-3" style="margin-top: 10px;">
 
-        <table class="table table-bordered table-striped" style="width: 350px; margin: auto;">
+        <table class="table table-bordered table-striped table-dark" style="width: 350px; margin: auto;">
             <thead>
             <tr class="table-dark">
                 <th scope="col" class="text-center" style="width: 50px; height: 61px;">
@@ -107,16 +123,16 @@
                     </td>
                     <td class="text-center" style="width: 100px;">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-outline-dark"
+                            <button type="button" class="btn"
                                     data-bs-toggle="popup-tip" title="Voir le backup."
                                     onclick="goTo({{ backup.id_backup }})">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white"
                                      class="bi bi-eye" viewBox="0 0 16 16">
                                     <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
                                     <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
                                 </svg>
                             </button>
-                            <button type="button" class="btn btn-outline-danger"
+                            <button type="button" class="btn btn-danger"
                                     data-bs-toggle="popup-tip" title="Supprimer le backup."
                                     onclick="delete_backup({{ backup.id_backup }})">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
@@ -134,26 +150,48 @@
     </div>
 </div>
 
+<style>
+    .fixed-accordion {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        background-color: white;
+    }
+</style>
+
 <script>
     let backups = {{ list_backups | json_encode | raw }};
+    let orderDate = "DESC";
 
+
+    /**
+     * Retourne à la liste des outils.
+     */
+    function goBack() {
+        window.location.href = '/';
+    }
+
+
+    /**
+     * Sélectionne ou désélectionne tous les backups affichés.
+     */
     function check() {
         for (const id in backups) {
-            let input = document.getElementById("checkbox_backup_" + backups[id]['id_backup']);
             if (document.getElementById("backup_" + backups[id]['id_backup']).style.display === "") {
-                if (document.getElementById('checkbox_select').checked) {
-                    input.checked = true;
-                } else {
-                    input.checked = false;
-                }
+                document.getElementById("checkbox_backup_" + backups[id]['id_backup']).checked = !!document.getElementById('checkbox_select').checked;
             } else {
-                input.checked = false;
+                document.getElementById("checkbox_backup_" + backups[id]['id_backup']).checked = false;
             }
         }
         verifyCompare();
         compare();
     }
 
+
+    /**
+     * Vérifie le nombre de cases cochées et affiche les boutons d'action en conséquence.
+     */
     function verifyCompare() {
         const downloadDropdown = document.getElementById('download_dropdown');
         for (const id in backups) {
@@ -170,36 +208,10 @@
         document.getElementById("button_delete_selection").style.display = 'none';
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const selectAllCheckbox = document.getElementById('checkbox_select');
-        const checkboxes = document.querySelectorAll('input[id^="checkbox_backup_"]');
-        const downloadDropdown = document.getElementById('download_dropdown');
 
-        function check() {
-            const isChecked = selectAllCheckbox.checked;
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = isChecked;
-            });
-            verifyCompare();
-        }
-
-        function verifyCompare() {
-            const checked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-            if (checked) {
-                downloadDropdown.style.display = '';
-            } else {
-                downloadDropdown.style.display = 'none';
-            }
-        }
-
-        selectAllCheckbox.addEventListener('change', check);
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', verifyCompare);
-        });
-
-        verifyCompare();
-    });
-
+    /**
+     * Applique les filtres de date sur la liste des backups.
+     */
     function filter() {
         const start = document.getElementById('start').value;
         const end = document.getElementById('end').value;
@@ -216,9 +228,13 @@
             }
         });
         compare();
-        document.getElementById('nbLogShow').textContent = 'Nombre de backup : ' + visibleCount;
+        document.getElementById('nbLogShow').textContent = 'Nombre de backups : ' + visibleCount;
     }
 
+
+    /**
+     * Réinitialise les filtres de date.
+     */
     function stopFilter() {
         document.getElementById('start').value = '';
         document.getElementById('end').value = '';
@@ -230,8 +246,11 @@
         compare();
     }
 
-    let orderDate = "DESC";
 
+    /**
+     * Met à jour la flèche de tri pour la colonne de date.
+     * @param {string} order - Ordre de tri ("ASC" ou "DESC")
+     */
     function updateArrowDate(order) {
         const arrowIcon = document.querySelector('#date_header svg');
         arrowIcon.innerHTML = '';
@@ -242,6 +261,10 @@
         }
     }
 
+
+    /**
+     * Filtre la liste des backups par date.
+     */
     function filterDate() {
         const tableBody = document.querySelector('tbody');
         const rows = Array.from(tableBody.querySelectorAll('tr'));
@@ -267,28 +290,23 @@
         compare();
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const filtersAccordionContainer = document.getElementById('filtersAccordionContainer');
-        const navbarHeight = document.querySelector('.navbar').offsetHeight;
-        window.addEventListener('scroll', function () {
-            if (window.scrollY >= filtersAccordionContainer.offsetTop - navbarHeight) {
-                filtersAccordionContainer.classList.add('fixed-accordion');
-                filtersAccordionContainer.style.top = navbarHeight + 'px';
-            } else {
-                filtersAccordionContainer.classList.remove('fixed-accordion');
-                filtersAccordionContainer.style.top = 'auto';
-            }
-        });
-    });
 
+    /**
+     * Redirige vers la page de détails d'un backup.
+     * @param {number} id_backup - ID du backup
+     */
     function goTo(id_backup) {
         window.location.href = "/backup/" + id_backup;
     }
 
+
+    /**
+     * Supprime tous les backups sélectionnés après confirmation.
+     */
     function deleteAllSelect() {
         openModal();
         document.getElementById("modalTitle").innerText = "Supprimer des backup";
-        document.getElementById("modalBody").innerText = "Êtes vous certains de vouloir supprimer ces backup ?";
+        document.getElementById("modalBody").innerText = "Êtes-vous certains de vouloir supprimer ces backups ?";
         return new Promise((resolve, reject) => {
             const confirmButton = document.getElementById('confirm');
             const cancelButton = document.getElementById('cancel');
@@ -358,6 +376,11 @@
         });
     }
 
+
+    /**
+     * Supprime un backup spécifique après confirmation.
+     * @param {number} id - ID du backup
+     */
     function delete_backup(id) {
         openModal();
         document.getElementById("modalTitle").innerText = "Supprimer un backup";
@@ -368,10 +391,10 @@
                     .then(response => {
                         document.getElementById("backup_" + id).remove();
                         backups = backups.filter(backup => backup.id_backup !== id);
-                        show_success_message("Le backup à été supprimé !");
+                        show_success_message("Le backup a été supprimé !");
                     })
                     .catch(error => {
-                        show_danger_message("La suppression à échoué : " + error);
+                        show_danger_message("La suppression a échoué : " + error);
                     });
                 closeModal();
                 compare();
@@ -383,6 +406,10 @@
         });
     }
 
+
+    /**
+     * Compare et affiche les boutons d'action basés sur les éléments sélectionnés.
+     */
     function compare() {
         for (const backup of backups) {
             if (document.getElementById("checkbox_backup_" + backup['id_backup']).checked && document.getElementById("backup_" + backup['id_backup']).style.display === "") {
@@ -392,14 +419,50 @@
         }
         document.getElementById("button_delete_selection").style.display = "none";
     }
-</script>
 
-<style>
-    .fixed-accordion {
-        position: fixed;
-        top: 0;
-        width: 100%;
-        z-index: 1000;
-        background-color: white;
-    }
-</style>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectAllCheckbox = document.getElementById('checkbox_select');
+        const checkboxes = document.querySelectorAll('input[id^="checkbox_backup_"]');
+        const downloadDropdown = document.getElementById('download_dropdown');
+
+        function check() {
+            const isChecked = selectAllCheckbox.checked;
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            verifyCompare();
+        }
+
+        function verifyCompare() {
+            const checked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            if (checked) {
+                downloadDropdown.style.display = '';
+            } else {
+                downloadDropdown.style.display = 'none';
+            }
+        }
+
+        selectAllCheckbox.addEventListener('change', check);
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', verifyCompare);
+        });
+
+        verifyCompare();
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const filtersAccordionContainer = document.getElementById('filtersAccordionContainer');
+        const navbarHeight = document.querySelector('#navbar').offsetHeight;
+        window.addEventListener('scroll', function () {
+            if (window.scrollY >= filtersAccordionContainer.offsetTop - navbarHeight) {
+                filtersAccordionContainer.classList.add('fixed-accordion');
+                filtersAccordionContainer.style.top = navbarHeight + 'px';
+            } else {
+                filtersAccordionContainer.classList.remove('fixed-accordion');
+                filtersAccordionContainer.style.top = 'auto';
+            }
+        });
+    });
+</script>

@@ -1,22 +1,40 @@
 {% include 'Components/headers.html.twig' %}
 
-<h1 class="text-center">{{ title }}</h1>
+<div class="row">
+    <div class="col-1">
+        <div style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px;"
+             title="Revenir à la page d'accueil"
+             data-bs-toggle="popup-tip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="white"
+                 class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16"
+                 onclick="goBack()"
+                 style="cursor: pointer;">
+                <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1"></path>
+            </svg>
+        </div>
+    </div>
+    <div class="col-9" style="margin-top: 22px;">
+        {% include 'Components/breadcrumb.html.twig' with {
+            'past': [
+                {'link': '/', 'name': 'Accueil'}
+            ],
+            'current': title
+        } %}
+    </div>
+</div>
 
-<div class="content" style="margin-top: 10px; margin-bottom: 10px;">
-    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
+<hr style="height: 50px; background: #ffffff;">
+
+<div class="content" style="margin: 20px 10%;">
+    <div style="margin-left: 10px; margin-right: 10px; font-size: medium; font-weight: normal; background: transparent;">
         <div class="card-body">
 
-
             <div class="accordion" id="example_log">
-                <div class="accordion-item">
+                <div class="accordion-item" style="background-color: #0e1022;">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed"
-                                type="button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#log"
-                                aria-expanded="false"
-                                aria-controls="log"
-                        >
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#log"
+                                aria-expanded="false" aria-controls="log">
                             Afficher le dernier log
                         </button>
                     </h2>
@@ -25,11 +43,11 @@
 
                             <div class="row row-cols-sm-2 row-cols-md-2 row-cols-xl-2 g-2">
                                 <div class="col">
-                                    <div class="card shadow-sm">
+                                    <div class="card cards_left" style="font-size: medium; font-weight: normal;">
                                         <div class="card-body">
                                             <h4>Paramètres</h4>
                                             {% if last_log.0.params_log is defined %}
-                                                <pre>
+                                                <pre style="white-space: pre-wrap;">
                                                     <code id="json-content">{{ last_log.0.params_log }}</code>
                                                 </pre>
                                             {% else %}
@@ -41,11 +59,11 @@
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="card shadow-sm">
+                                    <div class="card cards_left" style="font-size: medium; font-weight: normal;">
                                         <div class="card-body">
                                             <h4>Réponse</h4>
                                             {% if last_log.0.response_log is defined %}
-                                                <pre>
+                                                <pre style="white-space: pre-wrap;">
                                                     <code id="json-content">{{ last_log.0.response_log }}</code>
                                                 </pre>
                                             {% else %}
@@ -64,25 +82,23 @@
             </div>
 
             <div class="album py-5">
-                <h2 style="text-align: center;">Entrer l'emplacement dans la réponse des éléments suivants</h2>
+                <h2 style="text-align: center; color: white;">Entrer l'emplacement dans la réponse des éléments
+                    suivants</h2>
                 <br>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                     {% for param in params %}
                         <div class="col">
-                            <div class="card shadow-sm">
+                            <div class="card cards">
                                 <h6 style="text-align: center;">
                                     <label for="{{ param.id_params }}">
                                         {{ param.full_name_params }}
                                     </label>
                                 </h6>
                                 <div class="card-body">
-                                    <input
-                                            id="{{ param.id_params }}"
-                                            type="text"
-                                            class="form-control"
-                                            value="{{ param.content_params }}"
-                                            oninput="updateParam('{{ param.id_params }}', this.value)"
-                                    >
+                                    <input id="{{ param.id_params }}" type="text"
+                                           style="background: #272d4a; color: white;"
+                                           class="form-control" value="{{ param.content_params }}"
+                                           oninput="updateParam('{{ param.id_params }}', this.value)">
                                 </div>
                             </div>
                         </div>
@@ -92,11 +108,7 @@
 
             <div class="text-center" data-bs-toggle="popup-tip"
                  title="Enregistrer les modifications dans la base de données.">
-                <button
-                        type="submit"
-                        class="btn btn-outline-dark"
-                        onclick="applyChanges()"
-                >
+                <button type="submit" class="btn buttons" onclick="applyChanges()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
                          class="bi bi-floppy2-fill" viewBox="0 0 16 16">
                         <path d="M12 2h-2v3h2z"/>
@@ -109,32 +121,21 @@
     </div>
 </div>
 
+<hr style="height: 50px; background: #ffffff;">
 
-<div class="content" style="margin-top: 10px; margin-bottom: 10px;">
-    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
+<div class="content" style="margin: 20px 10%;">
+    <div style="margin-left: 10px; margin-right: 10px; font-size: medium; font-weight: normal;  background: transparent;">
 
         <div class="card-body">
-            <h2 style="text-align: center;">Modifier les CRON de récupération des logs</h2>
+            <h2 style="text-align: center; color: white;">CRON de récupération des logs</h2>
 
             <div class="album py-5">
-                <div id="messageCardCRONLog" role="alert"
-                     style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
-                    <span id="messageTextCRONLog">Message</span>
-                    <span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-                             class="bi bi-x-circle"
-                             viewBox="0 0 16 16" style="cursor: pointer" onclick="close_message_CRON()">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
-                        </svg>
-                    </span>
-                </div>
-                <br>
+
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-6 g-3" id="album_CRON_log">
                     {% for cron in CRON_info %}
                         {% if cron.commande_CRON == "CRON_COMMANDE_GET_LOG" %}
                             <div class="col" id="col_{{ cron.id_CRON }}">
-                                <div class="card shadow-sm">
+                                <div class="card cards">
                                     <div class="card-body">
                                         <div id="messageCardCRON_{{ cron.id_CRON }}" role="alert"
                                              style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
@@ -152,14 +153,15 @@
                                         <div class="d-flex justify-content-between">
                                             <input
                                                     id="cron_{{ cron.id_CRON }}"
-                                                    type="text"
-                                                    class="form-control"
+                                                    type="text" class="form-control"
                                                     value="{{ cron.expression_CRON }}"
-                                            >
+                                                    style="background: #272d4a; color: white; margin-right: 15px;"
+                                                    onchange="updateCRON()"
+                                                    oninput="validationCron({{ cron.id_CRON }}, this.value)">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
                                                  fill="red" class="bi bi-x-circle" viewBox="0 0 16 16"
                                                  data-bs-toggle="popup-tip"
-                                                 title="Supprimer le CRON. ATTENTION : Pour enregistrer les changements, cliqué sur la diskette."
+                                                 title="Supprimer le CRON. ATTENTION : Pour enregistrer les changements, cliquez sur la diskette."
                                                  style="cursor: pointer;" onclick="deleteCRON({{ cron.id_CRON }})">
                                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                                                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
@@ -171,15 +173,14 @@
                         {% endif %}
                     {% endfor %}
                     <div class="col">
-                        <div class="card shadow-sm">
+                        <div class="card cards">
                             <div class="card-body">
                                 <div id="messageCardCRONNewLog" role="alert"
                                      style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
                                     <span id="messageTextCRONNewLog">Message</span>
                                     <span>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                                             fill="currentColor"
-                                             class="bi bi-x-circle"
+                                             fill="currentColor" class="bi bi-x-circle"
                                              viewBox="0 0 16 16" style="cursor: pointer"
                                              onclick="close_message_CRON_new()">
                                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
@@ -188,7 +189,8 @@
                                     </span>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <input id="cron_new_log" type="text" class="form-control">
+                                    <input id="cron_new_log" type="text" class="form-control"
+                                           style="background: #272d4a; color: white; margin-right: 15px;">
                                     <span style="cursor: pointer;" onclick="addCRONLog()" data-bs-toggle="popup-tip"
                                           title="Ajouter un CRON. ATTENTION : Pour que les modifications soient enregistrées, cliquez sur la disquette.">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
@@ -204,49 +206,24 @@
                 </div>
             </div>
 
-            <div class="text-center">
-                <button
-                        type="submit" class="btn btn-outline-dark" onclick="updateCRON()" data-bs-toggle="popup-tip"
-                        title="Enregistrer les modifications des CRON dans la base de donnée et dans crontab."
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
-                         class="bi bi-floppy2-fill" viewBox="0 0 16 16">
-                        <path d="M12 2h-2v3h2z"/>
-                        <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v13A1.5 1.5 0 0 0 1.5 16h13a1.5 1.5 0 0 0 1.5-1.5V2.914a1.5 1.5 0 0 0-.44-1.06L14.147.439A1.5 1.5 0 0 0 13.086 0zM4 6a1 1 0 0 1-1-1V1h10v4a1 1 0 0 1-1 1zM3 9h10a1 1 0 0 1 1 1v5H2v-5a1 1 0 0 1 1-1"/>
-                    </svg>
-                </button>
-            </div>
-
         </div>
     </div>
 </div>
 
+<hr style="height: 50px; background: #ffffff;">
 
-<div class="content" style="margin-top: 10px; margin-bottom: 10px;">
-    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
+<div class="content" style="margin: 20px 10%;">
+    <div style="margin-left: 10px; margin-right: 10px; font-size: medium; font-weight: normal;  background: transparent;">
 
         <div class="card-body">
-            <h2 style="text-align: center;">Modifier les CRON de récupération des threads</h2>
+            <h2 style="text-align: center; color: white;">CRON de récupération des threads</h2>
 
             <div class="album py-5">
-                <div id="messageCardCRONThread" role="alert"
-                     style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
-                    <span id="messageTextCRONThread">Message</span>
-                    <span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-                             class="bi bi-x-circle"
-                             viewBox="0 0 16 16" style="cursor: pointer" onclick="close_message_CRON()">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
-                        </svg>
-                    </span>
-                </div>
-                <br>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-6 g-3" id="album_CRONThread">
                     {% for cron in CRON_info %}
                         {% if cron.commande_CRON == "CRON_COMMANDE_GET_THREAD" %}
                             <div class="col" id="col_{{ cron.id_CRON }}">
-                                <div class="card shadow-sm">
+                                <div class="card cards">
                                     <div class="card-body">
                                         <div id="messageCardCRON_{{ cron.id_CRON }}" role="alert"
                                              style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
@@ -264,10 +241,11 @@
                                         <div class="d-flex justify-content-between">
                                             <input
                                                     id="cron_{{ cron.id_CRON }}"
-                                                    type="text"
-                                                    class="form-control"
+                                                    type="text" class="form-control"
+                                                    style="background: #272d4a; color: white; margin-right: 15px;"
                                                     value="{{ cron.expression_CRON }}"
-                                            >
+                                                    onchange="updateCRON()"
+                                                    oninput="validationCron({{ cron.id_CRON }}, this.value)">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
                                                  fill="red" class="bi bi-x-circle" viewBox="0 0 16 16"
                                                  data-bs-toggle="popup-tip"
@@ -283,15 +261,14 @@
                         {% endif %}
                     {% endfor %}
                     <div class="col">
-                        <div class="card shadow-sm">
+                        <div class="card cards">
                             <div class="card-body">
                                 <div id="messageCardCRONNewThread" role="alert"
                                      style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
                                     <span id="messageTextCRONNewThread">Message</span>
                                     <span>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                                             fill="currentColor"
-                                             class="bi bi-x-circle"
+                                             fill="currentColor" class="bi bi-x-circle"
                                              viewBox="0 0 16 16" style="cursor: pointer"
                                              onclick="close_message_CRON_new_thread()">
                                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
@@ -300,7 +277,8 @@
                                     </span>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <input id="cron_new_thread" type="text" class="form-control">
+                                    <input id="cron_new_thread" type="text" class="form-control"
+                                           style="background: #272d4a; color: white; margin-right: 15px;">
                                     <span style="cursor: pointer;" onclick="addCRONThread()" data-bs-toggle="popup-tip"
                                           title="Ajouter un CRON. ATTENTION : Pour que les modifications soient enregistrées, cliquez sur la disquette.">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
@@ -316,49 +294,24 @@
                 </div>
             </div>
 
-            <div class="text-center">
-                <button
-                        type="submit" class="btn btn-outline-dark" onclick="updateCRON()" data-bs-toggle="popup-tip"
-                        title="Enregistrer les modifications des CRON dans la base de donnée et dans crontab."
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
-                         class="bi bi-floppy2-fill" viewBox="0 0 16 16">
-                        <path d="M12 2h-2v3h2z"/>
-                        <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v13A1.5 1.5 0 0 0 1.5 16h13a1.5 1.5 0 0 0 1.5-1.5V2.914a1.5 1.5 0 0 0-.44-1.06L14.147.439A1.5 1.5 0 0 0 13.086 0zM4 6a1 1 0 0 1-1-1V1h10v4a1 1 0 0 1-1 1zM3 9h10a1 1 0 0 1 1 1v5H2v-5a1 1 0 0 1 1-1"/>
-                    </svg>
-                </button>
-            </div>
-
         </div>
     </div>
 </div>
 
+<hr style="height: 50px; background: #ffffff;">
 
-<div class="content" style="margin-top: 10px; margin-bottom: 10px;">
-    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
+<div class="content" style="margin: 20px 10%;">
+    <div style="margin-left: 10px; margin-right: 10px; font-size: medium; font-weight: normal; background: transparent;">
 
         <div class="card-body">
-            <h2 style="text-align: center;">Modifier les CRON de récupération des backup des assistants</h2>
+            <h2 style="text-align: center; color: white;">CRON de récupération des backups des assistants</h2>
 
             <div class="album py-5">
-                <div id="messageCardCRONBackupAssistant" role="alert"
-                     style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
-                    <span id="messageTextCRONBackupAssistant">Message</span>
-                    <span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-                             class="bi bi-x-circle"
-                             viewBox="0 0 16 16" style="cursor: pointer" onclick="close_message_CRON_backup_assistant()">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
-                        </svg>
-                    </span>
-                </div>
-                <br>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-6 g-3" id="album_CRON">
                     {% for cron in CRON_info %}
                         {% if cron.commande_CRON == "CRON_COMMANDE_GET_BACKUP_ASSISTANTS" %}
                             <div class="col" id="col_{{ cron.id_CRON }}">
-                                <div class="card shadow-sm">
+                                <div class="card cards">
                                     <div class="card-body">
                                         <div id="messageCardCRON_{{ cron.id_CRON }}" role="alert"
                                              style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
@@ -376,10 +329,11 @@
                                         <div class="d-flex justify-content-between">
                                             <input
                                                     id="cron_{{ cron.id_CRON }}"
-                                                    type="text"
-                                                    class="form-control"
+                                                    type="text" class="form-control"
+                                                    style="background: #272d4a; color: white; margin-right: 15px;"
                                                     value="{{ cron.expression_CRON }}"
-                                            >
+                                                    onchange="updateCRON()"
+                                                    oninput="validationCron({{ cron.id_CRON }}, this.value)">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
                                                  fill="red" class="bi bi-x-circle" viewBox="0 0 16 16"
                                                  data-bs-toggle="popup-tip"
@@ -395,7 +349,7 @@
                         {% endif %}
                     {% endfor %}
                     <div class="col">
-                        <div class="card shadow-sm">
+                        <div class="card cards">
                             <div class="card-body">
                                 <div id="messageCardCRONNewBackupAssistant" role="alert"
                                      style="display: none; justify-content: space-between; align-items: center; margin: 10px;">
@@ -412,8 +366,10 @@
                                     </span>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <input id="cron_new_backup_assistant" type="text" class="form-control">
-                                    <span style="cursor: pointer;" onclick="addCRONBackupAssistant()" data-bs-toggle="popup-tip"
+                                    <input id="cron_new_backup_assistant" type="text" class="form-control"
+                                           style="background: #272d4a; color: white; margin-right: 15px;">
+                                    <span style="cursor: pointer;" onclick="addCRONBackupAssistant()"
+                                          data-bs-toggle="popup-tip"
                                           title="Ajouter un CRON. ATTENTION : Pour que les modifications soient enregistrées, cliquez sur la disquette.">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
                                              fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
@@ -428,34 +384,22 @@
                 </div>
             </div>
 
-            <div class="text-center">
-                <button
-                        type="submit" class="btn btn-outline-dark" onclick="updateCRON()" data-bs-toggle="popup-tip"
-                        title="Enregistrer les modifications des CRON dans la base de donnée et dans crontab."
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
-                         class="bi bi-floppy2-fill" viewBox="0 0 16 16">
-                        <path d="M12 2h-2v3h2z"/>
-                        <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v13A1.5 1.5 0 0 0 1.5 16h13a1.5 1.5 0 0 0 1.5-1.5V2.914a1.5 1.5 0 0 0-.44-1.06L14.147.439A1.5 1.5 0 0 0 13.086 0zM4 6a1 1 0 0 1-1-1V1h10v4a1 1 0 0 1-1 1zM3 9h10a1 1 0 0 1 1 1v5H2v-5a1 1 0 0 1 1-1"/>
-                    </svg>
-                </button>
-            </div>
-
         </div>
     </div>
 </div>
 
+<hr style="height: 50px; background: #ffffff;">
 
-<div class="content" style="margin-top: 10px; margin-bottom: 10px;">
-    <div class="card shadow-sm" style="margin-left: 10px; margin-right: 10px;">
+<div class="content" style="margin: 20px 10%;">
+    <div style="margin-left: 10px; margin-right: 10px; font-weight: normal; font-size: medium; background: transparent;">
 
         <div class="card-body">
-            <h2 style="text-align: center;">Gestion de la base de données</h2>
+            <h2 style="text-align: center; color: white;">Gestion de la base de données</h2>
 
             <script>
                 function convertOctet(size) {
                     let formattedSize;
-                    if (size < 1000 ) {
+                    if (size < 1000) {
                         formattedSize = `${size} o`;
                     } else if (size >= 1000 && size < 1000000) {
                         formattedSize = `${(size / 1000).toLocaleString('fr-FR')} Ko`;
@@ -471,7 +415,7 @@
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
                 <div class="col">
-                    <div class="card h-100 shadow-sm">
+                    <div class="card h-100 cards" style="font-weight: normal; font-size: medium;">
                         <div class="card-header">
                             <h5 class="card-title text-center">
                                 Taille totale de la base de données
@@ -486,7 +430,7 @@
                 </div>
 
                 <div class="col">
-                    <div class="card h-100 shadow-sm">
+                    <div class="card h-100 cards" style="font-weight: normal; font-size: medium;">
                         <div class="card-header">
                             <h5 class="card-title text-center">
                                 Taille totale des données
@@ -501,7 +445,7 @@
                 </div>
 
                 <div class="col">
-                    <div class="card h-100 shadow-sm">
+                    <div class="card h-100 cards" style="font-weight: normal; font-size: medium;">
                         <div class="card-header">
                             <h5 class="card-title text-center">
                                 Taille totale de la perte d'espace
@@ -517,7 +461,8 @@
             </div>
 
 
-            <table class="table table-bordered table-striped" style="margin-top: 20px; max-width: 800px; margin-right: auto; margin-left: auto;">
+            <table class="table table-bordered table-striped table-dark"
+                   style="margin-top: 20px; max-width: 800px; margin-right: auto; margin-left: auto;">
                 <thead>
                 <tr class="table-dark" style="height: 61px;">
                     <th scope="col" class="text-center">
@@ -539,10 +484,13 @@
                         <button
                                 class="btn btn-success" type="submit" id="button_delete_selection"
                                 data-bs-toggle="popup-tip" onclick="optimizeAll()"
+                                data-size="{{ bdd_total_size_data }}" data-free="{{ bdd_total_size_free }}"
                                 title="Optimiser toute la base de données.">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                 class="bi bi-speedometer" viewBox="0 0 16 16">
                                 <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2M3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.39.39 0 0 0-.029-.518z"/>
-                                <path fill-rule="evenodd" d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.95 11.95 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0"/>
+                                <path fill-rule="evenodd"
+                                      d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.95 11.95 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0"/>
                             </svg>
                         </button>
                     </th>
@@ -576,10 +524,13 @@
                             <div class="btn-group">
                                 <button type="button" class="btn btn-outline-success"
                                         onclick="optimizeTable('{{ table.name }}')"
+                                        data-size="{{ table.data_size }}" data-free="{{ table.data_free }}"
                                         data-bs-toggle="popup-tip" title="Optimiser la table.">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                         class="bi bi-speedometer" viewBox="0 0 16 16">
                                         <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2M3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.39.39 0 0 0-.029-.518z"/>
-                                        <path fill-rule="evenodd" d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.95 11.95 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0"/>
+                                        <path fill-rule="evenodd"
+                                              d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.95 11.95 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0"/>
                                     </svg>
                                 </button>
                                 <button type="button" class="btn btn-outline-danger"
@@ -607,27 +558,197 @@
     let CRON = {{ CRON_info|json_encode|raw }};
     let bdd = {{ info_bdd|json_encode|raw }};
 
+
+    /**
+     * Redirige l'utilisateur vers la page d'accueil.
+     */
+    function goBack() {
+        window.location.href = '/';
+    }
+
+
+    /**
+     * Détermine la classe CSS du bouton en fonction du pourcentage de perte d'espace.
+     * @param {number} percentage - Le pourcentage de perte d'espace.
+     * @param {number} free - La taille de la perte d'espace.
+     * @returns {string} - La classe CSS correspondante.
+     */
+    function getButtonClass(percentage, free) {
+        if (percentage >= 20 || free >= 100000000) {
+            return 'btn-outline-danger';
+        } else if (percentage >= 10 || free >= 10000000) {
+            return 'btn-outline-warning';
+        } else {
+            return 'btn-outline-success';
+        }
+    }
+
+
+    /**
+     * Optimise toutes les tables de la base de données.
+     */
     function optimizeAll() {
-        //Ajouter animation de chargement comme dans list_tools.
-        bdd.forEach(table => {
-            optimizeTable(table.name);
+        openModal();
+        document.getElementById("modalTitle").innerText = "Optimisation de la base de données";
+        document.getElementById("modalBody").innerText = "Êtes-vous sûr de vouloir optimiser toute la base de données ?";
+
+        return new Promise((resolve, reject) => {
+            const confirmButton = document.getElementById('confirm');
+            const cancelButton = document.getElementById('cancel');
+
+            const handleConfirmClick = async () => {
+                confirmButton.disabled = true;
+                cancelButton.disabled = true;
+                confirmButton.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> <span class="visually-hidden" role="status">Loading...</span>';
+
+                document.getElementById("modalBody").innerHTML = `
+                <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" style="width: 0%"></div>
+                </div>
+            `;
+
+                const progressBar = document.getElementById("progressBar");
+                const totalTasks = bdd.length;
+                let completedTasks = 0;
+
+                const updateProgressBar = async () => {
+                    completedTasks++;
+                    const progressPercentage = (completedTasks / totalTasks) * 100;
+                    progressBar.style.width = `${progressPercentage}%`;
+                    progressBar.setAttribute('aria-valuenow', progressPercentage);
+                    if (progressPercentage === 100) {
+                        await sleep(500);
+                    } else {
+                        await sleep(100);
+                    }
+                };
+
+                try {
+                    for (const table of bdd) {
+                        postRequest("/parameters/optimize/one", {name: table.name})
+                            .catch(error => {
+                                show_danger_message("L'optimisation a échoué : " + error);
+                            });
+                        await updateProgressBar();
+                    }
+                    show_success_message("Optimisation de la base de données réussi !");
+                    closeModal();
+                } catch (error) {
+                    show_danger_message("L'optimisation a échoué : " + error);
+                } finally {
+                    confirmButton.disabled = false;
+                    cancelButton.disabled = false;
+                    confirmButton.innerHTML = 'Confirmer';
+                    resolve();
+                }
+            };
+
+            confirmButton.addEventListener('click', handleConfirmClick);
+            cancelButton.addEventListener('click', () => {
+                closeModal();
+                resolve();
+            });
         });
     }
 
+
+    /**
+     * Supprime le contenu d'une table spécifique de la base de données.
+     * @param {string} name - Le nom de la table à supprimer.
+     */
     function deleteDataTable(name) {
-        //Ajouter validation comme dans list_tools.
-    }
+        openModal();
+        document.getElementById("modalTitle").innerText = "Suppression de données";
+        document.getElementById("modalBody").innerHTML = "Êtes-vous sûr de vouloir supprimer le contenu de cette table ? <b>Attention :</b> Cela supprimera <b>TOUTES les informations</b> liées à cette table.";
 
-    function optimizeTable(name) {
-        postRequest("/parameters/optimize/one", {name: name})
-            .then(response => {
-                show_success_message("Optimisation réussie !");
-            })
-            .catch(error => {
-                show_danger_message("L'optimisation a échoué : " + error);
+        return new Promise((resolve, reject) => {
+            const confirmButton = document.getElementById('confirm');
+            const cancelButton = document.getElementById('cancel');
+
+            const handleConfirmClick = async () => {
+                confirmButton.disabled = true;
+                cancelButton.disabled = true;
+                confirmButton.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> <span class="visually-hidden" role="status">Loading...</span>';
+
+                try {
+                    postRequest("/parameters/delete/one", {name: name})
+                        .then(response => {
+                            show_success_message("Suppression réussi !");
+                        })
+                        .catch(error => {
+                            show_danger_message("La suppression a échoué : " + error);
+                        });
+                    closeModal();
+                } catch (error) {
+                    show_danger_message("La suppression a échoué : " + error);
+                } finally {
+                    confirmButton.disabled = false;
+                    cancelButton.disabled = false;
+                    confirmButton.innerHTML = 'Confirmer';
+                    resolve();
+                }
+            };
+
+            confirmButton.addEventListener('click', handleConfirmClick);
+            cancelButton.addEventListener('click', () => {
+                closeModal();
+                resolve();
             });
+        });
     }
 
+
+    /**
+     * Optimise une table spécifique de la base de données.
+     * @param {string} name - Le nom de la table à optimiser.
+     */
+    function optimizeTable(name) {
+        openModal();
+        document.getElementById("modalTitle").innerText = "Optimisation de données";
+        document.getElementById("modalBody").innerText = "Êtes-vous sûr de vouloir optimiser cette table ?";
+
+        return new Promise((resolve, reject) => {
+            const confirmButton = document.getElementById('confirm');
+            const cancelButton = document.getElementById('cancel');
+
+            const handleConfirmClick = async () => {
+                confirmButton.disabled = true;
+                cancelButton.disabled = true;
+                confirmButton.innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> <span class="visually-hidden" role="status">Loading...</span>';
+
+                try {
+                    postRequest("/parameters/optimize/one", {name: name})
+                        .then(response => {
+                            show_success_message("Optimisation réussie !");
+                        })
+                        .catch(error => {
+                            show_danger_message("L'optimisation a échoué : " + error);
+                        });
+                    closeModal();
+                } catch (error) {
+                    show_danger_message("L'optimisation a échoué : " + error);
+                } finally {
+                    confirmButton.disabled = false;
+                    cancelButton.disabled = false;
+                    confirmButton.innerHTML = 'Confirmer';
+                    resolve();
+                }
+            };
+
+            confirmButton.addEventListener('click', handleConfirmClick);
+            cancelButton.addEventListener('click', () => {
+                closeModal();
+                resolve();
+            });
+        });
+    }
+
+
+    /**
+     * Met à jour la valeur d'un paramètre spécifique.
+     * @param {string} id - L'identifiant du paramètre à mettre à jour.
+     * @param {string} value - La nouvelle valeur du paramètre.
+     */
     function updateParam(id, value) {
         const index = params.findIndex(param => param.id_params === id);
         if (index !== -1) {
@@ -635,10 +756,14 @@
         }
     }
 
+
+    /**
+     * Applique les modifications apportées aux paramètres de réponse.
+     */
     function applyChanges() {
         openModal();
         document.getElementById("modalTitle").innerText = "Mettre à jours les paramètres de la réponse";
-        document.getElementById("modalBody").innerText = "Êtes vous certains de vouloir mettre à jour les paramètres de la réponse ?\n";
+        document.getElementById("modalBody").innerText = "Êtes-vous certains de vouloir mettre à jour les paramètres de la réponse ?\n";
         return new Promise((resolve, reject) => {
             document.getElementById('confirm').addEventListener('click', () => {
                 for (const param of params) {
@@ -659,177 +784,274 @@
         });
     }
 
-    function updateCRON() {
-        openModal();
-        document.getElementById("modalTitle").innerText = "Mettre à jour le fichier crontab";
-        document.getElementById("modalBody").innerText = "Êtes vous certains de vouloir mettre à jour le fichier ?\nCette action auras pour effet de remplacer les CRON du fichier par ceux de la base de donnée.";
-        return new Promise((resolve, reject) => {
-            document.getElementById('confirm').addEventListener('click', async () => {
-                let nbError = 0;
-                let nbNull = 0;
-                for (const cron of CRON) {
-                    const id = cron.id_CRON;
-                    let value = document.getElementById("cron_" + id).value;
-                    if (value !== null) {
-                        let isValide;
-                        await postRequest("/parameters/cron/validation", {value: value})
+
+    /**
+     * Met à jour les CRON dans la base de données et le fichier crontab.
+     */
+    async function updateCRON() {
+        let nbError = 0;
+        let nbNull = 0;
+        for (const cron of CRON) {
+            const id = cron.id_CRON;
+            let value = document.getElementById("cron_" + id).value;
+            if (value !== null) {
+                await postRequest("/parameters/cron/validation", {value: value})
+                    .then(response => {
+                        postRequest("/parameters/update/cron", {id: id, value: value})
                             .then(response => {
-                                isValide = true;
                                 close_message_CRON_id(id);
                             })
                             .catch(error => {
                                 nbError++;
-                                isValide = false;
-                                show_danger_message_CRON_id("La mise à jour a échoué : L'expression CRON est invalide !", id);
+                                show_danger_message_CRON_id("La mise à jour a échoué : Le fichier n'as pas été mis à jour !", id);
                             });
-                        if (isValide) {
-                            postRequest("/parameters/update/cron", {id: id, value: value})
-                                .then(response => {
-                                    close_message_CRON_id(id);
-                                })
-                                .catch(error => {
-                                    nbError++;
-                                    show_danger_message_CRON_id("La mise à jour a échoué : " + error, id);
-                                });
-                        }
-                    } else {
-                        nbNull++;
-                    }
-                }
-                if (nbNull === CRON.length) {
-                    postRequest("/parameters/stop/cron", {})
-                        .then(response => {
-                            close_message_CRON();
-                            show_warning_message("Le processus CRON à été arréter car aucun CRON ne lui à été donné !")
-                        })
-                        .catch(error => {
-                            nbError++;
-                            show_danger_message("L'arrêt du processus CRON à échoué : " + error);
-                        });
-                }
-                if (nbError === 0) {
-                    show_success_message("Tous les CRON on été mis à jour !");
-                } else {
-                    show_danger_message("Il y a eu " + nbError + " erreur(s) !");
-                }
-                closeModal();
-            });
-            document.getElementById('cancel').addEventListener('click', () => {
-                closeModal();
-            });
-        });
+                        document.getElementById("cron_" + id).style.background = "#272d4a";
+                    })
+                    .catch(error => {
+                        nbError++;
+                        document.getElementById("cron_" + id).style.background = "rgba(255, 0, 0, 0.7)";
+                    });
+            } else {
+                nbNull++;
+            }
+        }
+        if (nbError === 0) {
+            close_message();
+            show_success_message("Tous les CRON on été mis à jour !");
+        } else {
+            close_message();
+            show_danger_message("Il y a eu " + nbError + " erreur(s) !");
+        }
     }
 
+    /**
+     * Vérifie une expression est valide ou non.
+     * @param id - id du CRON.
+     * @param expression - L'expression à vérifier.
+     */
+    function validationCron(id, expression) {
+        postRequest("/parameters/cron/validation", {value: expression})
+            .then(response => {
+                document.getElementById("cron_" + id).style.background = "#272d4a";
+            })
+            .catch(error => {
+                document.getElementById("cron_" + id).style.background = "rgba(255, 0, 0, 0.7)";
+            });
+    }
+
+
+    /**
+     * Affiche un message de succès pour les CRON.
+     * @param {string} message - Le message de succès à afficher.
+     */
     function show_success_message_CRON(message) {
         document.getElementById("messageTextCRON").textContent = message;
         document.getElementById("messageCardCRON").style.display = "flex";
         document.getElementById("messageCardCRON").className = "alert alert-success";
     }
 
+
+    /**
+     * Affiche un message d'avertissement pour les CRON.
+     * @param {string} message - Le message d'avertissement à afficher.
+     */
     function show_warning_message_CRON(message) {
         document.getElementById("messageTextCRON").textContent = message;
         document.getElementById("messageCardCRON").style.display = "flex";
         document.getElementById("messageCardCRON").className = "alert alert-warning";
     }
 
+
+    /**
+     * Affiche un message d'erreur pour les CRON.
+     * @param {string} message - Le message d'erreur à afficher.
+     */
     function show_danger_message_CRON(message) {
         document.getElementById("messageTextCRON").textContent = message;
         document.getElementById("messageCardCRON").style.display = "flex";
         document.getElementById("messageCardCRON").className = "alert alert-danger";
     }
 
+
+    /**
+     * Affiche un message de succès pour un CRON spécifique.
+     * @param {string} message - Le message de succès à afficher.
+     * @param {number} id - L'identifiant du CRON.
+     */
     function show_success_message_CRON_id(message, id) {
         document.getElementById("messageTextCRON_" + id).textContent = message;
         document.getElementById("messageCardCRON_" + id).style.display = "flex";
         document.getElementById("messageCardCRON_" + id).className = "alert alert-success";
     }
 
+
+    /**
+     * Affiche un message d'avertissement pour un CRON spécifique.
+     * @param {string} message - Le message d'avertissement à afficher.
+     * @param {number} id - L'identifiant du CRON.
+     */
     function show_warning_message_CRON_id(message, id) {
         document.getElementById("messageTextCRON_" + id).textContent = message;
         document.getElementById("messageCardCRON_" + id).style.display = "flex";
         document.getElementById("messageCardCRON_" + id).className = "alert alert-warning";
     }
 
+
+    /**
+     * Affiche un message d'erreur pour un CRON spécifique.
+     * @param {string} message - Le message d'erreur à afficher.
+     * @param {number} id - L'identifiant du CRON.
+     */
     function show_danger_message_CRON_id(message, id) {
         document.getElementById("messageTextCRON_" + id).textContent = message;
         document.getElementById("messageCardCRON_" + id).style.display = "flex";
         document.getElementById("messageCardCRON_" + id).className = "alert alert-danger";
     }
 
+
+    /**
+     * Affiche un message de succès pour l'ajout d'un nouveau CRON.
+     * @param {string} message - Le message de succès à afficher.
+     */
     function show_success_message_CRON_new(message) {
         document.getElementById("messageTextCRONNewLog").textContent = message;
         document.getElementById("messageCardCRONNewLog").style.display = "flex";
         document.getElementById("messageCardCRONNewLog").className = "alert alert-success";
     }
 
+
+    /**
+     * Affiche un message d'avertissement pour l'ajout d'un nouveau CRON.
+     * @param {string} message - Le message d'avertissement à afficher.
+     */
     function show_warning_message_CRON_new(message) {
         document.getElementById("messageTextCRONNewLog").textContent = message;
         document.getElementById("messageCardCRONNewLog").style.display = "flex";
         document.getElementById("messageCardCRONNewLog").className = "alert alert-warning";
     }
 
+
+    /**
+     * Affiche un message d'erreur pour l'ajout d'un nouveau CRON.
+     * @param {string} message - Le message d'erreur à afficher.
+     */
     function show_danger_message_CRON_new(message) {
         document.getElementById("messageTextCRONNewLog").textContent = message;
         document.getElementById("messageCardCRONNewLog").style.display = "flex";
         document.getElementById("messageCardCRONNewLog").className = "alert alert-danger";
     }
 
+
+    /**
+     * Affiche un message de succès pour l'ajout d'un nouveau CRON de thread.
+     * @param {string} message - Le message de succès à afficher.
+     */
     function show_success_message_CRON_new_thread(message) {
         document.getElementById("messageTextCRONNewThread").textContent = message;
         document.getElementById("messageCardCRONNewThread").style.display = "flex";
         document.getElementById("messageCardCRONNewThread").className = "alert alert-success";
     }
 
+
+    /**
+     * Affiche un message d'avertissement pour l'ajout d'un nouveau CRON de thread.
+     * @param {string} message - Le message d'avertissement à afficher.
+     */
     function show_warning_message_CRON_new_thread(message) {
         document.getElementById("messageTextCRONNewThread").textContent = message;
         document.getElementById("messageCardCRONNewThread").style.display = "flex";
         document.getElementById("messageCardCRONNewThread").className = "alert alert-warning";
     }
 
+
+    /**
+     * Affiche un message d'erreur pour l'ajout d'un nouveau CRON de thread.
+     * @param {string} message - Le message d'erreur à afficher.
+     */
     function show_danger_message_CRON_new_thread(message) {
         document.getElementById("messageTextCRONNewThread").textContent = message;
         document.getElementById("messageCardCRONNewThread").style.display = "flex";
         document.getElementById("messageCardCRONNewThread").className = "alert alert-danger";
     }
 
+
+    /**
+     * Affiche un message de succès pour l'ajout d'un nouveau CRON de backup d'assistant.
+     * @param {string} message - Le message de succès à afficher.
+     */
     function show_success_message_CRON_new_backup_assistant(message) {
         document.getElementById("messageTextCRONNewBackupAssistant").textContent = message;
         document.getElementById("messageCardCRONNewBackupAssistant").style.display = "flex";
         document.getElementById("messageCardCRONNewBackupAssistant").className = "alert alert-success";
     }
 
+
+    /**
+     * Affiche un message d'avertissement pour l'ajout d'un nouveau CRON de backup d'assistant.
+     * @param {string} message - Le message d'avertissement à afficher.
+     */
     function show_warning_message_CRON_new_backup_assistant(message) {
         document.getElementById("messageTextCRONNewBackupAssistant").textContent = message;
         document.getElementById("messageCardCRONNewBackupAssistant").style.display = "flex";
         document.getElementById("messageCardCRONNewBackupAssistant").className = "alert alert-warning";
     }
 
+
+    /**
+     * Affiche un message d'erreur pour l'ajout d'un nouveau CRON de backup d'assistant.
+     * @param {string} message - Le message d'erreur à afficher.
+     */
     function show_danger_message_CRON_new_backup_assistant(message) {
         document.getElementById("messageTextCRONNewBackupAssistant").textContent = message;
         document.getElementById("messageCardCRONNewBackupAssistant").style.display = "flex";
         document.getElementById("messageCardCRONNewBackupAssistant").className = "alert alert-danger";
     }
 
+
+    /**
+     * Ferme le message pour les CRON.
+     */
     function close_message_CRON() {
         document.getElementById("messageCardCRON").style.display = "none";
     }
 
+
+    /**
+     * Ferme le message pour un CRON spécifique.
+     * @param {number} id - L'identifiant du CRON.
+     */
     function close_message_CRON_id(id) {
         document.getElementById("messageCardCRON_" + id).style.display = "none";
     }
 
+
+    /**
+     * Ferme le message pour l'ajout d'un nouveau CRON.
+     */
     function close_message_CRON_new() {
         document.getElementById("messageCardCRONNewLog").style.display = "none";
     }
 
+
+    /**
+     * Ferme le message pour l'ajout d'un nouveau CRON de thread.
+     */
     function close_message_CRON_new_thread() {
         document.getElementById("messageCardCRONNewThread").style.display = "none";
     }
 
+
+    /**
+     * Ferme le message pour l'ajout d'un nouveau CRON de backup d'assistant.
+     */
     function close_message_CRON_new_backup_assistant() {
         document.getElementById("messageCardCRONNewBackupAssistant").style.display = "none";
     }
 
+
+    /**
+     * Ajoute un nouveau CRON de log après validation de l'expression.
+     */
     async function addCRONLog() {
         const value = document.getElementById("cron_new_log").value;
         let isValide;
@@ -847,7 +1069,11 @@
                     response = JSON.parse(response);
                     show_success_message_CRON_new("Le CRON à été ajouté avec succès !");
                     addCardCRON(response.id, value, 'album_CRON_log');
-                    CRON.push({"id_CRON": response.id, "expression_CRON": value, "commande_CRON": "CRON_COMMANDE_GET_LOG"})
+                    CRON.push({
+                        "id_CRON": response.id,
+                        "expression_CRON": value,
+                        "commande_CRON": "CRON_COMMANDE_GET_LOG"
+                    })
                 })
                 .catch(error => {
                     show_danger_message_CRON_new("L'ajout a échoué : " + error);
@@ -855,6 +1081,10 @@
         }
     }
 
+
+    /**
+     * Ajoute un nouveau CRON de thread après validation de l'expression.
+     */
     async function addCRONThread() {
         const value = document.getElementById("cron_new_thread").value;
         let isValide;
@@ -872,7 +1102,11 @@
                     response = JSON.parse(response);
                     show_success_message_CRON_new_thread("Le CRON à été ajouté avec succès !");
                     addCardCRON(response.id, value, 'album_CRONThread');
-                    CRON.push({"id_CRON": response.id, "expression_CRON": value, "commande_CRON": "CRON_COMMANDE_GET_THREAD"})
+                    CRON.push({
+                        "id_CRON": response.id,
+                        "expression_CRON": value,
+                        "commande_CRON": "CRON_COMMANDE_GET_THREAD"
+                    })
                 })
                 .catch(error => {
                     show_danger_message_CRON_new_thread("L'ajout a échoué : " + error);
@@ -880,6 +1114,10 @@
         }
     }
 
+
+    /**
+     * Ajoute un nouveau CRON de backup d'assistant après validation de l'expression.
+     */
     async function addCRONBackupAssistant() {
         const value = document.getElementById("cron_new_backup_assistant").value;
         let isValide;
@@ -889,7 +1127,7 @@
             })
             .catch(error => {
                 isValide = false;
-                show_danger_message_CRON_new_backup_assistant("L'ajout a échoué : L'expression CRON est invalide !");
+                show_danger_message_CRON_new_backup_assistant("L’ajout a échoué : L’expression CRON est invalide !");
             });
         if (isValide) {
             postRequest("/parameters/add/cron", {value: value, commande: 'CRON_COMMANDE_GET_BACKUP_ASSISTANTS'})
@@ -897,7 +1135,11 @@
                     response = JSON.parse(response);
                     show_success_message_CRON_new_backup_assistant("Le CRON à été ajouté avec succès !");
                     addCardCRON(response.id, value, 'album_CRON');
-                    CRON.push({"id_CRON": response.id, "expression_CRON": value, "commande_CRON": "CRON_COMMANDE_GET_BACKUP_ASSISTANTS"})
+                    CRON.push({
+                        "id_CRON": response.id,
+                        "expression_CRON": value,
+                        "commande_CRON": "CRON_COMMANDE_GET_BACKUP_ASSISTANTS"
+                    })
                 })
                 .catch(error => {
                     show_danger_message_CRON_new_backup_assistant("L'ajout a échoué : " + error);
@@ -905,6 +1147,13 @@
         }
     }
 
+
+    /**
+     * Ajoute une nouvelle carte CRON dans l'album spécifié.
+     * @param {number} id - L'identifiant du CRON.
+     * @param {string} value - L'expression CRON.
+     * @param {string} albumId - L'identifiant de l'album où ajouter la carte.
+     */
     function addCardCRON(id, value, albumId) {
         const albumCRON = document.getElementById(albumId);
 
@@ -913,7 +1162,7 @@
         newDiv.id = "col_" + id;
 
         const cardDiv = document.createElement("div");
-        cardDiv.classList.add("card", "shadow-sm");
+        cardDiv.classList.add("card", "cards");
 
         const cardBodyDiv = document.createElement("div");
         cardBodyDiv.classList.add("card-body");
@@ -957,12 +1206,15 @@
         cronInput.id = "cron_" + id;
         cronInput.setAttribute("type", "text");
         cronInput.classList.add("form-control");
-        cronInput.setAttribute("value", value);
+        cronInput.setAttribute("value", value)
+        cronInput.style.background = "#272d4a";
+        cronInput.style.color = "white";
+        cronInput.style.marginRight = "15px";
 
         const closeSvg2 = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         closeSvg2.setAttribute("width", "40");
         closeSvg2.setAttribute("height", "40");
-        closeSvg2.setAttribute("fill", "currentColor");
+        closeSvg2.setAttribute("fill", "red");
         closeSvg2.setAttribute("class", "bi bi-x-circle");
         closeSvg2.setAttribute("viewBox", "0 0 16 16");
         closeSvg2.style.cursor = "pointer";
@@ -996,10 +1248,15 @@
         albumCRON.insertBefore(newDiv, beforeLastElement);
     }
 
+
+    /**
+     * Supprime un CRON spécifique de la base de données.
+     * @param {number} id - L'identifiant du CRON à supprimer.
+     */
     function deleteCRON(id) {
         openModal();
         document.getElementById("modalTitle").innerText = "Supprimer un CRON de la BDD";
-        document.getElementById("modalBody").innerText = "Êtes vous certains de vouloir supprimer ce CRON ?\nCette action auras pour effet de supprimer CRON de la base de donnée.\n";
+        document.getElementById("modalBody").innerText = "Êtes-vous certains de vouloir supprimer ce CRON ?\nCette action aura pour effet de supprimer CRON de la base de données.\n";
         return new Promise((resolve, reject) => {
             document.getElementById('confirm').addEventListener('click', () => {
                 postRequest("/parameters/delete/cron", {id: id})
@@ -1017,4 +1274,27 @@
             });
         });
     }
+
+
+    /**
+     * Met à jour les classes CSS des boutons en fonction de la perte d'espace.
+     */
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll('button[data-size]');
+        buttons.forEach(button => {
+            const size = parseFloat(button.getAttribute('data-size'));
+            const free = parseFloat(button.getAttribute('data-free'));
+            const percentage = parseInt((free / (size + free)) * 100);
+            const newClass = getButtonClass(percentage, free);
+            button.classList.remove('btn-outline-success', 'btn-outline-warning', 'btn-outline-danger');
+            button.classList.add(newClass);
+        });
+        const button = document.getElementById("button_delete_selection");
+        const size = parseFloat(button.getAttribute('data-size'));
+        const free = parseFloat(button.getAttribute('data-free'));
+        const percentage = parseInt((free / (size + free)) * 100);
+        const newClass = getButtonClass(percentage, free);
+        button.classList.remove('btn-success', 'btn-warning', 'btn-danger');
+        button.classList.add(newClass);
+    });
 </script>

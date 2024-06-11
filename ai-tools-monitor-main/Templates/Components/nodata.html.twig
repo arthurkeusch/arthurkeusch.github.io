@@ -1,8 +1,24 @@
-<div class="error-container">
-    <p class="error-message">
-        {{ message }}
-    </p>
-</div>
+{% if isError is defined %}
+    {% if isError == "true" %}
+        <div class="error-container">
+            <p class="error-message">
+                {{ message }}
+            </p>
+        </div>
+    {% else %}
+        <div class="success-container">
+            <p class="success-message">
+                {{ message }}
+            </p>
+        </div>
+    {% endif %}
+{% else %}
+    <div class="error-container">
+        <p class="error-message">
+            {{ message }}
+        </p>
+    </div>
+{% endif %}
 
 <style>
     .error-container {
@@ -18,9 +34,28 @@
         margin: 0 auto;
     }
 
+    .success-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 20px;
+        border: 2px solid #0ed500;
+        border-radius: 10px;
+        background-color: #f5ffee;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
     .error-message {
         font-size: 18px;
         text-align: center;
         color: #ff0000;
+    }
+
+    .success-message {
+        font-size: 18px;
+        text-align: center;
+        color: #0ed500;
     }
 </style>

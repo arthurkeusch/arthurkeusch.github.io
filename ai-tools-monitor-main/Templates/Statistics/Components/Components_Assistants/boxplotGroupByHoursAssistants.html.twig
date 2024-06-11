@@ -1,13 +1,54 @@
-<div id="boxplotGroupByHours_assistants"></div>
+<ul class="list-group list-group-horizontal mx-auto">
+    <li class="list-group-item" style="cursor: pointer;">
+        <input class="form-check-input me-1" type="radio"
+               value="" id="all_points"
+               onclick="showBoxPlotGroupByHoursPointsAssistants(1)" style="cursor: pointer;">
+        <label class="form-check-label" for="all_points"
+               style="cursor: pointer; user-select: none;">
+            Tous les points
+        </label>
+    </li>
+    <li class="list-group-item" style="cursor: pointer;">
+        <input class="form-check-input me-1" type="radio"
+               value="" id="outliers_points" checked
+               onclick="showBoxPlotGroupByHoursPointsAssistants(2)" style="cursor: pointer;">
+        <label class="form-check-label" for="outliers_points"
+               style="cursor: pointer; user-select: none;">
+            Uniquement les valeurs aberrantes
+        </label>
+    </li>
+    <li class="list-group-item" style="cursor: pointer;">
+        <input class="form-check-input me-1" type="radio"
+               value="" id="no_points"
+               onclick="showBoxPlotGroupByHoursPointsAssistants(3)" style="cursor: pointer;">
+        <label class="form-check-label" for="no_points"
+               style="cursor: pointer; user-select: none;">
+            Ne rien afficher
+        </label>
+    </li>
+</ul>
+<br>
+
+<div id="boxplotGroupByHours_assistants" style="height: 100%; width: 100%;"></div>
 
 <script>
     let data = {{ data|json_encode|raw }};
     let domain = [];
     const orderedDomains = ["0h - 3h", "4h - 7h", "8h - 11h", "12h - 15h", "16h - 19h", "20h - 23h"];
 
+
+    /**
+     * Convertit les données en les regroupant par tranches horaires.
+     */
     function convertData() {
         domain = [];
 
+
+        /**
+         * Retourne la plage horaire correspondant à l'heure donnée et l'ajoute au domaine.
+         * @param {number} hours - L'heure à convertir.
+         * @returns {string} - La plage horaire correspondante.
+         */
         function getHours(hours) {
             if (hours >= 0 && hours <= 3) {
                 domain.push("0h - 3h");
@@ -30,6 +71,12 @@
             }
         }
 
+
+        /**
+         * Retourne un tableau de plages horaires uniques.
+         * @param {Array} timeRanges - Les plages horaires à filtrer.
+         * @returns {Array} - Les plages horaires uniques.
+         */
         function getUniqueTimeRanges(timeRanges) {
             const uniqueTimeRanges = [];
             const seen = new Set();
@@ -46,7 +93,8 @@
         data.forEach(thread => {
             newData.push({
                 'hours': getHours(parseInt(new Date(thread.date_thread.replace(' ', 'T')).getHours().toString().padStart(2, '0'))),
-                'latency': thread.latency_thread
+                'latency': thread.latency_thread,
+                'id_log': thread.id_thread
             });
         });
         domain = getUniqueTimeRanges(domain).sort((a, b) => orderedDomains.indexOf(a) - orderedDomains.indexOf(b));
@@ -55,7 +103,25 @@
 
     convertData();
 
-    function add_boxplotGroupByHours_assistants(number) {
+
+    /**
+     * Ajoute un diagramme en boîte groupé par heures pour les assistants avec les points de données spécifiques.
+     */
+    async function showBoxPlotGroupByHoursPointsAssistants(number) {
+        const svgNode = await add_boxplotGroupByHours_assistants(number);
+        const boxplotDiv = document.getElementById("boxplotGroupByHours_assistants");
+        boxplotDiv.innerHTML = '';
+        boxplotDiv.appendChild(svgNode);
+        document.getElementById("all_points").checked = (number === 1);
+        document.getElementById("outliers_points").checked = (number === 2);
+        document.getElementById("no_points").checked = (number === 3);
+    }
+
+
+    /**
+     * Crée et retourne le SVG pour le diagramme en boîte groupé par heures avec les styles de points spécifiés.
+     */
+    function add_boxplotGroupByHours_assistants(stylePointe) {
         const width = 928;
         const height = 600;
         const marginTop = 20;
@@ -91,7 +157,7 @@
             .paddingOuter(0.5);
 
         const y = d3.scaleLinear()
-            .domain([d3.min(bins, d => d.range[0]) || 0, d3.max(bins, d => d.range[1]) || height]).nice()
+            .domain([0, d3.max(data, d => d.latency)]).nice()
             .range([height - marginBottom, marginTop]);
 
         const svg = d3.create("svg")
@@ -140,16 +206,37 @@
             .attr("stroke", "currentColor")
             .attr("stroke-width", 2);
 
-        g.append("g")
-            .attr("fill", "currentColor")
-            .attr("fill-opacity", 0.2)
-            .attr("stroke", "none")
-            .selectAll("circle")
-            .data(d => d.outliers)
-            .join("circle")
-            .attr("r", 2)
-            .attr("cx", () => (Math.random() - 0.5) * 4)
-            .attr("cy", d => y(d.latency) || 0);
+        function addPoints(points, g, allData) {
+            const circles = g.append("g")
+                .attr("fill", "#00bc00")
+                .attr("fill-opacity", 0.8)
+                .attr("stroke", "none")
+                .selectAll("circle")
+                .data(points)
+                .enter()
+                .append("circle")
+                .attr("r", 2)
+                .attr("cx", () => (Math.random() - 0.5) * x.bandwidth() * 0.4)
+                .attr("cy", d => y(d.latency))
+                .style("cursor", "pointer")
+                .on("mouseover", function () {
+                    d3.select(this).attr("r", 4).attr("fill-opacity", 1);
+                })
+                .on("mouseout", function () {
+                    d3.select(this).attr("r", 2).attr("fill-opacity", 0.8);
+                })
+                .on("click", function (event, d) {
+                    goToAssistant(d.id_log)
+                });
+        }
+
+        g.each(function(d) {
+            if (stylePointe === 1) {
+                addPoints(d.allPoints, d3.select(this), data);
+            } else if (stylePointe === 2) {
+                addPoints(d.outliers, d3.select(this), data);
+            }
+        });
 
         svg.append("g")
             .attr("transform", `translate(0,${height - marginBottom})`)
